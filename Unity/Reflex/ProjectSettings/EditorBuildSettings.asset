@@ -11,14 +11,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Reflex.unity
     guid: a4b9d8b7a18af4d2f8c4ab2598dfe8e4
-  - enabled: 1
-    path: Assets/Scenes/ConcordOriginalPhysics.unity
-    guid: bf7ac823cab704877962a7d8e9ac2fc4
-  - enabled: 1
-    path: Assets/Scenes/AlpineOriginalPhysics.unity
-    guid: 1ae60b17ac5304fc98e8dc236f06e55a
-  - enabled: 1
-    path: Assets/Scenes/BikeDiscovery.unity
-    guid: 11ead62766e6b47aca4307e34db03daf
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

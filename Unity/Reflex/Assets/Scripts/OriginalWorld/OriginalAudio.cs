@@ -222,16 +222,9 @@ namespace Reflex.Port.OriginalWorld
             }
             else
             {
-                string lv = !string.IsNullOrEmpty(level) ? level : LevelOfActiveScene();
+                string lv = level ?? "";
                 if (!string.IsNullOrEmpty(lv)) Begin(lv);
             }
-        }
-
-        /// Scenes built before `level` existed: the level follows from the scene's name (AlpineOriginalPhysics, ConcordOriginalPhysics).
-        public static string LevelOfActiveScene()
-        {
-            string n = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            return n.IndexOf("Concord", StringComparison.OrdinalIgnoreCase) >= 0 ? "NAT_Concord" : n.IndexOf("Alpine", StringComparison.OrdinalIgnoreCase) >= 0 ? "FR_Alpine" : "";
         }
 
         /// Starts building the library of a level from the Reflex install (call before the first command when `level` was not set).

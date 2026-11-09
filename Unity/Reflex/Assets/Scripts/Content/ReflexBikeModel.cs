@@ -1,10 +1,9 @@
 // The player's bike, built at run time from the player's own Reflex install (nothing of the game is kept in the project):
 // the chassis model (MXs/<chassis>/MX_<chassis>, LOD 0) on the MX_Hierarchy nodes, the front / rear tyre models (MX_Tires/<set>)
 // on the OBJ_FRT_Tire / OBJ_BCK_Tire nodes, each binding's material resolved as the game does (the graphic kit's plastics and
-// seat, the wheel set's rim / spokes / tyre, the frame's fork sticker on the second UV set ...). Ported from
-// _re/formats/bike_asset_export.py (the same geometry: static surfaces carry their node's world matrix, the skinned fenders
-// stay in their stored coordinates; UV V flipped for Unity) and Editor/ReflexBikeBuilder + AlpineOriginalPhysicsBuilder's
-// WheelGroup / BindBikePose (the part meshes are in model space; OriginalBikePose moves each by liveWorld(node) * inverse(bindWorld(node))).
+// seat, the wheel set's rim / spokes / tyre, the frame's fork sticker on the second UV set ...). Static surfaces carry their node's
+// world matrix, the skinned fenders stay in their stored coordinates; UV V is flipped for Unity. The part meshes are in model
+// space; OriginalBikePose moves each by liveWorld(node) * inverse(bindWorld(node)).
 // The bike the captured world uses is the MarsF Lite with the THQ red graphic kit and THQ tyres (BIKE_FORMAT.md): BikeSpec.MarsFLite.
 using System;
 using System.Collections.Generic;

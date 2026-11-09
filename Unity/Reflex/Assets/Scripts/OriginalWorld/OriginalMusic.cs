@@ -97,7 +97,7 @@ namespace Reflex.Port.OriginalWorld
         public readonly List<int> GameTracksPlayed = new List<int>();
         public int[] GamePlaylist => gamePlaylist;
 
-        string LevelName => !string.IsNullOrEmpty(level) ? level : OriginalAudio.LevelOfActiveScene();
+        string LevelName => !string.IsNullOrEmpty(level) ? level : "";
         static string ActivityOf(string level) => ActivityOfStyled(TrackMods.Style(level));   // (a custom track: its kind's)
         static string ActivityOfStyled(string level) =>
             level.StartsWith("NAT_", StringComparison.Ordinal) ? "National" : level.StartsWith("FR_", StringComparison.Ordinal) ? "FreeRide" : "";

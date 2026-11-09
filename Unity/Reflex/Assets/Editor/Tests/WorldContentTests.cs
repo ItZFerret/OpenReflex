@@ -121,10 +121,10 @@ namespace Reflex.Port.Tests
         }
 
         // Opens a built scene and plays it (REFLEX_PLAYTEST=<out dir>; ReflexLevelPlayTest renders and exits):
-        //   REFLEX_PLAYTEST_SCENE=Assets/Scenes/ConcordOriginalPhysics.unity
+        //   REFLEX_PLAYTEST_SCENE=Assets/Scenes/Reflex.unity
         public static void PlayTest()
         {
-            string scene = Environment.GetEnvironmentVariable("REFLEX_PLAYTEST_SCENE") ?? "Assets/Scenes/ConcordOriginalPhysics.unity";
+            string scene = Environment.GetEnvironmentVariable("REFLEX_PLAYTEST_SCENE") ?? "Assets/Scenes/Reflex.unity";
             EditorSceneManager.OpenScene(scene, OpenSceneMode.Single);
             // the sound/music loaders decode thousands of clips (minutes in batch mode); not needed for the visual check
             if (Environment.GetEnvironmentVariable("REFLEX_PLAYTEST_AUDIO") != "1")
@@ -144,7 +144,7 @@ namespace Reflex.Port.Tests
             var log = new StringBuilder();
             try
             {
-                string scene = Environment.GetEnvironmentVariable("REFLEX_PLAYTEST_SCENE") ?? "Assets/Scenes/ConcordOriginalPhysics.unity";
+                string scene = Environment.GetEnvironmentVariable("REFLEX_PLAYTEST_SCENE") ?? "Assets/Scenes/Reflex.unity";
                 EditorSceneManager.OpenScene(scene, OpenSceneMode.Single);
                 var ol = UnityEngine.Object.FindAnyObjectByType<OriginalLevel>();
                 var rt = ol.runtime ? ol.runtime : UnityEngine.Object.FindAnyObjectByType<OriginalWorldRuntime>();

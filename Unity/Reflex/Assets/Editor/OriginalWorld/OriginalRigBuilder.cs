@@ -12,32 +12,10 @@ using Reflex.Port.OriginalWorld;
 
 namespace Reflex.Port.OriginalWorldEditor
 {
-    public static class AlpineOriginalPhysicsBuilder
+    // The original-physics rig every event scene shares (OriginalWorldRuntime, the terrain, HUD, game audio and music components):
+    // ReflexEventSceneBuilder puts it in Assets/Scenes/Reflex.unity. Everything it shows is read from the player's install at run time.
+    public static class OriginalRigBuilder
     {
-        public const string ScenePath = "Assets/Scenes/AlpineOriginalPhysics.unity";
-
-        [MenuItem("Reflex/Build Alpine original physics scene")]
-        public static void Build()
-        {
-            if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play mode first.");
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            // Level content (scenery, hovercraft, terrain material, track textures) is read from the player's install at run time.
-            var level = ReflexSceneryBuilder.EnsureLevel("FR_Alpine");
-
-            // Starting pose (only frames the scene before the plugin runs): the level's first free-ride spawn anchor at run time.
-            Vector3 startPos = Vector3.zero; Quaternion startRot = Quaternion.identity;
-
-            var runtime = BuildRig(startPos, startRot, null, null, "REFLEX / ALPINE · ORIGINAL GAME PHYSICS");
-            runtime.terrain = CreateOriginalTerrain("Alpine");
-            level.runtime = runtime; level.terrain = runtime.terrain;
-
-            EditorSceneManager.SaveScene(scene, ScenePath);
-            if (!EditorBuildSettings.scenes.Any(s => s.path == ScenePath))
-                EditorBuildSettings.scenes = EditorBuildSettings.scenes.Concat(new[] { new EditorBuildSettingsScene(ScenePath, true) }).ToArray();
-            AssetDatabase.SaveAssets();
-            Debug.Log("Alpine original physics scene built. Everything (world, terrain, scenery, vehicles, sound, UI) is read from the player's Reflex install at run time.");
-        }
-
         // The level terrain, built at play time by OriginalTerrain from the running original world's collision
         // heights (Unity Terrain with GPU LOD; follows the deformation surface). The scene only holds the component:
         // OriginalLevel (added by ReflexSceneryBuilder.EnsureLevel) reads the level material from the install at run time
@@ -121,7 +99,7 @@ namespace Reflex.Port.OriginalWorldEditor
             return audio;
         }
 
-        internal static void AddHud(OriginalWorldRuntime runtime, string title = "REFLEX / ALPINE · ORIGINAL GAME PHYSICS")
+        internal static void AddHud(OriginalWorldRuntime runtime, string title = "REFLEX · ORIGINAL GAME")
         {
             var canvas = new GameObject("HUD", typeof(Canvas), typeof(UnityEngine.UI.CanvasScaler)); canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
             var scaler = canvas.GetComponent<UnityEngine.UI.CanvasScaler>(); scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1440, 900); scaler.matchWidthOrHeight = 0.5f;

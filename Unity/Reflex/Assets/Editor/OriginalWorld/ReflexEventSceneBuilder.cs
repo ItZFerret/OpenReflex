@@ -21,8 +21,8 @@ namespace Reflex.Port.OriginalWorldEditor
             if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Exit Play mode first.");
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var level = ReflexSceneryBuilder.EnsureLevel("NAT_Concord");
-            var runtime = AlpineOriginalPhysicsBuilder.BuildRig(Vector3.zero, Quaternion.identity, "concord-world.bin", null, "REFLEX · ORIGINAL GAME");
-            runtime.terrain = AlpineOriginalPhysicsBuilder.CreateOriginalTerrain("Level");
+            var runtime = OriginalRigBuilder.BuildRig(Vector3.zero, Quaternion.identity, "concord-world.bin", null, "REFLEX · ORIGINAL GAME");
+            runtime.terrain = OriginalRigBuilder.CreateOriginalTerrain("Level");
             level.runtime = runtime; level.terrain = runtime.terrain;
             var select = runtime.gameObject.AddComponent<ReflexEventSelect>();
             select.level = level; select.runtime = runtime; select.gameAudio = runtime.gameAudio;
