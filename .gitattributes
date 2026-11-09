@@ -1,0 +1,4 @@
+# Shell and Python scripts keep LF line endings on every platform (a CRLF checkout on Windows breaks bash under WSL).
+*.sh text eol=lf
+*.py text eol=lf
+*.command text eol=lf
