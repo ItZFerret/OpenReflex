@@ -1,0 +1,129 @@
+world persist attach
+world tutorial attach
+world ui_setting HUDVisibility 1 1
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world ui_voice
+world tutorial frame
+world tutorial objects
+world tutorial state
+frames 15
+world tutorial progress
+world ui_event HidePreChallengePopup
+frames 120
+world tutorial state
+world tutorial test_pass
+frames 120
+world tutorial frame
+frames 20
+world tutorial frame
+frames 20
+world tutorial frame
+frames 20
+world tutorial frame
+frames 20
+world tutorial state
+world tutorial progress
+world memhash
+world persist leave

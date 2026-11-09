@@ -1,0 +1,141 @@
+/* The audit's P2 front-end pages (w-p2front), in the career menu's look (OuCareer.uss / OuRestyle.uss): the original's popups (quit, locked, invalid vehicle,
+   rules), the Race & Ride CHALLENGES page, the career welcome and completion pages, the VEHICLE LIST, the MOTOCARD welcome, the SCREEN ADJUSTMENT page and the
+   career hub's credits. Loaded by OuTheme.Apply / OptUi.CreateDocument after OuRestyle.uss; every rule starts with .p2- (or overrides one shared class inside a
+   .p2- container), so nothing else is touched. Reference size 1920 x 1080 (OuModern.uss: the panel scales by height). */
+
+/* ------------------------------------------------------------------ the career hub's credits */
+.p2-credits { flex-direction: column; align-items: flex-end; justify-content: center; margin-left: 28px; height: 78px; min-width: 250px; padding: 4px 22px 2px 26px; flex-shrink: 0; background-color: var(--oc-glass); border-right-width: 8px; border-right-color: var(--oc-gold); }
+.p2-credits-label { font-size: 20px; letter-spacing: 5px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-credits-value { font-size: 46px; letter-spacing: 1px; color: var(--oc-gold); margin-top: -6px; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; white-space: nowrap; }
+
+/* ------------------------------------------------------------------ popups (QuitConfirmation, Locked, InvalidRaceRequirements, Rules) */
+.ou-frontend .p2-popup { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.ou-frontend.mxa-root .p2-popup .ou-scrim { background-color: rgba(4, 5, 7, 0.82); }
+.ou-frontend.mxa-root .p2-popup .ou-dialog { width: 900px; max-width: 94%; padding: 92px 56px 30px 56px; }
+.ou-frontend.mxa-root .p2-popup .p2-popup-text { font-size: 31px; color: var(--oc-paper); white-space: normal; margin: 0 0 30px 0; -unity-text-align: upper-left; }
+.p2-popup-format { font-size: 40px; letter-spacing: 6px; color: var(--oc-orange-hot); margin: -4px 0 14px 0; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-popup-buttons { flex-direction: row; justify-content: center; }
+.p2-popup-stack { flex-direction: column; align-items: stretch; }
+.ou-frontend.mxa-root .p2-popup-buttons .p2-popup-button { margin: 0 14px 8px 14px; min-width: 240px; }
+.ou-frontend.mxa-root .p2-popup-stack .p2-popup-button { margin: 0 0 10px 0; }
+.p2-startrace-facts { flex-direction: row; flex-wrap: wrap; margin: 0 0 24px 0; padding: 14px 18px 6px 18px; background-color: rgba(8, 12, 14, 0.62); border-left-width: 4px; border-left-color: var(--oc-orange-hot); }
+.p2-startrace-facts .oc-fact { width: 50%; margin-bottom: 8px; padding-right: 12px; }
+.p2-startrace-facts .p2-startrace-wide { width: 100%; }
+.p2-popup-hints { flex-direction: row; justify-content: center; margin-top: 20px; }
+.p2-popup-hints .mxa-hint { margin: 0 24px; flex-direction: row; align-items: center; }
+.p2-popup-hints .mxa-hint-label { font-size: 24px; letter-spacing: 3px; color: var(--oc-dim); margin-left: 10px; }
+
+/* ------------------------------------------------------------------ the Race & Ride CHALLENGES page */
+.p2-ch { flex-grow: 1; flex-shrink: 1; min-height: 0; flex-direction: column; }
+.p2-ch-mid { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; margin-top: 4px; }
+.p2-ch-empty { font-size: 40px; color: var(--oc-dim); margin: 80px 0 0 40px; white-space: normal; }
+.p2-ch-locs { width: 560px; flex-shrink: 0; flex-direction: column; margin-right: 28px; }
+.p2-ch-side { flex-grow: 1; flex-shrink: 1; min-width: 0; flex-direction: column; }
+
+.p2-ch-card {
+    flex-direction: row; align-items: center; height: 172px; margin-bottom: 14px; padding: 0 20px 0 14px; background-color: var(--oc-glass);
+    border-left-width: 8px; border-left-color: rgba(204, 95, 41, 0.0);
+    transition-property: background-color, translate, border-left-color; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.p2-ch-card:hover { background-color: var(--oc-glass-hi); }
+.p2-ch-card-on { border-left-color: var(--oc-orange); background-color: var(--oc-glass-hi); }
+.p2-ch-card:focus { background-color: var(--oc-gold); border-left-color: var(--oc-ink); translate: 10px 0; }
+.p2-ch-thumb { width: 150px; height: 130px; flex-shrink: 0; margin-right: 20px; background-color: rgba(0, 0, 0, 0.5); -unity-background-scale-mode: scale-and-crop; border-width: 2px; border-color: var(--oc-line); }
+.p2-ch-card-copy { flex-grow: 1; flex-shrink: 1; min-width: 0; justify-content: center; }
+.p2-ch-card-name { font-size: 44px; letter-spacing: 0.5px; color: var(--oc-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -4px; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-ch-card:focus .p2-ch-card-name { color: var(--oc-ink); }
+.p2-ch-card-slots { flex-direction: row; margin: 6px 0 0 -6px; }
+.p2-ch-card-tags { position: absolute; right: 14px; top: 10px; flex-direction: row; align-items: center; }
+.p2-ch-card:focus .oc-tag { background-color: rgba(14, 15, 15, 0.82); color: var(--oc-paper); }
+.p2-ch-cup { width: 54px; height: 54px; margin-left: 8px; -unity-background-scale-mode: scale-to-fit; }
+
+.p2-ch-panel { flex-shrink: 0; }
+.p2-ch-off { display: none; }
+.p2-ch-panel > .oc-panel-body { padding: 0 0 18px 0; }
+.p2-ch-photo { height: 132px; background-color: rgba(0, 0, 0, 0.5); -unity-background-scale-mode: scale-and-crop; justify-content: flex-end; border-bottom-width: 2px; border-bottom-color: var(--oc-line); }
+.p2-ch-photo-cap { padding: 14px 24px 6px 24px; background-color: rgba(8, 12, 13, 0.55); }
+.p2-ch-eyebrow { font-size: 24px; letter-spacing: 6px; color: var(--oc-orange-hot); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-ch-list { padding: 14px 14px 0 14px; }
+.p2-ch-row {
+    flex-direction: row; align-items: center; height: 84px; margin-bottom: 6px; padding: 0 20px 0 14px; background-color: rgba(255, 255, 255, 0.05);
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.p2-ch-row:hover { background-color: rgba(255, 255, 255, 0.10); }
+.p2-ch-row:focus { background-color: var(--oc-gold); translate: 8px 0; }
+.p2-ch-row:disabled { opacity: 0.45; }
+.p2-ch-slot { margin-left: 0; margin-right: 18px; width: 50px; height: 50px; }
+.p2-ch-row-copy { width: 372px; flex-shrink: 0; justify-content: center; }
+.p2-ch-row-title { font-size: 33px; letter-spacing: 0.5px; color: var(--oc-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -3px; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-ch-row-best { font-size: 22px; letter-spacing: 2px; color: var(--oc-dim); margin-top: -2px; white-space: nowrap; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-ch-row:focus .p2-ch-row-title { color: var(--oc-ink); }
+.p2-ch-row:focus .p2-ch-row-best { color: rgba(14, 15, 15, 0.72); }
+.p2-ch-tiers { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-width: 0; justify-content: flex-end; }
+.p2-ch-tier { width: 168px; margin-left: 8px; padding: 6px 10px 4px 12px; background-color: rgba(0, 0, 0, 0.42); border-left-width: 6px; border-left-color: var(--oc-dim); }
+.p2-ch-tier-gold { border-left-color: rgb(255, 215, 0); }
+.p2-ch-tier-silver { border-left-color: rgb(192, 192, 192); }
+.p2-ch-tier-bronze { border-left-color: rgb(196, 112, 40); }
+.p2-ch-tier-name { font-size: 18px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-ch-tier-value { font-size: 30px; color: var(--oc-paper); margin-top: -3px; white-space: nowrap; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-ch-tier-got { background-color: rgba(226, 172, 64, 0.30); }
+.p2-ch-tier-got > .p2-ch-tier-name { color: var(--oc-paper); }
+.p2-ch-row:focus .p2-ch-tier { background-color: rgba(14, 15, 15, 0.78); }
+.p2-ch-row:focus .p2-ch-tier-got { background-color: rgba(14, 15, 15, 0.94); }
+.p2-ch-go { width: 120px; flex-shrink: 0; margin-left: 14px; font-size: 34px; letter-spacing: 3px; color: var(--oc-orange); -unity-text-align: middle-right; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-ch-row:focus .p2-ch-go { color: var(--oc-ink); }
+.p2-ch-ride { margin: 4px 14px 0 14px; height: 64px; }
+.p2-ch-ride > .oc-btn-label { font-size: 40px; }
+.p2-ch-desc { font-size: 26px; color: var(--oc-dim); white-space: normal; margin: 6px 8px 0 14px; max-height: 330px; overflow: hidden; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+
+/* ------------------------------------------------------------------ the career welcome, the MOTOCARD welcome */
+.p2-center { justify-content: center; align-items: center; }
+.p2-welcome { width: 1560px; flex-shrink: 1; }
+.p2-welcome > .oc-panel-body { padding: 24px 40px 22px 40px; }
+.p2-welcome-text { font-size: 30px; color: var(--oc-paper); white-space: normal; margin-bottom: 16px; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-welcome-ask { font-size: 32px; color: var(--oc-orange-hot); white-space: normal; margin: 6px 0 14px 0; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-welcome-row { width: 900px; }
+.p2-welcome .oc-btn { width: 620px; margin-top: 14px; }
+.p2-motocard-welcome .p2-welcome-text { font-size: 29px; margin-bottom: 12px; }
+
+/* ------------------------------------------------------------------ the career completion video */
+.p2-video-page { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgb(0, 0, 0); justify-content: center; align-items: center; }
+.p2-video { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
+.p2-video-caption { font-size: 90px; letter-spacing: 6px; color: var(--oc-gold); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+
+/* ------------------------------------------------------------------ the VEHICLE LIST (VehiclesQuickViewPopup) */
+.ou-frontend.mxa-root .p2-popup .ou-dialog-p2qv { width: 1500px; padding: 92px 40px 26px 40px; }
+.p2-qv { flex-direction: row; height: 560px; }
+.p2-qv-left { flex-grow: 1; flex-shrink: 1; min-width: 0; margin-right: 26px; }
+.p2-qv-head { flex-direction: row; align-items: center; height: 46px; background-color: var(--oc-orange); padding: 0 0 0 20px; margin-bottom: 6px; flex-shrink: 0; }
+.p2-qv-head > .p2-qv-col { font-size: 22px; letter-spacing: 4px; color: var(--oc-ink); }
+.p2-qv-scroll { flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.p2-qv-row { flex-direction: row; align-items: center; height: 72px; margin-bottom: 5px; padding: 0 16px 0 20px; background-color: var(--oc-glass); transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic; }
+.p2-qv-row:hover { background-color: var(--oc-glass-hi); }
+.p2-qv-row:focus { background-color: var(--oc-gold); translate: 8px 0; }
+.p2-qv-col { font-size: 32px; letter-spacing: 0.5px; color: var(--oc-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.p2-qv-type { width: 270px; flex-shrink: 0; }
+.p2-qv-name { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.p2-qv-row:focus > .p2-qv-col { color: var(--oc-ink); }
+.p2-qv-row:focus .oc-tag { background-color: rgba(14, 15, 15, 0.82); color: var(--oc-paper); }
+.p2-qv-empty { font-size: 30px; color: var(--oc-dim); padding: 22px 20px; white-space: normal; }
+.p2-qv-perf { width: 520px; flex-shrink: 0; align-self: stretch; }
+.p2-qv-perf > .oc-panel-bar { height: 52px; }
+.p2-qv-perf .oc-panel-title { font-size: 32px; }
+.p2-qv-bars { padding-top: 6px; }
+.p2-qv-stat { margin-bottom: 14px; }
+.p2-qv-stat-name { font-size: 22px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-qv-stat-bars { margin-top: 4px; }
+.p2-bar { height: 14px; margin-bottom: 5px; background-color: rgba(0, 0, 0, 0.55); border-width: 1px; border-color: var(--oc-line); }
+.p2-bar-base { position: absolute; left: 0; top: 0; bottom: 0; background-color: var(--oc-paper); }
+.p2-bar-bonus { position: absolute; top: 0; bottom: 0; background-color: var(--oc-gold); }
+
+/* ------------------------------------------------------------------ the SCREEN ADJUSTMENT page (OPTIONS > VIDEO) */
+.p2-adjust { width: 1320px; }
+.p2-adjust-inner { padding: 20px 36px 26px 36px; }
+.p2-adjust-message { font-size: 32px; color: rgb(224, 224, 200); white-space: normal; margin-bottom: 20px; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-adjust-steps { flex-direction: row; height: 150px; border-width: 2px; border-color: rgba(224, 224, 200, 0.2); }
+.p2-adjust-step { flex-grow: 1; flex-basis: 0; justify-content: flex-end; align-items: center; }
+.p2-adjust-step-label { font-size: 18px; letter-spacing: 1px; margin-bottom: 4px; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.p2-adjust-dark { flex-direction: row; height: 84px; margin-top: 14px; background-color: rgb(0, 0, 0); }
+.p2-adjust-patch { flex-grow: 1; flex-basis: 0; margin: 14px 10px; justify-content: flex-end; align-items: center; }
+.p2-adjust-rows { margin-top: 18px; }
+.p2-adjust-go { margin-top: 14px; }

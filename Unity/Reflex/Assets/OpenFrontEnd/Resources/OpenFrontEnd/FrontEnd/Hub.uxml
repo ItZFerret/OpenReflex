@@ -1,0 +1,15 @@
+<!-- The front end's main screen (OpenShell.ShowMain): the logo and the menu on the left, the continue / garage cards
+     bottom right. The code fills the named elements; OuFrontEnd.uss styles them. -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../OuFrontEnd.uss" />
+    <ui:VisualElement name="hub" class="ou-hub">
+        <ui:VisualElement name="hub-left" class="ou-hub-left">
+            <ui:VisualElement name="hub-logo" class="ou-hub-logo" />
+            <ui:VisualElement name="hub-menu" class="ou-hub-menu" />
+            <ui:VisualElement name="hub-small" class="ou-hub-small" />
+        </ui:VisualElement>
+        <ui:VisualElement name="hub-right" class="ou-hub-right">
+            <ui:VisualElement name="hub-cards" class="ou-hub-cards" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

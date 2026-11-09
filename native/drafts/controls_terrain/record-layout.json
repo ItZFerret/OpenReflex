@@ -1,0 +1,149 @@
+{
+  "schema": "reflex.private-controls-terrain-layout.v1",
+  "input_bytes": 55756,
+  "output_bytes": 39188,
+  "fields": [
+    {
+      "name": "state_bits",
+      "offset": 0,
+      "bytes": 38656
+    },
+    {
+      "name": "control_bits",
+      "offset": 38656,
+      "bytes": 256
+    },
+    {
+      "name": "filters",
+      "offset": 38912,
+      "bytes": 36
+    },
+    {
+      "name": "runtime_009cc37c",
+      "offset": 38948,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009cc8a8",
+      "offset": 38952,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009cd9bc",
+      "offset": 38956,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009cd9dc",
+      "offset": 38960,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009cd9e8",
+      "offset": 38964,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009d3bfc",
+      "offset": 38968,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009d78dc",
+      "offset": 38972,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009ddfc8",
+      "offset": 38976,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009e30dc",
+      "offset": 38980,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_009e30e0",
+      "offset": 38984,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_00a95844",
+      "offset": 38988,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_00a95d50",
+      "offset": 38992,
+      "bytes": 4
+    },
+    {
+      "name": "runtime_00d615c0",
+      "offset": 38996,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d615d0",
+      "offset": 39012,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d61650",
+      "offset": 39028,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d61660",
+      "offset": 39044,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d61670",
+      "offset": 39060,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d61680",
+      "offset": 39076,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d61690",
+      "offset": 39092,
+      "bytes": 16
+    },
+    {
+      "name": "runtime_00d616a0",
+      "offset": 39108,
+      "bytes": 16
+    },
+    {
+      "name": "dt_bits",
+      "offset": 39124,
+      "bytes": 4
+    },
+    {
+      "name": "profile",
+      "offset": 39128,
+      "bytes": 4
+    },
+    {
+      "name": "terrain_record",
+      "offset": 39132,
+      "bytes": 16624
+    }
+  ],
+  "output": "Input state/control/filters/runtime prefix39124 bytes updated, followed by64bytes calculated diagnostics: count/startXYZ/endXYZ/found/pointVec4/normalVec4. No dt/profile/geometry output. Zero diagnostics when no query.",
+  "terrain": "Exact terrain_ray16624-byte source record; vector slots48..112 replaced by current controls stack vectors. Profileoffset24 must equal controls profile;9cd9e8 atoffset44 must match controls runtime. Marker/bounds present; base may absent.",
+  "canonical_addresses": {
+    "simulation": "10000000",
+    "control": "20000000",
+    "filters": "30000000",
+    "world": "31000000",
+    "scene": "32000000",
+    "height": "33000000",
+    "bounds": "34000000"
+  },
+  "registry": "Single world:9e30dc=9e30e0=1;9e30d4=World,+8counter=1;runtimea95844=Scene;World44a8=Scene1c=11223344. Original registry selection executes. World ray metadata derived from supplied terrain record."
+}

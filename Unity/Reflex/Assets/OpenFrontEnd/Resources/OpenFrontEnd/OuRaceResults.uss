@@ -1,0 +1,68 @@
+/* The owned race / career result pages (OwnRaceResults, OwnCareerPanels, OwnCareerPageView): what is specific to them; the look is
+   OuModern.uss (pages, boards, stat tiles, dialogs). */
+.ou-results-hidden { display: none; }
+.ou-results-body { flex-grow: 1; min-height: 0; }
+.ou-results-confirm { flex-grow: 1; justify-content: flex-start; max-width: 1100px; }
+.ou-results-message { white-space: normal; }
+.ou-lead { white-space: normal; }
+.ou-actions { flex-shrink: 0; margin-top: 24px; }
+.ou-actions > .mxa-main-button { height: auto; min-height: 76px; padding-top: 8px; padding-bottom: 8px; }
+.ou-actions > .mxa-main-button > .mxa-button-label { white-space: normal; font-size: 42px; -unity-text-align: middle-left; }
+.ou-overlay { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+
+/* the mode results (w-pausemodes): Freestyle's judges beside the score tiles, a lead row of tiles when there is no place number */
+.ou-stats-lead { margin-top: 6px; }
+.ou-frontend.mxa-root .ou-stats-judges .ou-stat { min-width: 100px; padding: 6px 10px 6px 12px; margin: 0 8px 8px 0; }
+.ou-frontend.mxa-root .ou-stats-judges .ou-stat-value { font-size: 36px; margin-top: -4px; }
+.ou-frontend.mxa-root .ou-stats-judges .ou-stat-label { font-size: 16px; letter-spacing: 2px; }
+.ou-race-results .ou-page-side > * { flex-shrink: 0; }
+
+/* the side column ends above the legend band at any screen shape / UI SCALE (w-uibatch; OwnRaceResults.SideInfo / FitSide): the result
+   (.ou-results-info: the place, the tiles, the judges) takes what the actions leave and clips; the actions never shrink. The tiles are explicit
+   rows (OuWidgets.StatGrid) sized by their content; .ou-results-tight (set when the result would not fit) is the compact set. */
+.ou-race-results .ou-page-side { min-height: 0; }
+.ou-race-results .ou-page-side > .ou-results-info { flex-shrink: 1; min-height: 0; overflow: hidden; }
+.ou-results-info > * { flex-shrink: 0; }
+.ou-results-info .ou-tile-grid { flex-shrink: 0; flex-direction: column; margin: 6px 0 12px 0; }
+.ou-results-info .ou-tile-grid.ou-stats-lead { margin-top: 10px; }
+.ou-results-info .ou-tile-row { flex-direction: row; flex-shrink: 0; }
+.ou-frontend.mxa-root .ou-results-info .ou-tile-row > .ou-stat { flex-grow: 1; flex-shrink: 1; flex-basis: auto; min-width: 0; margin: 0 10px 10px 0; padding: 6px 16px 6px 16px; }
+.ou-frontend.mxa-root .ou-results-info .ou-tile-row > .ou-stat:last-child { margin-right: 0; }
+.ou-frontend.mxa-root .ou-results-info .ou-tile-row > .ou-stat > .ou-stat-label { font-size: 19px; letter-spacing: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-frontend.mxa-root .ou-results-info .ou-tile-row > .ou-stat > .ou-stat-value { font-size: 46px; margin-top: -4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-frontend.mxa-root .ou-results-info .ou-stats-judges .ou-tile-row > .ou-stat { padding: 4px 12px 4px 12px; margin: 0 8px 8px 0; }
+.ou-frontend.mxa-root .ou-results-info .ou-stats-judges .ou-tile-row > .ou-stat:last-child { margin-right: 0; }
+.ou-frontend.mxa-root .ou-results-info .ou-stats-judges .ou-tile-row > .ou-stat > .ou-stat-value { font-size: 36px; }
+.ou-frontend.mxa-root .ou-results-info .ou-stats-judges .ou-tile-row > .ou-stat > .ou-stat-label { font-size: 16px; letter-spacing: 2px; }
+.ou-frontend.mxa-root .ou-results-tight .ou-place { height: 124px; }
+.ou-frontend.mxa-root .ou-results-tight .ou-place-num { font-size: 140px; margin-top: -24px; }
+.ou-frontend.mxa-root .ou-results-tight .ou-place-suffix { font-size: 54px; margin-bottom: 16px; }
+.ou-frontend.mxa-root .ou-results-tight .ou-actions { margin-top: 12px; }
+.ou-frontend.mxa-root .ou-results-tight .ou-actions > .mxa-main-button { min-height: 62px; margin-bottom: 8px; }
+.ou-frontend.mxa-root .ou-results-tight .ou-actions > .mxa-main-button > .mxa-button-label { font-size: 38px; }
+
+/* the party modes' end page (OwnPartyResults): the second column's title ("TAG IT TIME") is longer than the race columns' 168 px */
+.ou-board-wide { width: 230px; flex-shrink: 0; -unity-text-align: middle-right; font-size: 24px; color: rgba(246, 246, 244, 0.86); }
+
+/* a narrow page (16:10, 4:3; OwnRaceResults.FitSide): the side column gives the board room, the board's cells narrow */
+.ou-frontend.mxa-root .ou-race-results .ou-results-narrow > .ou-page-side { width: 520px; margin-right: 32px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-results-info .ou-tile-row > .ou-stat { padding: 6px 12px 6px 12px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-results-info .ou-tile-row > .ou-stat > .ou-stat-value { font-size: 40px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-results-info .ou-stats-judges .ou-tile-row > .ou-stat > .ou-stat-value { font-size: 32px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-results-info .ou-stats-judges .ou-tile-row > .ou-stat > .ou-stat-label { font-size: 14px; letter-spacing: 1px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-rank { width: 60px; margin-right: 10px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-cell { font-size: 26px; margin-right: 8px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-name { min-width: 96px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-status { width: 110px; font-size: 18px; letter-spacing: 1px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-time, .ou-frontend.mxa-root .ou-results-narrow .ou-board-best { width: 120px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-best { font-size: 23px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-points { width: 90px; }
+.ou-frontend.mxa-root .ou-results-narrow .ou-board-head > Label, .ou-frontend.mxa-root .ou-results-narrow .ou-board-head > .ou-board-cell { font-size: 17px; letter-spacing: 1px; }
+
+/* RIDER CAP (w-rc-client): a field past the original's 12 (OwnRaceResults: .ou-results-big on the page) packs the board's rows tighter so
+   about twice as many show at once; the board scrolls to the rest (the local rider's row in view). A field of 12 or fewer is unchanged. */
+.ou-frontend.mxa-root .ou-results-big .ou-board-row { height: 38px; margin-bottom: 3px; }
+.ou-frontend.mxa-root .ou-results-big .ou-board-cell { font-size: 23px; }
+.ou-frontend.mxa-root .ou-results-big .ou-board-rank { width: 60px; font-size: 24px; margin-right: 12px; }
+.ou-frontend.mxa-root .ou-results-big .ou-board-status { font-size: 17px; letter-spacing: 1px; }
+.ou-frontend.mxa-root .ou-results-big .ou-board-best, .ou-frontend.mxa-root .ou-results-big .ou-board-wide { font-size: 20px; }

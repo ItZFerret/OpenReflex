@@ -1,0 +1,34 @@
+/* The championship weekend's pages (RESTORED CONTENT): the weekend card between the stages (OwnChampWeekendCard, on top of OuRaceResults.uss)
+   and the weekend setup page (OpenShell.ChampWeekend.cs, the setup page's skeleton). The look is OuModern.uss's (pages, boards, tiles). */
+
+/* the board: one narrow column per stage (its place), the qualification status, the points */
+.ou-cw-col { width: 92px; flex-shrink: 0; -unity-text-align: middle-center; font-size: 25px; color: rgba(246, 246, 244, 0.86); }
+.ou-board-head > .ou-cw-col { -unity-text-align: middle-center; }
+.ou-cw-statuscol { width: 120px; flex-shrink: 0; font-size: 20px; letter-spacing: 2px; -unity-text-align: middle-center; color: rgba(246, 246, 244, 0.86); }
+.ou-cw-out { opacity: 0.55; }
+
+/* the stages in order, over the board */
+.ou-cw-strip { flex-direction: row; flex-shrink: 0; margin-bottom: 14px; }
+.ou-cw-stage {
+    flex-grow: 1; flex-basis: 0; flex-shrink: 1; min-width: 0;
+    margin-right: 8px; padding: 8px 14px 8px 14px;
+    background-color: rgba(18, 20, 25, 0.84);
+    border-top-width: 4px; border-top-color: rgba(255, 255, 255, 0.14);
+}
+.ou-cw-stage-name { font-size: 24px; letter-spacing: 2px; color: rgb(246, 246, 244); -unity-font-style: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-cw-stage-sub { font-size: 17px; letter-spacing: 2px; color: rgba(246, 246, 244, 0.62); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-cw-stage-done { border-top-color: var(--ou-green); }
+.ou-cw-stage-done > .ou-cw-stage-sub { color: var(--ou-green); }
+.ou-cw-stage-next { border-top-color: var(--ou-focus-fill); background-color: rgba(60, 64, 76, 0.96); }
+.ou-cw-stage-next > .ou-cw-stage-sub { color: var(--ou-gold); }
+
+/* the side column: the qualification line */
+.ou-frontend .ou-cw-status { align-self: flex-start; margin: 2px 0 10px 0; font-size: 20px; }
+
+/* the setup page: the stages as a flow on the left, the per-stage rows on the right */
+.ou-cw-flow { flex-direction: row; flex-wrap: wrap; margin: 4px 0 6px 0; }
+.ou-cw-flow > .ou-cw-stage { flex-grow: 0; flex-shrink: 0; flex-basis: auto; min-width: 150px; margin: 0 8px 8px 0; }
+.ou-cw-flow > .ou-cw-stage > Label { overflow: visible; text-overflow: clip; }
+.ou-cw-stagehead { flex-direction: row; align-items: center; }
+.ou-cw-stagehead > .ou-pill { margin-left: 12px; }
+.ou-cw-field-slot { margin: 6px 0 0 0; }

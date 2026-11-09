@@ -1,0 +1,313 @@
+{
+ "seed": 20260101,
+ "total_cases": 258922,
+ "categories": {
+  "add": {
+   "cases": 24968,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "cmp": {
+   "cases": 8000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "const": {
+   "cases": 20,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "div": {
+   "cases": 40000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "exact_f2xm1_int": {
+   "cases": 199,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "exact_fyl2x_misc": {
+   "cases": 346,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "exact_fyl2x_pow2": {
+   "cases": 200,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "exact_fyl2xp1_hugepow2": {
+   "cases": 40,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "exact_fyl2xp1_misc": {
+   "cases": 183,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "exact_fyl2xp1_pow2": {
+   "cases": 195,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "f2xm1": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fcos": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fpatan": {
+   "cases": 4000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fpatan_negzero_corrected": {
+   "cases": 8,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fptan": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "from_f32": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "from_f64": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "from_f80": {
+   "cases": 4000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "from_int": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fsin": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fyl2x": {
+   "cases": 2654,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "fyl2xp1": {
+   "cases": 2777,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_f2xm1_tiny": {
+   "cases": 1200,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fcos_huge": {
+   "cases": 600,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fcos_tiny": {
+   "cases": 1200,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fpatan_tiny": {
+   "cases": 1500,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fptan_huge": {
+   "cases": 600,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fptan_tiny": {
+   "cases": 1200,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fsin_huge": {
+   "cases": 600,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fsin_tiny": {
+   "cases": 1200,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "hp_fyl2xp1_tiny": {
+   "cases": 1200,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "mul": {
+   "cases": 40000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "rem": {
+   "cases": 14000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "rint": {
+   "cases": 12000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "scale": {
+   "cases": 6000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "sqrt": {
+   "cases": 25000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "sub": {
+   "cases": 25032,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "to_f32": {
+   "cases": 8000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "to_f64": {
+   "cases": 8000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  },
+  "to_f80": {
+   "cases": 3000,
+   "mismatches": {
+    "arm64": 0,
+    "x86_64": 0
+   }
+  }
+ },
+ "archs": [
+  "arm64",
+  "x86_64"
+ ],
+ "total_mismatches": {
+  "arm64": 0,
+  "x86_64": 0
+ },
+ "examples": {
+  "arm64": [],
+  "x86_64": []
+ },
+ "x87py_disagrees_with_exact_math": {
+  "exact_fyl2x_misc": 26,
+  "exact_fyl2xp1_hugepow2": 6,
+  "exact_fyl2xp1_misc": 10,
+  "exact_fyl2x_pow2": 17,
+  "exact_fyl2xp1_pow2": 9,
+  "exact_f2xm1_int": 40
+ },
+ "transcendental_cases_total": 31922,
+ "notes": [
+  "Categories exact_* : true result is exactly representable (2^k, integer log2, 2^n-1); expectation is an exact-rational oracle, x87py_disagrees_with_exact_math counts cases where x87.py's 90-digit evaluation itself differs from exact math (x87.py imprecision, not a C++ mismatch).",
+  "Categories hp_* : expectation is x87.py's own formulas evaluated at 420 digits (x87.py at 90 digits is unreliable for tiny operands because of its absolute series tolerance).",
+  "fpatan_negzero_corrected: x87.py returns an UNROUNDED pi for atan2(+-0, -0); expectation is pi rounded to 64 bits.",
+  "to_f32/to_f64: overflow expectation is infinity (x87.py to_bits has a dead overflow branch)."
+ ]
+}

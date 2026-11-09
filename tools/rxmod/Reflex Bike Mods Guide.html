@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Reflex Bike Mods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f3; --surface: #ffffff; --surface-2: #f0eee9; --text: #1d1c1a; --muted: #5f5c55; --faint: #8b877e;
+  --border: #e2dfd8; --accent: #c2410c; --accent-soft: #fdeee6; --code-bg: #f3f1ec; --code-text: #262420;
+  --ok: #15803d; --ok-soft: #e7f5ec; --warn: #a16207; --warn-soft: #fbf3dc; --bad: #b91c1c; --bad-soft: #fbe9e9;
+  --kw: #9a3412; --str: #166534; --com: #8b877e; --num: #1d4ed8;
+  --b-header: #fde2d3; --b-data: #dcebdc; --b-index: #dbe4f5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141413; --surface: #1c1b19; --surface-2: #24221f; --text: #ecebe7; --muted: #aaa69c; --faint: #7d796f;
+    --border: #33312c; --accent: #fb923c; --accent-soft: #3a2316; --code-bg: #191816; --code-text: #e7e4dd;
+    --ok: #4ade80; --ok-soft: #15291c; --warn: #facc15; --warn-soft: #2d2711; --bad: #f87171; --bad-soft: #321a1a;
+    --kw: #fdba74; --str: #86efac; --com: #7d796f; --num: #93c5fd;
+    --b-header: #4a2a19; --b-data: #1f3a24; --b-index: #1f2c47;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141413; --surface: #1c1b19; --surface-2: #24221f; --text: #ecebe7; --muted: #aaa69c; --faint: #7d796f;
+  --border: #33312c; --accent: #fb923c; --accent-soft: #3a2316; --code-bg: #191816; --code-text: #e7e4dd;
+  --ok: #4ade80; --ok-soft: #15291c; --warn: #facc15; --warn-soft: #2d2711; --bad: #f87171; --bad-soft: #321a1a;
+  --kw: #fdba74; --str: #86efac; --com: #7d796f; --num: #93c5fd;
+  --b-header: #4a2a19; --b-data: #1f3a24; --b-index: #1f2c47;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15.5px/1.65 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 48px;
+  max-width: 1180px; margin: 0 auto;
+  padding: 40px max(24px, env(safe-area-inset-right)) 80px max(24px, env(safe-area-inset-left));
+}
+nav.toc { position: sticky; top: 24px; align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; font-size: 13.5px; }
+nav.toc .label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin-bottom: 8px; }
+nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 4px 0 4px 12px; border-left: 2px solid var(--border); }
+nav.toc a:hover { color: var(--text); border-left-color: var(--accent); }
+main { min-width: 0; max-width: 820px; }
+header.hero { margin-bottom: 36px; }
+.eyebrow { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+h1 { font-size: 34px; line-height: 1.2; margin: 8px 0 12px; letter-spacing: -.02em; }
+h2 { font-size: 23px; margin: 56px 0 12px; letter-spacing: -.01em; padding-top: 8px; border-top: 1px solid var(--border); padding-top: 28px; }
+h3 { font-size: 17px; margin: 30px 0 8px; }
+p { margin: 10px 0; }
+.lede { font-size: 17px; color: var(--muted); max-width: 700px; }
+a { color: var(--accent); }
+code, pre { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: .88em; background: var(--code-bg); padding: .1em .35em; border-radius: 4px; border: 1px solid var(--border); overflow-wrap: anywhere; }
+pre { position: relative; background: var(--code-bg); color: var(--code-text); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font: 13px/1.55 "JetBrains Mono", ui-monospace, Menlo, monospace; margin: 12px 0 18px; }
+pre code { background: none; border: 0; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre .tag { position: absolute; top: 0; right: 0; font: 600 10.5px/1 Inter, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding: 7px 10px; }
+pre button.copy { position: absolute; top: 6px; right: 6px; font: 500 12px Inter, sans-serif; border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 6px; padding: 3px 9px; cursor: pointer; opacity: 0; transition: opacity .15s; }
+pre:hover button.copy, pre button.copy:focus { opacity: 1; }
+pre:hover .tag { opacity: 0; }
+.k { color: var(--kw); } .s { color: var(--str); } .c { color: var(--com); font-style: italic; } .n { color: var(--num); }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; display: block; overflow-x: auto; }
+table thead, table tbody { display: table; width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; font-size: 12.5px; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td.num { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin: 16px 0; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+.grid3 .card { margin: 0; }
+.card h4 { margin: 0 0 6px; font-size: 15px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+.pill { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); margin-bottom: 8px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+.note.ok { border-color: var(--ok); background: var(--ok-soft); }
+.note.warn { border-color: var(--warn); background: var(--warn-soft); }
+.note.bad { border-color: var(--bad); background: var(--bad-soft); }
+.note strong:first-child { display: block; margin-bottom: 2px; }
+ul.check, ul.cross { list-style: none; padding-left: 0; }
+ul.check li, ul.cross li { padding-left: 26px; position: relative; margin: 7px 0; }
+ul.check li::before { content: "✓"; position: absolute; left: 4px; color: var(--ok); font-weight: 700; }
+ul.cross li::before { content: "✕"; position: absolute; left: 4px; color: var(--bad); font-weight: 700; }
+ol.steps { padding-left: 22px; } ol.steps li { margin: 8px 0; }
+.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.diagram svg text { font-family: Inter, sans-serif; fill: var(--text); }
+.diagram svg .mono { font-family: "JetBrains Mono", monospace; }
+.diagram svg .muted { fill: var(--muted); }
+.downloads { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.downloads a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--border); background: var(--surface); border-radius: 9px; text-decoration: none; color: var(--text); font-weight: 500; font-size: 14px; }
+.downloads a:hover { border-color: var(--accent); }
+.downloads a span, .downloads button span { color: var(--faint); font-weight: 400; font-size: 12.5px; }
+.downloads button { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--accent); background: var(--accent-soft); border-radius: 9px; color: var(--text); font: 600 14px Inter, sans-serif; cursor: pointer; }
+.downloads button[hidden] { display: none; }
+.kit-msg { font-size: 13px; color: var(--faint); margin-top: -4px; }
+.hex { font: 12.5px/1.6 "JetBrains Mono", monospace; }
+.hex .h1 { background: var(--b-header); border-radius: 3px; }
+footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--faint); font-size: 13px; }
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 24px max(16px, env(safe-area-inset-right)) 64px max(16px, env(safe-area-inset-left)); }
+  nav.toc { position: static; max-height: none; margin-bottom: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; columns: 2; column-gap: 16px; }
+  nav.toc .label { column-span: all; }
+  .grid3 { grid-template-columns: minmax(0, 1fr); }
+  h1 { font-size: 27px; } h2 { font-size: 20px; }
+  pre button.copy { opacity: 1; }
+  pre .tag { display: none; }
+}
+@media (max-width: 480px) { nav.toc { columns: 1; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="label">Contents</div>
+  <a href="#start">Start here</a>
+  <a href="#what">What a bike mod is</a>
+  <a href="#pipeline">The pipeline</a>
+  <a href="#originals">Pick the original</a>
+  <a href="#model">Set up the model</a>
+  <a href="#recipe">The recipe</a>
+  <a href="#export">Export</a>
+  <a href="#textures">Textures</a>
+  <a href="#manifest">mod.json</a>
+  <a href="#materials">Materials</a>
+  <a href="#game">How the game fits it</a>
+  <a href="#test">Testing</a>
+  <a href="#online">Online and skins</a>
+  <a href="#sample">The FC 250 sample</a>
+  <a href="#examples">The other NFG COLE bikes</a>
+  <a href="#rxmesh">The .rxmesh format</a>
+  <a href="#format">The container</a>
+  <a href="#rules">Rules checklist</a>
+  <a href="#faq">FAQ</a>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">OpenReflex · bike model onboarding</div>
+  <h1>Building bikes as <code>.rxmod</code></h1>
+  <p class="lede">From a Blender model and its PSD template to a bike in the game: how the bike rides as one of the game's own bikes, how to set the model up, the recipe, the export, the textures, <code>mod.json</code>, testing — with NFG COLE's 2025 Husqvarna FC 250 as the worked sample, start to finish.</p>
+  <div class="downloads">
+    <a href="blender_rxmod.py" target="_blank" rel="noopener">blender_rxmod.py <span>the Blender exporter: model -> .rxmesh, previews, report</span></a>
+    <a href="rxmod.py" target="_blank" rel="noopener">rxmod.py <span>check, pack, list, extract, token (needs rxtrack.py beside it)</span></a>
+    <a href="psd_compose.py" target="_blank" rel="noopener">psd_compose.py <span>a PSD template's diffuse / spec / normal, without Photoshop</span></a>
+    <a href="sample-fc250/" target="_blank" rel="noopener">sample-fc250/ <span>the FC 250: .blend, recipe, maps, the mod, the .rxmod</span></a>
+  </div>
+  <p class="kit-msg">The tools also live in the OpenReflex repo under <code>tools/rxmod/</code>; the full format spec is <code>core/plan/RXMOD.md</code>. The sample bike is NFG COLE's, shared with his permission for this kit.</p>
+</header>
+
+<section id="start">
+<h2 style="border-top:0;padding-top:0;margin-top:0">Start here</h2>
+<p>A <strong>bike mod</strong> is one <code>.rxmod</code> file holding a whole new bike — its model and its textures — that rides as one of the game's own bikes. Players drop it into <code>Mods/Bikes</code> (any sub-folder) and each bike in it shows up in <strong>GARAGE &gt; VEHICLE</strong> as a MOD card under the original it rides as, credited <em>BY &lt;author&gt;</em>.</p>
+<div class="grid3">
+  <div class="card"><span class="pill">1 · Blender</span><h4>Model + recipe</h4><p>Split the model into the parts that move, write a small JSON recipe, run <code>blender_rxmod.py</code>: out comes <code>bike.rxmesh</code> and a preview.</p></div>
+  <div class="card"><span class="pill">2 · Textures</span><h4>PSD -&gt; PNG</h4><p>Export the diffuse (and spec) from the template — Photoshop or <code>psd_compose.py</code>. Powers of two, at most 4096.</p></div>
+  <div class="card"><span class="pill">3 · Pack</span><h4>mod.json + check + pack</h4><p>Name the original bike, the brand / model, the author and the materials; <code>rxmod.py check</code>, try the folder in the game, <code>rxmod.py pack</code>.</p></div>
+</div>
+<div class="note ok"><strong>Everything here is tested against the game.</strong>The six NFG COLE bikes (12 bikes in all) went through exactly this pipeline: every one shows in the garage and race setup, rides and finishes a race with AI, and its suspension and steering move its parts. The FC 250 sample in this kit rebuilds <em>byte for byte</em>: its <code>.blend</code> + <code>recipe.json</code> give the same <code>bike.rxmesh</code>, and its <code>mod/</code> folder packs to the same <code>.rxmod</code> players have.</div>
+<div class="note warn"><strong>Which builds read it.</strong><code>.rxmod</code> bikes load in the <strong>experimental</strong> OpenReflex builds (commit 466458c8 and later). The released 1.0.x line doesn't read them yet.</div>
+</section>
+
+<section id="what">
+<h2>What a bike mod is</h2>
+<ul class="check">
+<li><strong>Its own look</strong>: your model and textures replace the original bike's model, plastics, frame, engine, bars, exhaust — everything (wheels optional, see below).</li>
+<li><strong>The original's physics, 1:1</strong>: the bike <em>rides as</em> an original (you name its VehicleModelId): engine, gearing, suspension, handling, mass, price and ownership are that bike's. Nothing in a <code>.rxmod</code> can change physics; the game's core simulates the original either way.</li>
+<li><strong>Animated by the original's rig</strong>: the game's pose of the original bike (steering, fork travel, swingarm, wheel spin, levers) moves your parts by the node each one is bound to.</li>
+<li><strong>Fitted at load</strong>: the game scales and aligns your model so its axles sit exactly on the original's, and your wheels to the original tyres' radius — no need to match the original's dimensions by hand.</li>
+<li><strong>Several bikes per file</strong>: a 250 and a 450 can share one mesh and one atlas (the archive stores equal bytes once).</li>
+</ul>
+</section>
+
+<section id="pipeline">
+<h2>The pipeline</h2>
+<pre><code>bike.blend + recipe.json --blender_rxmod.py--&gt; bike.rxmesh  (+ side.png preview, report.json)
+template.psd             --psd_compose.py / Photoshop--&gt; diffuse.png, spec.png
+mymod/ mod.json + bike.rxmesh + diffuse.png + spec.png  --rxmod.py check--&gt; ok  --(Mods/Bikes)--&gt; try it
+mymod/                   --rxmod.py pack--&gt; My Bike.rxmod</code></pre>
+<p>Tools: Blender 4.x or 5.x (headless is fine), Python 3 (standard library) for <code>rxmod.py</code>, and numpy for <code>psd_compose.py</code> (Blender's own Python has it: <code>/Applications/Blender.app/Contents/Resources/&lt;version&gt;/python/bin/python3.x</code>).</p>
+</section>
+
+<section id="originals">
+<h2>Pick the original bike it rides as</h2>
+<p>Same class (a 250 rides as a 250F, a 450 as a 450F), same brand where the game has it. The game's brands are fictional: Blaze = Honda, Dakumoto = Kawasaki, Shima = Suzuki, Takashi = Yamaha, KTM = KTM.</p>
+<table>
+<thead><tr><th>VehicleModelId</th><th>Original</th><th>Class</th><th>NFG COLE bike riding as it</th></tr></thead>
+<tbody>
+<tr><td>11 / 1</td><td>Blaze 250F / 450F</td><td>250F / 450F</td><td>Honda CRF250R / CRF450R</td></tr>
+<tr><td>13 / 14</td><td>Dakumoto 250F / 450F</td><td>250F / 450F</td><td>Kawasaki KX250 / KX450</td></tr>
+<tr><td>18 / 28</td><td>KTM 250 SX-F / 450 SX-F</td><td>250F / 450F</td><td>GASGAS MC 250F / 450F, Husqvarna FC 250 / 450 (KTM's platform)</td></tr>
+<tr><td>17 / 10</td><td>Shima 250F / 450F</td><td>250F / 450F</td><td>TM Racing 250Fi / 450Fi (no TM in the game; the brand nobody else used)</td></tr>
+<tr><td>31 / 32</td><td>Takashi 250F / 450F</td><td>250F / 450F</td><td>Yamaha YZ250F / YZ450F</td></tr>
+<tr><td>12, 35, 36, 6, 29</td><td colspan="3">the 125 two-strokes (Blaze 125S, Dakumoto 125, KTM 125 SX, Shima 125R, Takashi 125R)</td></tr>
+<tr><td>27, 16, 15, 9, 30</td><td colspan="3">the 250 two-strokes (Blaze 250R, Dakumoto 250S, KTM 250 SX, Shima 250R, Takashi 250R)</td></tr>
+</tbody>
+</table>
+<p>Several mods may ride as the same original: each is a card of its own.</p>
+</section>
+
+<section id="model">
+<h2>Set up the model</h2>
+<ul>
+<li><strong>Real size</strong>, any unit (the recipe's <code>unit</code> says metres per Blender unit: <code>1.0</code> in metres, <code>0.3048</code> for a model in feet, as MX Simulator / MX Bikes style models — all of NFG COLE's — are).</li>
+<li><strong>Standing on its wheels, Z up</strong>, nose along any horizontal axis (the exporter works out forward from the axles).</li>
+<li><strong>Split into the parts that move</strong>, as objects (or materials):</li>
+</ul>
+<table>
+<thead><tr><th>Node</th><th>Put in it</th><th>Moves with</th><th>Preview colour</th></tr></thead>
+<tbody>
+<tr><td><code>OBJ_Frame</code></td><td>frame, engine, plastics, seat, tank, exhaust, footpegs, rear fender, radiators</td><td>the bike</td><td>grey</td></tr>
+<tr><td><code>OBJ_UPR_Forks</code></td><td>triple clamps, upper fork tubes, bars, levers, grips, number plate, front fender</td><td>the steering</td><td>blue</td></tr>
+<tr><td><code>OBJ_LWR_Forks</code></td><td>fork legs, front caliper, disc guard</td><td>the steering + fork travel</td><td>cyan</td></tr>
+<tr><td><code>OBJ_FRT_Tire</code> / <code>OBJ_BCK_Tire</code></td><td>tyre, rim, spokes, hub, disc, sprocket (optional)</td><td>the wheel's spin (+ travel)</td><td>yellow / orange</td></tr>
+<tr><td><code>OBJ_Swingarm</code></td><td>swingarm, chain, chain guide, rear caliper</td><td>the rear suspension</td><td>magenta</td></tr>
+<tr><td><code>OBJ_Throttle</code>, <code>OBJ_ClutchLVR</code>, <code>OBJ_BrakeLVR</code></td><td>optional: the throttle tube and the levers</td><td>the rider's hands</td><td>green</td></tr>
+<tr><td>skinned</td><td>the rear shock (and anything else that stretches)</td><td>between two nodes (frame top, swingarm bottom)</td><td>red</td></tr>
+</tbody>
+</table>
+<ul>
+<li><strong>No wheels in the model?</strong> Fine — most of NFG COLE's bikes have none (MX Simulator models keep wheels apart). The game then draws the original bike's own tyres and rims on your axles. Give the exporter the axle centres (<code>"axles"</code>): an axle bolt modelled across the fork legs / swingarm is easy to find, its centre is the axle.</li>
+<li><strong>With wheels</strong>: bind them to <code>OBJ_FRT_Tire</code> / <code>OBJ_BCK_Tire</code>; the exporter takes their centres as the axles and the game scales them to the original tyre's radius (up to ±15 %).</li>
+<li>Everything <em>visible and set to render</em> is exported. Hide reference images, spare parts and helper objects, or list what to include. Variant parts laid out beside the bike (pipes, bars) are moved into place with <code>"offsets"</code>.</li>
+<li>Around 100 000 triangles for the whole bike is fine (the NFG COLE bikes are 30k-160k).</li>
+</ul>
+</section>
+
+<section id="recipe">
+<h2>The recipe</h2>
+<p>A JSON file telling the exporter which object is which part. Patterns are regular expressions (case-insensitive) on the object name (<code>obj:</code>) or the material name (<code>mat:</code>); the first rule that matches wins. The sample's, as used:</p>
+<pre><code>{
+ "unit": 0.3048,                                       metres per Blender unit (the model is in feet)
+ "include": ["^FMF FG$", "^ProTaper$", "^LowerFork$", "^Swingarm$"],     the objects that make this bike
+ "offsets": { "FMF FG": [-9, 0, 0] },                  the FMF exhaust variant sits 9 units beside the bike: moved into place
+ "axles":   { "front": [1.9118, 2.6211, -0.8947],      no wheels in the model: the axle bolts' centres (Blender coordinates)
+              "rear":  [1.9118, -2.2629, -0.9409] },
+ "nodes": [ ["obj:^ProTaper$",  "OBJ_UPR_Forks"],      bars, clamps, upper tubes, plate, fender
+            ["obj:^LowerFork$", "OBJ_LWR_Forks"],
+            ["obj:^Swingarm$",  "OBJ_Swingarm"],
+            ["obj:.*",          "OBJ_Frame"] ],        everything else
+ "skin": [ { "match": "mat:^Shock(\\.\\d+)?$", "top": "OBJ_Frame", "bottom": "OBJ_Swingarm" } ],
+ "materials": [ ["mat:^(Plastics?|Seat|GasCap|BarPad|Dull Plastic|Plastic matte|Carbon Fiber|Rubber|Donuts|Clear|Material)(\\.\\d+)?$", "body"],
+                ["mat:^Cast", "cast"],
+                [".*", "metal"] ]                      Blender material -> the mod's material name in mod.json
+}</code></pre>
+<table>
+<thead><tr><th>Key</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>unit</code></td><td>Metres per Blender unit (default: the scene's unit scale).</td></tr>
+<tr><td><code>include</code> / <code>exclude</code></td><td>Object name patterns (default: every visible, rendered mesh).</td></tr>
+<tr><td><code>offsets</code></td><td><code>{object: [dx, dy, dz]}</code> in Blender units: moves a variant laid out beside the bike into place.</td></tr>
+<tr><td><code>nodes</code></td><td><code>[[pattern, node], ...]</code>: which node moves each object / material.</td></tr>
+<tr><td><code>default</code></td><td>The node of what no rule names (default <code>OBJ_Frame</code>).</td></tr>
+<tr><td><code>split</code> + <code>where</code></td><td>For models merged into one mesh: <code>"split": true</code> matches each loose part on its own, and <code>where</code> rules place parts by position (<code>{"node": "OBJ_FRT_Tire", "in_wheel": "front", "max_x": 0.09}</code>, <code>{"node": ..., "box": [[x,y,z],[x,y,z]]}</code> in bike space, metres from the rear axle).</td></tr>
+<tr><td><code>axles</code></td><td>The axle centres in Blender coordinates, for a model without wheels (else the wheel parts' centres are used).</td></tr>
+<tr><td><code>wheels</code></td><td><code>{"front": pattern, "rear": pattern}</code>: which parts' centres are the axles, when they aren't the <code>OBJ_*_Tire</code> parts.</td></tr>
+<tr><td><code>steer</code></td><td>Optional: two points on the steering axis (top, bottom), Blender coordinates. Default: fitted to the fork tubes.</td></tr>
+<tr><td><code>pivot</code></td><td>Optional: the swingarm pivot, Blender coordinates (default: the swingarm's front end).</td></tr>
+<tr><td><code>skin</code></td><td>Parts stretched between two nodes: weighted along their long axis (<code>"ramp": [0.35, 0.65]</code> = where the blend happens).</td></tr>
+<tr><td><code>materials</code></td><td><code>[[pattern, mod material], ...]</code>: several Blender materials may share one mod material (they share the atlas).</td></tr>
+</tbody>
+</table>
+<p>The kit's <code>examples/</code> holds the recipes of all six NFG COLE bikes: models in feet and in metres, separate wheel objects (TM), one shared model for two bikes (KX), variants laid out side by side (YZ, CRF, FC, MC) and pivot / axle points given by hand (KX).</p>
+</section>
+
+<section id="export">
+<h2>Export</h2>
+<pre><code>blender -b bike.blend --python blender_rxmod.py -- --recipe recipe.json --out mymod/bike/bike.rxmesh \
+        --report report.json --preview side.png
+# textured instead of node colours (checks the UVs and the variant you picked):
+blender -b bike.blend --python blender_rxmod.py -- --recipe recipe.json --out mymod/bike/bike.rxmesh \
+        --preview three4.png --texture mymod/bike/diffuse.png --view three4</code></pre>
+<p>It prints <code>blender_rxmod: bike.rxmesh: 9 surfaces, 81228 vertices, 102398 triangles, wheelbase 4.884 ft</code>. A wheelbase far from 4.5-5 ft means a wrong <code>unit</code> or wrong axles. <code>--view</code> takes <code>side</code>, <code>left</code>, <code>front</code>, <code>top</code> or <code>three4</code>. Open the preview (the kit zip's copy of this guide shows the sample's).</p>
+<p><code>report.json</code> has the axles (feet, from the rear axle), the wheelbase, the steering axis and head, the swingarm pivot, every surface (node, material, skinned, counts) and which node each object went to — check it whenever a part moves wrong.</p>
+<div class="note warn"><strong>Opening downloaded <code>.blend</code> files.</strong>A <code>.blend</code> can carry Python scripts. Run Blender with auto-run off (<code>-Y</code>, <code>--factory-startup</code>) on files you didn't make; on macOS the NFG COLE files were also opened under <code>sandbox-exec</code> with no network and writes only to the output folder.</div>
+</section>
+
+<section id="textures">
+<h2>Textures</h2>
+<ul class="check">
+<li>PNG or JPG, 8 bits, sides a <strong>power of two, at most 4096</strong>. NFG COLE's bikes: one 4096 x 4096 diffuse atlas and a 2048 x 2048 spec map each.</li>
+<li>Exported the same way up as Blender maps them (the exporter writes Blender's UVs; the game handles the rest).</li>
+<li>Colours are used as stored (no colour-space conversion).</li>
+</ul>
+<p>From a PSD template without Photoshop (numpy needed: Blender's Python has it). Templates often carry a cover / "welcome" layer and a palette that must not end up on the bike:</p>
+<pre><code>python3 -I psd_compose.py layers "2025 FC 250 RE.psd"                       # the layer tree: find the cover / UV / palette layers
+python3 -I psd_compose.py compose "2025 FC 250 RE.psd" diffuse.png --skip Welcome --skip "Color Palet" --skip "Color Pallet"
+python3 -I psd_compose.py compose template.psd spec.png --only Spec --flatten 0,0,0        # a hidden Spec group alone
+python3 -I psd_compose.py compose template.psd norm.png --only Norm --flatten 0.5,0.5,1    # a hidden Norm group alone
+python3 -I psd_compose.py compose "8K template.psd" diffuse.png --size 4096                # an 8K template at 4K</code></pre>
+<p>It supports 8-bit RGB PSDs, groups (pass-through and isolated, with masks and opacity), layer and clipping masks and the common blend modes; adjustment layers and layer effects are not drawn (each skipped one is listed). Checked against Photoshop's own composite of a 4096 template: mean difference 0.24 / 255. The sample's <code>fc/diffuse.png</code> is the first command's output; its <code>fc/spec.png</code> is NFG COLE's <code>2025 FC 250 RE spec.png</code> scaled to 2048.</p>
+</section>
+
+<section id="manifest">
+<h2>mod.json</h2>
+<p>The sample's (two bikes from one model):</p>
+<pre><code>{
+ "format": "reflex-mod", "version": 1, "type": "bikes",
+ "id": "nfgcole-2025-husqvarna-fc",                          a stable id: skins name it
+ "name": "2025 Husqvarna FC", "author": "NFG COLE",
+ "description": "2025 Husqvarna FC 250 and FC 450 by NFG COLE (both from the FC 250 model and skin)",
+ "thumbnail": "preview.png",
+ "bikes": [
+  { "bike": 18, "original": "KTM 250 SX-F", "brand": "Husqvarna", "model": "FC 250", "id": "fc250",
+    "mesh": "fc/bike.rxmesh", "fit": "axles",
+    "materials": {
+      "body":  { "template": "plastic", "diffuse": "fc/diffuse.png", "spec": "fc/spec.png", "mud": 1.0 },
+      "metal": { "template": "frame",   "diffuse": "fc/diffuse.png", "spec": "fc/spec.png", "mud": 1.0 },
+      "cast":  { "template": "engine",  "diffuse": "fc/diffuse.png", "spec": "fc/spec.png", "mud": 1.0 } } },
+  { "bike": 28, "original": "KTM 450 SX-F", "brand": "Husqvarna", "model": "FC 450", "id": "fc450",
+    "mesh": "fc/bike.rxmesh", ... the same materials ... }
+ ]
+}</code></pre>
+<table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>format</code>, <code>version</code>, <code>type</code></td><td><code>"reflex-mod"</code>, <code>1</code>, <code>"bikes"</code>.</td></tr>
+<tr><td><code>id</code>, <code>bikes[].id</code></td><td>Optional but recommended: stable names skins use to find your bike.</td></tr>
+<tr><td><code>name</code>, <code>author</code>, <code>description</code>, <code>thumbnail</code></td><td>The card's lines and credit (<em>BY &lt;author&gt;</em>); a thumbnail picture in the mod.</td></tr>
+<tr><td><code>bikes[].bike</code></td><td><strong>The original's VehicleModelId</strong> (required). <code>original</code> is its name, for people reading the file.</td></tr>
+<tr><td><code>bikes[].brand</code>, <code>.model</code> (or <code>.name</code>)</td><td>The card's brand and model lines; <code>logo</code>: a brand logo picture for the stage.</td></tr>
+<tr><td><code>bikes[].mesh</code></td><td>The bike's <code>.rxmesh</code> (bikes may share one).</td></tr>
+<tr><td><code>bikes[].fit</code></td><td><code>"axles"</code> (default: scaled so both axles sit on the original's) or <code>"keep"</code> (your own size, aligned on the rear axle).</td></tr>
+<tr><td><code>bikes[].materials</code></td><td>Every material name the mesh uses (the recipe's <code>materials</code> right-hand sides), see below.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="materials">
+<h2>Materials</h2>
+<p>Each material <strong>borrows the look of one of the original bike's materials</strong> — its shader, lighting, reflections and mud — with your maps:</p>
+<table>
+<thead><tr><th><code>template</code></th><th>Looks like</th><th>Use it for</th></tr></thead>
+<tbody>
+<tr><td><code>plastic</code></td><td>the graphics kit's plastics: glossy, reflective</td><td>plastics, seat, number plates, tank, grips</td></tr>
+<tr><td><code>frame</code></td><td>the frame: painted metal, shine from the spec map</td><td>frame, swingarm, forks, bars, hardware, exhaust</td></tr>
+<tr><td><code>engine</code></td><td>the engine</td><td>engine cases, castings</td></tr>
+<tr><td><code>wheel</code></td><td>the rims</td><td>rims, hubs, spokes</td></tr>
+<tr><td><code>tire</code></td><td>the tyres (uses <code>normal</code>)</td><td>tyres</td></tr>
+<tr><td><code>chain</code></td><td>the chain: cut-outs from the diffuse's alpha</td><td>anything with alpha cut-outs (with <code>"alphaTest": true</code>) — TM's wheels</td></tr>
+</tbody>
+</table>
+<p>Fields: <code>diffuse</code>, <code>spec</code> (greyscale: shine / reflection), <code>normal</code> (+ <code>normalFlipY</code>), <code>sfx</code> (an authored SFX map: R shine, G mud mask, B reflection), <code>mud</code> (0..1, default 1), <code>shine</code> (a scale of the spec), <code>twoSided</code>, <code>alphaTest</code> + <code>alphaRef</code>. Number plates and decals are part of your diffuse (a <code>.rxmod</code> bike has no run-time number).</p>
+</section>
+
+<section id="game">
+<h2>How the game fits it</h2>
+<p>At load the game fits your mesh to the original's rig and logs what it did (<code>Player.log</code>):</p>
+<pre><code>Reflex bike 2025 Husqvarna FC / Husqvarna FC 250: 9 surfaces, 81228 vertices, 102398 triangles on HR_MercuryF_Lite's hierarchy:
+  scale 0.9808, pitch -0.01 deg, steering axis 1.61 in off the original's, 2.4 deg apart, the original's wheels</code></pre>
+<table>
+<thead><tr><th>Value</th><th>Healthy</th><th>If not</th></tr></thead>
+<tbody>
+<tr><td><code>scale</code></td><td>0.95 - 1.05 (the NFG COLE bikes: 0.979 - 0.989)</td><td>wrong <code>unit</code> or axles</td></tr>
+<tr><td><code>pitch</code></td><td>within a degree</td><td>the model isn't level, or an axle point is off</td></tr>
+<tr><td><code>steering axis ... off</code></td><td>a few inches, a few degrees (1.5 - 2.8 in, 2.4 - 3.9°)</td><td>a wrong <code>steer</code> / fork parts: the forks swing at full lock</td></tr>
+<tr><td><code>OBJ_FRT_Tire r in -&gt; r' in</code></td><td>within 15 % (TM: 12.97 -&gt; 13.46 in)</td><td>larger: left as modelled (logged), the bike floats or sinks</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="test">
+<h2>Testing</h2>
+<ol class="steps">
+<li><code>python3 rxmod.py check mymod</code> ends with <code>ok</code>; its summary line per bike shows nodes, surfaces, triangles, the wheelbase and the materials.</li>
+<li>Copy the <strong>folder</strong> into <code>&lt;game&gt;/Mods/Bikes/</code> (it loads unpacked: change and retry) and start an experimental build.</li>
+<li><strong>GARAGE &gt; VEHICLE &gt; MY RIDES &gt; MODDED BIKES</strong>: the card (<em>FC 250 · HUSQVARNA · BY NFG COLE</em>), turn the bike on the stage: wheels on the ground, no missing parts, no inside-out surfaces.</li>
+<li>Ride it (TEST RIDE or a race): steer at a standstill (the fork and bars turn together), land a jump (the forks and swingarm compress, the shock stretches), the wheels spin.</li>
+<li><code>python3 rxmod.py pack mymod "My Bike.rxmod"</code> and swap the folder for the file.</li>
+</ol>
+<table>
+<thead><tr><th>Log line</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>[RxMod] &lt;file&gt;: mod.json: ...</code></td><td>The manifest doesn't read: the whole mod is left out.</td></tr>
+<tr><td><code>[RxMod] ...: bike N: mesh ... is not in the mod</code></td><td>A <code>mesh</code> entry is missing.</td></tr>
+<tr><td><code>the mod's axles are X ft apart</code></td><td>Units or axes wrong (a bike's axles are ~4.8 ft apart).</td></tr>
+<tr><td><code>node X is not in &lt;hierarchy&gt;: drawn on Y</code></td><td>A node name the original doesn't have.</td></tr>
+<tr><td><code>material X is not in mod.json</code></td><td>The mesh names a material <code>mod.json</code> lacks: drawn as plain plastic.</td></tr>
+<tr><td><code>OBJ_FRT_Tire radius ... left as modelled</code></td><td>The wheel is more than 15 % off the original's tyre.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="online">
+<h2>Online and skins</h2>
+<p>A rider's look carries the bike as <code>"bike": "b:&lt;content id&gt;:&lt;VehicleModelId&gt;"</code> (<code>rxmod.py token</code>; the sample's is <code>b:bfde3bf08744:18</code>). Riders with the same <code>.rxmod</code> see your bike, anyone else the original bike it rides as; physics never change. Any byte change is a new version the others need too.</p>
+<p>Skins (liveries) for your bike are separate small <code>.rxmod</code> files that name your mod's <code>id</code> and bike <code>id</code> and replace your map files — that is what the <code>id</code> fields are for, and why the atlas paths in your <code>mod.json</code> should stay stable between versions. See the skin kit (<code>rxmod-skin-kit</code>).</p>
+</section>
+
+<section id="sample">
+<h2>The FC 250 sample</h2>
+<p><code>sample-fc250/</code> is NFG COLE's 2025 Husqvarna FC 250, as it was converted for the game (shared with his permission):</p>
+<table>
+<thead><tr><th>File</th><th>What</th></tr></thead>
+<tbody>
+<tr><td><code>2025 FC 250 RE.blend</code></td><td>NFG COLE's model (feet; variants laid out beside the bike: FMF / PC / Akrapovic exhausts with and without frame guards, FatBar / ProTaper / Twinwall bars)</td></tr>
+<tr><td><code>2025 FC 250 RE spec.png</code></td><td>His spec map (4096)</td></tr>
+<tr><td><code>recipe.json</code></td><td>The recipe used (FMF exhaust + frame guard, ProTaper bars)</td></tr>
+<tr><td><code>mod/</code></td><td>The finished mod folder: <code>mod.json</code>, <code>fc/bike.rxmesh</code>, <code>fc/diffuse.png</code> (from his PSD, cover layers skipped), <code>fc/spec.png</code> (2048), <code>preview.png</code></td></tr>
+<tr><td><code>2025 Husqvarna FC.rxmod</code></td><td>The packed file players have</td></tr>
+<tr><td><code>previews/</code></td><td>The node and textured previews, and <code>report.json</code></td></tr>
+</tbody>
+</table>
+<p>Rebuild it (both outputs come out byte-identical to the shipped ones):</p>
+<pre><code>blender -b -Y --factory-startup "sample-fc250/2025 FC 250 RE.blend" --python blender_rxmod.py -- \
+        --recipe sample-fc250/recipe.json --out sample-fc250/mod/fc/bike.rxmesh --report report.json --preview side.png
+python3 rxmod.py check sample-fc250/mod
+python3 rxmod.py pack  sample-fc250/mod "2025 Husqvarna FC.rxmod"</code></pre>
+<p>Its numbers: 81 228 vertices, 102 398 triangles in 9 surfaces (the frame and plastics on <code>OBJ_Frame</code>, the shock skinned frame-to-swingarm, bars / clamps / fender on <code>OBJ_UPR_Forks</code>, fork legs on <code>OBJ_LWR_Forks</code>, swingarm + chain on <code>OBJ_Swingarm</code>), wheelbase 4.884 ft, no wheels (the KTM's own). In the game it rides as the KTM 250 SX-F (and as the 450 SX-F as the FC 450).</p>
+</section>
+
+<section id="examples">
+<h2>The other NFG COLE bikes</h2>
+<p><code>examples/</code> holds the recipe, <code>mod.json</code> and export report of the other five (their art isn't in this kit): useful patterns for other models.</p>
+<table>
+<thead><tr><th>Mod</th><th>What the recipe shows</th></tr></thead>
+<tbody>
+<tr><td>2025 Honda CRF</td><td>Objects named <code>Circle.0NN</code>: picked by name; the bars variant moved with <code>offsets</code>; one model for the 250 and the 450</td></tr>
+<tr><td>2023 Yamaha YZ-F</td><td>Two models, two recipes (<code>recipe-yz250f.json</code>, <code>recipe-yz450f.json</code>), one mod</td></tr>
+<tr><td>2024 Kawasaki KX</td><td>A model in metres with separate frame / forks / swingarm objects, plus "pivot" helper objects excluded; axles and the swingarm <code>pivot</code> given by hand</td></tr>
+<tr><td>2024 GASGAS MC</td><td>Akrapovic exhaust + FatBar variant, everything else default</td></tr>
+<tr><td>2023 TM Racing</td><td>Wheels in the model (bound to <code>OBJ_FRT_Tire</code> / <code>OBJ_BCK_Tire</code>), their own <code>wheels</code> material with alpha cut-outs (<code>chain</code> template), maps packed in the <code>.blend</code></td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="rxmesh">
+<h2>The <code>.rxmesh</code> format</h2>
+<p>For exporters from other tools (3ds Max, Maya, a converter): what <code>blender_rxmod.py</code> writes. Little-endian; <code>str</code> = u16 byte length + UTF-8.</p>
+<pre><code>"RXMS"  u32 version = 1  u32 flags = 0
+u32 nodes;      each: str name, i32 parent (-1 root, else an earlier node), f32[16] world matrix (row-major,
+                column vectors: the translation is elements 3, 7, 11)
+u32 materials;  each: str name (a key of the bike's "materials" in mod.json)
+u32 surfaces;   each: u32 material, u32 node, u32 flags (1 skinned, 2 uv1, 4 tangents), u32 vertices V, u32 indices I,
+                f32[3V] positions, f32[3V] normals, f32[2V] uv0, [f32[2V] uv1], [f32[4V] tangents],
+                [u8[4V] bone nodes (255 = none), f32[4V] weights], u32[I] triangle list</code></pre>
+<ul>
+<li><strong>Space</strong>: feet, <strong>X right, Y up, Z forward</strong> (left-handed), any origin. Triangles <strong>clockwise</strong> seen from outside (Blender's counter-clockwise faces are reversed when the axes swap). UVs as the modelling tool has them (origin bottom-left).</li>
+<li><strong>Nodes</strong> named as the original's (table above) at <em>your</em> pivots: <code>OBJ_Frame</code> root; <code>OBJ_UPR_Forks</code> and <code>OBJ_LWR_Forks</code> on the steering axis with their Y axis along it; <code>OBJ_FRT_Tire</code> / <code>OBJ_BCK_Tire</code> at the axles (<strong>required</strong>); <code>OBJ_Swingarm</code> at the pivot.</li>
+<li>A rigid surface moves with its node; a skinned one blends up to four nodes per vertex.</li>
+<li><code>rxmod.py check</code> reads a <code>.rxmesh</code> fully (counts, bounds, node names, the wheelbase) — use it on your exporter's output.</li>
+</ul>
+</section>
+
+<section id="format">
+<h2>The container</h2>
+<p>A <code>.rxmod</code> is an RXAR container exactly like a <code>.rxtrack</code> (see the rxtrack kit's guide, or <code>core/plan/RXARCHIVE.md</code>) with the header kind <strong><code>MODS</code></strong> (0x53444F4D), <code>mod.json</code> at the root, the meshes and pictures at the paths it names, and the index metadata <code>{"format":"reflex-mod","type":"bikes",...}</code>. <code>rxmod.py pack</code> writes it (entries stored, a SHA-256 each, equal bytes stored once); <code>rxmod.py list</code> / <code>extract</code> read one.</p>
+</section>
+
+<section id="rules">
+<h2>Rules checklist</h2>
+<ul class="check">
+<li>Every bike names its original's VehicleModelId, same class (and brand where the game has it).</li>
+<li>The mesh has <code>OBJ_FRT_Tire</code> and <code>OBJ_BCK_Tire</code> (the axles); the wheelbase reads ~4.5 - 5 ft.</li>
+<li>Every material the mesh uses is in <code>mod.json</code>, with a template.</li>
+<li>Pictures: PNG / JPG, powers of two, at most 4096.</li>
+<li><code>author</code> set; <code>id</code> and bike <code>id</code>s set if skins should find you.</li>
+<li><code>rxmod.py check</code> says <code>ok</code>; the card shows; the bike rides, steers and compresses right.</li>
+<li>Only your own art, or art you have the author's permission to ship.</li>
+</ul>
+<ul class="cross">
+<li>No physics: power, handling and price are the original's, by design.</li>
+<li>No game files in a mod.</li>
+</ul>
+</section>
+
+<section id="faq">
+<h2>FAQ</h2>
+<h3>My model has no wheels. Do I need to make some?</h3>
+<p>No: give the axles and the game draws the original bike's tyres and rims (as on every NFG COLE bike but the TM).</p>
+<h3>Can a 250 and a 450 share a model?</h3>
+<p>Yes: two entries in <code>bikes</code>, the same <code>mesh</code> and maps, different <code>bike</code> numbers (the CRF, KX, MC and FC do this).</p>
+<h3>The forks swing sideways when I steer.</h3>
+<p>Your steering axis is far from the original's: check <code>steer_axis</code> / <code>steer_head_ft</code> in the report, give <code>"steer"</code> two points on your head stem's axis, and make sure no frame part ended up on <code>OBJ_UPR_Forks</code>.</p>
+<h3>A part stays still / moves with the wrong thing.</h3>
+<p>Look it up in <code>report.json</code>'s <code>objects</code> (object -&gt; node) and the node preview; fix its <code>nodes</code> rule (first match wins: put specific rules before <code>obj:.*</code>).</p>
+<h3>Where's the full spec?</h3>
+<p><code>core/plan/RXMOD.md</code> in the OpenReflex repo; the modder guide <code>tools/rxmod/README.md</code>.</p>
+</section>
+</main>
+</div>
+</body>
+</html>

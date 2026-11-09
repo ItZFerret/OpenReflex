@@ -1,0 +1,9 @@
+{
+  "title": "CREDITS",
+  "credits": [
+    { "name": "itswillyferret", "role": "PROJECT LEAD", "note": "Responsible for the entire project." },
+    { "name": "boneboy", "role": "LOGO", "note": "The OPEN REFLEX logo." },
+    { "name": "MX vs ATV Reflex", "role": "THE ORIGINAL GAME", "note": "By THQ / Rainbow Studios." }
+  ],
+  "legal": "This project is not affiliated with, endorsed by or sponsored by THQ, Rainbow Studios or their successors. MX vs ATV Reflex and all related marks belong to their respective owners."
+}

@@ -1,0 +1,233 @@
+/* The options pages' own parts in the OPEN REFLEX theme: Open Unleashed's MxaControls.uss (the CONTROLS remap table and its modal)
+   and the pause extras beside the game's live pause page (ReflexPauseExtras), moved here from the options agent's OptLook.uss when the
+   shell's theme became the one source (OptUi.CreateDocument loads OuMenu.uss, OuFrontEnd.uss, OuControls.uss). Fonts: Fonts/ (SIL OFL). */
+
+/* ------------------------------------------------------------------ CONTROLS (Open Unleashed's MxaControls.uss) */
+
+.mxa-ctl-page {
+    width: 1560px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-bottom: 4px;
+}
+
+.mxa-ctl-settings {
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+.mxa-ctl-settings > .mxa-row {
+    width: 49%;
+    height: 50px;
+    margin-right: 1%;
+}
+
+.mxa-ctl-info > .mxa-row-label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(242, 242, 238, 0.4);
+}
+
+.mxa-ctl-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 200px;
+}
+
+.mxa-ctl-row {
+    padding: 5px 12px;
+}
+
+.mxa-ctl-label {
+    width: 40%;
+    flex-direction: column;
+}
+
+.mxa-ctl-name {
+    width: 100%;
+}
+
+.mxa-ctl-sub {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.4);
+    margin-top: 2px;
+}
+
+.mxa-ctl-inactive .mxa-ctl-name {
+    color: rgba(242, 242, 238, 0.42);
+}
+
+.mxa-ctl-headcell {
+    width: 29%;
+    margin-left: 1%;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(242, 242, 238, 0.45);
+}
+
+.mxa-ctl-cell {
+    width: 29%;
+    margin-left: 1%;
+    height: 40px;
+    justify-content: center;
+    padding-left: 14px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-left-width: 3px;
+    border-left-color: rgba(0, 0, 0, 0);
+    transition-property: background-color;
+    transition-duration: 0.1s;
+}
+
+.mxa-ctl-cell-label {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+}
+
+/* changed from the default: the accent edge */
+.mxa-ctl-custom {
+    border-left-color: rgba(232, 28, 36, 0.75);
+}
+
+.mxa-ctl-unbound > .mxa-ctl-cell-label {
+    color: rgba(242, 242, 238, 0.3);
+}
+
+.mxa-ctl-cell:focus {
+    background-color: var(--ou-red);
+}
+
+.mxa-ctl-cell:focus > .mxa-ctl-cell-label {
+    color: rgb(16, 16, 16);
+}
+
+/* ------------------------------------------------------------------ prompts */
+
+.mxa-ctl-modal {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(6, 7, 9, 0.72);
+    align-items: center;
+    justify-content: center;
+}
+
+.mxa-ctl-box {
+    width: 820px;
+    padding: 34px 40px 30px 40px;
+    border-radius: 10px;
+    background-color: rgb(20, 21, 25);
+    border-left-width: 5px;
+    border-left-color: var(--ou-red);
+}
+
+.mxa-ctl-conflict {
+    border-left-color: rgb(255, 120, 60);
+}
+
+.mxa-ctl-modal-kicker {
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    color: var(--ou-red);
+}
+
+.mxa-ctl-conflict > .mxa-ctl-modal-kicker {
+    color: rgb(255, 140, 80);
+}
+
+.mxa-ctl-modal-title {
+    font-size: 34px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+    margin-top: 8px;
+    white-space: normal;
+}
+
+.mxa-ctl-modal-text {
+    font-size: 18px;
+    color: rgba(242, 242, 238, 0.75);
+    margin-top: 12px;
+    white-space: normal;
+}
+
+.mxa-ctl-modal-warn {
+    font-size: 15px;
+    color: rgb(255, 140, 80);
+    margin-top: 10px;
+}
+
+.mxa-ctl-modal-count {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.45);
+    margin-top: 18px;
+}
+
+.mxa-ctl-modal-note {
+    font-size: 14px;
+    color: rgba(242, 242, 238, 0.45);
+    margin-top: 16px;
+    white-space: normal;
+}
+
+.mxa-ctl-choice {
+    height: 54px;
+    margin-top: 12px;
+    justify-content: center;
+    padding-left: 22px;
+}
+
+.mxa-ctl-choice > .mxa-button-label {
+    font-size: 19px;
+}
+
+/* ------------------------------------------------------------------ the pause extras beside the game's own pause page (ReflexPauseExtras) */
+
+.rx-pause-extras {
+    position: absolute;
+    right: 64px;
+    bottom: 132px;
+    width: 560px;
+    padding: 14px 18px 16px 4px;
+    background-color: var(--ou-glass);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-top-color: rgba(232, 28, 36, 0.7);
+    border-top-width: 2px;
+    border-radius: 6px;
+}
+
+.rx-pause-extras .mxa-pause-section {
+    margin-top: 2px;
+}
+
+.rx-pause-extras .mxa-main-button {
+    padding: 4px 0 4px 22px;
+    margin-top: 6px;
+}
+
+.rx-pause-extras .mxa-main-button > .mxa-button-label {
+    font-size: 30px;
+}
+
+.rx-pause-extras .mxa-main-button:focus {
+    border-left-color: var(--ou-red);
+}
+
+.rx-pause-extras .mxa-pause-row:focus {
+    border-left-color: var(--ou-red);
+}
+
+.rx-pause-extras-hints {
+    flex-direction: row;
+    margin: 10px 0 0 0;
+}
+
+.rx-pause-extras-hints .mxa-hint {
+    margin-left: 22px;
+}

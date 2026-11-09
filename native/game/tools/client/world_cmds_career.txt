@@ -1,0 +1,23 @@
+# a career race world as the Unity client drives it (OriginalCareerRace, OriginalPostRace, ReflexCareer.Finish)
+world persist attach_steam
+world pages com_stubs
+world ui_voice
+world pages ui RulesType
+world pages ui_images
+world ui_setting HUDVisibility 1 2
+world ui_setting HUDVisibility 0 0
+world remap apply
+world career status
+world career rules_done 0
+frames 60 1
+world career status
+world pages state
+frames 1500 1
+world race
+world career status
+world career results
+world pages state
+world career_finish
+world memhash
+world persist leave
+world memhash

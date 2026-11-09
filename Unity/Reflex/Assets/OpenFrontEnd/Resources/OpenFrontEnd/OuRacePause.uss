@@ -1,0 +1,73 @@
+/* The owned race pause page (OwnRacePause): its own parts; the look is OuModern.uss. */
+.ou-pause-hidden { display: none; }
+/* the confirm dialogs' layer (OwnRacePause.overlay): this class was styled only in OuRaceResults.uss, which the pause never loads, so the overlay was an ordinary
+   zero-height flex child under the page body, and its dialog (absolutely filling the overlay) centred on the bottom edge of the layer: the title bar low, the
+   KEEP RIDING / QUIT row under the footer hints. Filling the layer makes the dialog centre on the screen. */
+.ou-overlay { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.ou-pause-body { flex-grow: 1; min-height: 0; }
+.ou-pause-side { width: 640px; min-height: 0; }
+.ou-race-pause .mxa-pause-col { width: auto; flex-grow: 0; }
+.ou-race-pause .mxa-pause-menu { margin-top: 12px; }
+
+/* The pause column (w-pausefix): the stat tiles (OuWidgets.StatGrid, explicit rows: a wrapping tile container was measured one line tall and the rows were
+   drawn over its wrapped tiles) over a ScrollView of rows. The tiles are compact and keep their height; the ScrollView takes what the page leaves
+   (min-height 0), so the rows end above the footer at any height / UI scale and scroll (the navigation follows the focus) when they do not all fit.
+   Row height, label and tile size are the compact set of this page; the ordinary front-end buttons stay 76 px. */
+.ou-race-pause .ou-tile-grid { flex-shrink: 0; margin: 4px 0 4px 0; }
+.ou-race-pause .ou-tile-row { flex-direction: row; flex-shrink: 0; }
+.ou-frontend.mxa-root .ou-race-pause .ou-tile-row > .ou-stat { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; max-width: 50%; margin: 0 10px 8px 0; padding: 4px 14px 4px 14px; }
+.ou-frontend.mxa-root .ou-race-pause .ou-tile-row > .ou-stat:last-child { margin-right: 0; }
+.ou-frontend.mxa-root .ou-race-pause .ou-tile-row > .ou-stat > .ou-stat-label { font-size: 18px; letter-spacing: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-frontend.mxa-root .ou-race-pause .ou-tile-row > .ou-stat > .ou-stat-value { font-size: 40px; margin-top: -4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ou-race-pause .ou-pause-menu-scroll { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; margin-top: 4px; }
+.ou-race-pause .ou-pause-menu-list { margin-top: 0; padding-right: 18px; }   /* (the focused row slides 12 px right: room inside the clip) */
+.ou-frontend.mxa-root .ou-race-pause .ou-pause-menu-list .mxa-main-button { height: 62px; margin-bottom: 6px; flex-shrink: 0; }
+.ou-frontend.mxa-root .ou-race-pause .ou-pause-menu-list .mxa-main-button > .mxa-button-label { font-size: 40px; }
+.ou-race-pause .mxa-pause-menu .mxa-main-button > .mxa-button-label { font-size: 44px; }
+.ou-trick-scroll { flex-grow: 1; margin-top: 18px; }
+.ou-trick-row { flex-direction: row; align-items: center; min-height: 92px; padding: 8px 24px 8px 20px; margin-bottom: 6px; border-left-width: 0; border-radius: 0; background-color: rgba(255, 255, 255, 0.045); transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic; }
+.ou-trick-row:focus { background-color: var(--ou-focus-fill); translate: 10px 0; }
+.ou-trick-tier { width: 118px; color: var(--ou-gold); font-size: 22px; letter-spacing: 3px; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); }
+.ou-trick-name { flex-grow: 1; font-size: 36px; color: rgb(255, 255, 255); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.ou-trick-gesture { width: 240px; height: 68px; }
+
+/* the mode pages (w-pausemodes): the Free Ride map, the challenge's description, the vehicle list, the tuning rows */
+.ou-race-pause .ou-pause-aside { width: 520px; flex-shrink: 0; }
+.ou-race-pause .ou-pause-map-img { width: 460px; height: 460px; background-color: rgba(0, 0, 0, 0.35); }
+.ou-race-pause .ou-pause-map-arrow { position: absolute; width: 36px; height: 36px; margin-left: -18px; margin-top: -18px; }
+.ou-race-pause .ou-pause-challenge .ou-lead { font-size: 30px; }
+.ou-race-pause .ou-pause-list { height: 100%; }
+.ou-race-pause .ou-pause-list-scroll { flex-grow: 1; flex-shrink: 1; min-height: 0; margin-top: 14px; }
+.ou-race-pause .ou-veh-row { min-height: 78px; margin-right: 6px; }
+.ou-race-pause .ou-veh-class { width: 170px; font-size: 20px; }
+.ou-race-pause .ou-veh-row .ou-trick-name { font-size: 32px; }
+/* the PRO RIDERS list: the rider's name first (STR_PRO_RIDER), then the vehicle type */
+.ou-race-pause .ou-veh-pros .ou-veh-class { width: 330px; font-size: 26px; flex-shrink: 0; }
+.ou-race-pause .ou-veh-pros .ou-veh-row .ou-trick-name { font-size: 28px; }
+.ou-race-pause .ou-pill { margin-left: 8px; }
+.ou-race-pause .ou-pause-stats .ou-lead { font-size: 28px; }
+.ou-race-pause .ou-pause-stat { margin-bottom: 18px; }
+.ou-race-pause .ou-pause-stat-name { font-size: 22px; letter-spacing: 4px; color: rgb(190, 188, 168); margin-bottom: 6px; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); }
+.ou-race-pause .ou-gbar { height: 14px; margin-bottom: 6px; border-radius: 0; background-color: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.ou-race-pause .ou-gbar-base { position: absolute; left: 0; top: 0; bottom: 0; background-color: rgba(246, 246, 244, 0.88); }
+.ou-race-pause .ou-gbar-bonus { position: absolute; top: 0; bottom: 0; background-color: rgb(204, 95, 41); }
+.ou-race-pause .ou-pause-tune { margin-top: 14px; }
+.ou-race-pause .ou-pause-tune-row { height: 84px; }
+.ou-race-pause .ou-tune-value { align-items: center; }
+.ou-race-pause .ou-tune-value > .mxa-arrow { margin-top: -6px; }
+.ou-race-pause .ou-tune-bars { width: 200px; margin: 0 14px; }
+.ou-race-pause .ou-tune-text { min-width: 100px; font-size: 26px; -unity-text-align: middle-right; }
+.ou-race-pause .ou-pause-aside { align-self: flex-start; }
+.ou-race-pause .ou-pause-stats { height: auto; }
+
+/* ---------------------------------------------------------------- MotoSkills PreTutorialPopup (w-tutfx): the original's layout (PreTutorialPopup.lyr, a 1280 x 720 page, x1.5 here):
+   a black 50 % band over the world, the orange rule under the title, the lesson's video on the right, the description crawling up its mask on the left */
+.ou-pretut-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.ou-pretut-band { position: absolute; left: 0; right: 0; top: 165px; height: 750px; background-color: rgba(0, 0, 0, 0.5); }
+.ou-pretut-rule { position: absolute; left: 0; right: 0; top: 253px; height: 6px; background-color: rgb(204, 95, 41); }
+.ou-pretut-stage { position: absolute; left: 50%; margin-left: -960px; top: 0; width: 1920px; height: 1080px; }
+.ou-pretut-title { position: absolute; left: 198px; top: 169px; width: 744px; height: 66px; font-size: 64px; color: rgb(204, 95, 41); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; -unity-text-align: middle-left; white-space: nowrap; }
+.ou-pretut-video { position: absolute; left: 966px; top: 316px; width: 768px; height: 384px; background-color: rgba(0, 0, 0, 0.55); -unity-background-scale-mode: stretch-to-fill; }
+.ou-pretut-mask { position: absolute; left: 199px; top: 316px; width: 750px; height: 450px; overflow: hidden; }
+.ou-pretut-text { position: absolute; left: 0; top: 0; width: 750px; font-size: 42px; color: rgb(170, 169, 151); white-space: normal; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-pretut-buttons { position: absolute; left: 727px; top: 805px; width: 514px; flex-direction: column; }

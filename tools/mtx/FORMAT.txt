@@ -1,0 +1,252 @@
+Experimental Reflex track package, version 4 (versions 1–3 remain readable)
+
+One gzip-compressed .rxtrack file. No classic database, package, level or scene files are shipped in the mod.
+Uncompressed data, little endian:
+  4 bytes "RXPK", uint32 package version (1, 2, 3 or 4), uint32 JSON byte length (2..65536)
+  UTF-8 JSON metadata (format="reflex-mod-track", version=1, name, source, units, materialPreset, course)
+  4 bytes "RXM1", uint32 version (1), uint32 samples (2048), float32 spacing (2 feet)
+  float32 spawn position XYZ, float32 forward direction XYZ
+  2048*2048 float32 heights in feet; columns -X to +X, rows +Z to -Z
+
+Course is an array of five floats per point (XYZ, width, original course attribute).
+Coordinates are centered on the source collision bounds; no horizontal scaling.
+The exporter interpolates the source terrain, extends its edges, and fills missing source samples.
+Both versions supply a deformable terrain and a course material mask for offline Free Ride.
+Version 2 appends two bounded sections after the height samples:
+  "SCNE", uint32 byte length (maximum 128 MiB), RXSC scenery payload
+  "COLL", uint32 byte length (maximum 32 MiB), RXCO collision payload
+RXSC starts with "RXSC", uint32 version 3 (versions 1 and 2 are also readable), then counted texture, material, group and draw tables.
+Textures contain uint32 identifier, int32 width/height and RGBA8 pixels. Materials retain the source's
+base pass and up to three layers, alpha cutoff/blend, vertex lighting, UV selection and address modes.
+Groups retain their name, visibility and optional position/quaternion. Draws contain material/group
+indices, sky/billboard flags, positions, four UV sets, RGBA8 vertex colors, optional billboard pivot/
+offset and uint32 triangle indices. This layout is implemented by scenery.py and ExperimentalMtxScenery.cs.
+RXCO starts with "RXCO", uint32 version 1 or 2 and uint32 chunk count. Each chunk contains uint32 vertex
+count (multiple of 3, at most 48000) and XYZ float32 triangle vertices. The native loader validates
+these, builds local triangle shapes around each chunk's center and registers them in Reflex's static
+collision broadphase. Scenery and collision coordinates share the terrain's centered frame.
+The exporter removes ground triangles superseded by the deformable terrain; imported opaque ground
+cannot hide its ruts. Source scenery keeps its own textures, alpha and baked vertex lighting. The
+riding surface retains the Reflex material. Source sky domes follow the camera. Helicopter rotors spin;
+the helicopter follows its source flight clip. Race-enabled packages append the RXRA extension described below.
+The client resolves the NAT_Concord material/terrain infrastructure from the user's Reflex install,
+removes that venue's placed entities, replaces the heightfield and start, and uses the live Reflex
+terrain deformation and track decal paths. The native session does not retain custom-track records.
+Package readers bound allocations and reject invalid dimensions, non-finite data, truncation and CRC failures.
+
+Build the native core with core/build.sh. BuildMacBatch creates the isolated client.
+Verify the package with: python3 tools/mtx/test_package.py /absolute/path/to/track.rxtrack
+The mtx_mod_smoke.c driver verifies sustained riding, deformation and reset through the product session API.
+
+RXSC version 2 ends with a counted animation table. Each clip has float32 duration and int32 track count;
+each track has int32 group index, int32 rotation-key count, (time, quaternion XYZW) float32 keys,
+int32 translation-key count and (time, position XYZ) float32 keys. Clips loop and translations use
+the same centered coordinates as static groups. A clip replaces the procedural spinner on its targets.
+
+Experimental debug scaling
+Paradise Valley defaults to 180%; McKenna Rock defaults to 160%. Each track saves its own trial scale. During riding, Ctrl+Shift+[ / ]
+changes scale by 5 percentage points (50–200%). Each change reloads the complete track and returns
+riders to the start; the UI shows the current scale. The choice is saved only in the experimental
+client's save folder. Terrain, scenery placements, animation paths, collision placements and spawn poses scale together;
+vehicles and physics retain their original size. Replay, menus and keyboard-entry overlays ignore
+these hotkeys. Camera-bound bracket keys are respected.
+
+Collision regression checks
+mtx_scenery_probe <game-dir> <package> [scale] [contacts] checks every static triangle's scaled
+coordinates, broadphase membership and CollisionEntity owner. With contacts it respawns at all
+scenery groups and advances impact simulation. This caught the null owner in rider body-hit
+queries (the "unported game function 00000000" event failure). Collision construction runs after
+level loading, so it uses the session scale instead of the already-closed level-load scale bracket.
+mtx_mod_smoke <game-dir> <package> [scale] [frames] also checks deformation and track reset.
+-reflexMtxSmoke -reflexMtxScaleSmoke runs riding plus synthetic bracket hotkeys in the rendered
+client, checking both reloads and terrain/scenery scale agreement. Use an isolated -reflexSaveDir.
+
+Installed nationals
+McKennaRock.rxtrack (MTX southwick) and ParadiseValley.rxtrack (MTX buddscreek) each include
+their own terrain, course, scenery textures and meshes, and collision. Paradise Valley has
+289 draw meshes, 268 textures, 214 collision groups and 4371 collision triangles. Both use Reflex
+terrain materials and deformation, and support Free Ride; the RXRA extension also enables racing.
+
+Rebuild a package: python3 tools/mtx/import_national.py <installed-MTX-track-folder> <output.rxtrack>
+Optional --name and --id override the source report's display name and the generated package id.
+The exporter rejects tracks larger than the supported terrain instead of silently clipping them.
+Launch-MTX-Experimental.command opens McKenna Rock; Launch-Paradise-Valley.command opens Paradise
+Valley. Both use the same experimental app and save folder. The app's -reflexMtxTrack argument takes
+the package filename without its extension. The debug scaler follows either track selected in menus.
+Per-track, default-versioned save keys prevent old shared scale trials from overriding these defaults.
+
+Version 3 authored surface section
+After COLL: "SURF", uint32 payload bytes (12 + 2048*2048*4), then "RXSM", uint32 version 1,
+uint32 size 2048, and row-major RGBA8 pixels in the same +Z-first order as the height grid.
+R=grass weight, G=rough-soil weight, B=rock weight; RGB sum <=255. The remainder is primary
+riding dirt. A=255 means coverage by an authored ground face; 0 means the grass fallback outside
+the imported terrain. Readers validate exact dimensions, bounds, weight sums and compression CRC.
+Paradise Valley's map is rasterized from original ground triangles, texture identities, UVs and
+vertex/texture alpha layer blends. No centreline strip is used for its surface placement. The
+exporter still removes these old ground faces so the live Reflex heightfield remains visible.
+
+The client maps these weights to native Reflex Bedford Dirt01 (riding dirt), Dirt02 (rough soil),
+Slate (rock) and Grass. It flips rows for Unity texture coordinates, retains real-world detail
+texel size as the track scales, supplies a terrain-aligned chrominance/luminance variation map and a far
+colour map, and retains the original terrain lighting, rut tint and RT_Bump pipeline.
+Native deformation strength/depth: dirt .85/.65, grass .30/.25, rock .05/.05; pile-up channel 1.
+The rendered tire decals use the same softness channels. The smoke test checks actual rendered
+track-map pixels as well as nonzero ribbon triangles. McKenna Rock's v2 package remains supported.
+
+Fixed-size scenery (RXSC 3 / RXCO 2)
+The package version is unchanged; these section versions are independent. Older sections still load.
+RXSC 3 appends one float32 XYZW anchor per vertex after each draw's triangle indices, before the next
+draw. RXCO 2 appends the same anchor array after each chunk's XYZ vertices. W is exactly 0 (track
+scale) or 1 (fixed physical size). All anchors must be finite. For a fixed-size vertex p at track scale
+s, world position is p + anchor.xyz * (s - 1); otherwise it is p * s. The renderer compensates inside
+its scaled root; the native collision builder applies the identical mapping before computing bounds.
+Anchors use each object's bottom-center pivot. All materials and collision faces share that pivot;
+tree leaves/trunks and multi-piece snackbars/water tanks share an assembly pivot.
+Booth signs contained by their structure share its pivot; tower platforms and upper sections stay joined. Billboard card
+origins and offsets are compensated too. Bales, tents, cones, vehicles, people, buildings, individual
+trees, booths, grandstands, speakers and podiums keep their source dimensions. Course fences, terrain, backdrops and
+other unclassified infrastructure retain track scaling to avoid pulling apart terrain-connected meshes.
+Animated groups retain the existing animation/scale behavior.
+
+Use --objects-dir <folder> when rebuilding either current package. This folder holds the original
+SouthwickZpre, SouthwickscnZpre, SouthwickcolZpre (or BuddsCreek equivalents), extracted from the
+user's MTX Disc 1 ISO at win/program files/Aspyr/MTX/Game/data/pre. objects.py reads gzip/PRE archives,
+SCN sector ownership and COL object vertices; original assets are never checked into this repository.
+Ownership is recovered from original vertex positions, not inferred from material batches or spatial
+collision tiles. Omit the argument only when deliberately producing legacy, uniformly scaled scenery.
+
+Crowd sectors are split into connected spectator cards before assigning fixed-size anchors. Each
+spectator uses their own bottom-center pivot, retaining their original trackside foot position as the
+terrain scales; the crowd is never shrunk around a hillside-wide shared pivot.
+Verify spectator placement with: python3 tools/mtx/test_crowd.py <package.rxtrack>
+<installed-cache-folder> <original-PRE-folder> <BuddsCreek-or-Southwick> (arguments on one line).
+This checks every exported spectator anchor against the original card's feet at six track scales,
+and rejects the previous crowd-wide pivot behavior.
+
+Detailed imported terrain materials
+Paradise Valley uses Bedford's Dirt01 and Dirt02 at their native 128-repeat physical density, Slate and
+Grass. Three deterministic spatial frequencies vary the packed/loose dirt blend and broad colour;
+authored grass/rock weights and physical softness remain unchanged. The far colour map carries
+the same variation. An opt-in _MtxDetail shader parameter adds a rotated coarse soil sample and
+near-camera fine grain from the native detail textures. It is zero on stock tracks. Live RT_Bump,
+tire marks, heightfield normals and deformation tint remain the original rendering path.
+
+Paradise Valley resolves the two dark-brown Bedford soil textures directly from the installed game.
+Near and far colours use their measured mean colours so distance cannot fade back to pale sand.
+The loose-soil layer is dark dirt too; no Concord Sand or DirtLight is bound to this track.
+
+Paradise Valley dark-soil calibration: the soil fraction receives 42% of the previous reflectance
+through the chrominance/luminance map and the matching far colour, with a lower specular mask
+(3/255 instead of 10/255). Grass and rock retain their brightness. This corrects the pale result
+under the Concord donor light rig without changing scene exposure or deformation softness.
+
+Native terrain relief for MTX mods
+BuildMtxBumpModels supplies ReflexRTBump with three draws: a terrain-sized HFB_4tex surface bump
+layer, course-following native rut ribbons, then HFB_1tex_deformed live deformation reveal.
+Paradise uses Bedford's Dirt01_BumpNew / Dirt02_Bump matched to its soil textures. The existing
+Concord bump assets supply the other surfaces, rut pattern and deformation reveal. All assets are
+resolved from the installed game; the compressed mod's existing course supplies ribbon placement.
+
+Ribbons interpolate the closed course, keep groove texture spacing in world feet, fade their edges,
+and mask out authored grass/rock. The native rut blue channel is reduced to one quarter for shallow
+visual displacement. These are the same visual bump/displacement overlays used by stock tracks;
+physical tire deformation/collision continues to come from the native simulation, not new static
+collision barriers. The smoke test reads RT_Bump before riding and requires non-neutral height
+variation, then separately checks live tire ribbons and actual marked pixels after riding.
+
+Retail nationals and supercross catalog (RXPK 4)
+All 8 nationals and 8 supercross venues are supported by catalog.py. Source names
+are distinct from display names: Washougal = Devils Gate, Broome = Pacific Hills,
+Bayou = Boggstown, Europe = Woodbridge, Miami = Los Angeles, Portland = San Francisco.
+New venues default to 160%; Paradise Valley retains 180%. Categories come from the
+package metadata. These venues support offline Free Ride. Packages with the RXRA extension also
+support native National/Supercross races and AI opponents.
+
+Version 4 appends after SURF:
+  "COLR", uint32 byte length (12 + 2048*2048*4)
+  "RXCM", uint32 version (1), uint32 size (2048), then RGBA8 display-encoded (sRGB) source colour pixels
+Rows match RXM1/SURF (+Z to -Z); alpha is reserved and written as 255. Both native
+and Unity readers validate section magic, length, dimensions, truncation and CRC.
+Native physics skips this visual section; softness still comes only from SURF.
+
+The importer identifies each venue's ground materials using audited texture IDs,
+then bakes source texture UVs, material/vertex colour and authored alpha blends.
+Texture RGB is decoded before filtering/blending/vertex lighting and encoded back
+to sRGB for storage; neutral vertex lighting therefore preserves source colour.
+It samples steep ground faces too, so their palette remains under the heightfield.
+Only identified ground materials can be removed from the new venues' scenery;
+near-ground faces on booths, signs and stadium props are preserved.
+The terrain shader uses this color map in both near and far views, with sRGB
+decoding like the imported scenery (surface masks remain linear). Native Reflex
+soil/grass/rock detail is normalized by its measured layer means before applying
+the source palette. Native bump layers, course ruts and live tire deformation
+remain active. Existing v2 McKenna and v3 Paradise appearance stays unchanged.
+Original source textures/assets are local inputs, never committed to the repository.
+
+Reproduce imports with tools/mtx/import_catalog.py <cache-root> <new-output-dir>
+--objects-dir <extracted-PRE-folder> [--tracks <cache-names...>] [--jobs 1..4].
+The command refuses to overwrite existing packages. Each venue requires its three
+<Level>Zpre, <Level>scnZpre and <Level>colZpre archives. The main SCN is selected by
+level path, not archive order (some archives list their sky model first).
+Crowd/people sectors use per-connected-person foot anchors. Body-sized connected
+components are separated from large stadium seating panels, which retain terrain
+scaling so they stay attached to their stands; welded cache corners
+are split when adjacent triangles belong to different fixed-size props.
+
+Validate source color/UV/blend preservation with test_surfaces.py; validate each
+package with test_package.py. test_crowd.py accepts any source level that has crowds.
+The native scenery probe checks scaled collision positions and owner registration;
+the opt-in player smoke checks loading, frames, movement, scenery, rendered relief,
+live tire marks and exceptions, and captures elevated terrain views.
+
+Denver blimp animation keys are sorted as complete records before export. Denver
+and St. Louis use unobstructed authored course entries as starts, with their
+height sampled from the exported heightfield and their heading following the course.
+
+Optional RXRA racing extension (all package versions)
+After the final visual/collision section, an optional "RACE", uint32 byte length
+wraps "RXRA", uint32 version 1, uint32 kind (0 National, 1 Supercross), uint32
+lap-point count and uint32 lead-in-point count. Counts are bounded at 4096 each.
+Next: two ten-float gates (position XYZ, forward XYZ, right XYZ, width), then
+lap and lead-in points as five floats (XYZ, width, desired speed in feet/sec).
+The lap closes on its first point; the lead-in ends there. JSON raceVersion=1
+advertises race support. It is still a single gzip file; no classic Reflex files.
+
+The native adapter builds a temporary race graph from this portable data and
+uses Reflex's own countdown, drivers, AI, timing, standings and results. The
+first finish crossing arms the lap clock. Subsequent laps require three ordered
+course sectors and a forward crossing between the finish posts. The imported
+quad seam cannot discard a valid finish. Start-grid spacing stays rider-sized;
+positions follow track scale. Riders stage beyond the static MTX gate; the native
+countdown holds them until the start (the imported gate has no drop animation).
+Imported collision is marked DriveOn so tires can
+ride elevated mesh roads, not just hit their undersides. Source mesh riding layers participate in recovery
+height selection and both wheel-placement probes. Imported riders recover on the
+centreline; repeated immediate crashes retreat three route points for run-up,
+without advancing race progress or skipping finish/sector gates. The donor's
+lap-pacing targets are not used. Stock-track behavior is unchanged.
+
+Both Free Ride and National/Supercross events appear in the custom track browser.
+The experimental desktop launchers start a three-lap race at Amateur (native Normal / skill 95) difficulty.
+The scaler reload preserves the active race's opponents, laps and garage choice.
+
+Lighting (client side, no package change; Content/ExperimentalMtxLighting.cs)
+Reflex's world shaders write raw texture values into the HDR target and the post chain tonemaps them. The imported
+scenery and the RXPK 4 ground colour are display-referred (MTX: texture x prelit vertex colour x 2, 0x80 = 1.0), so the
+client uses them raw: scenery textures are linear (not sRGB) textures, and the ground colour is divided by the light that
+flat open ground receives so it shows MTX's own colour. The MTX level keeps Concord's DistanceFog and HDRSettings (the stock
+exposure; open-air venues hold the adaptation to exposures 0.8..1 and use the executable's default bloom, so MTX's display-white
+skies are not burnt out) besides its terrain, light and sky. Each venue's light comes from MTX's <Level>_Lights structure (the level's
+*_scripts.qb): key light heading / pitch / colour (azimuth atan2(z, x) = heading + 270 degrees in the package frame, checked
+against fits to the baked vertex lighting), ambient hue, fog colour and alpha, and the `lighting` world / sky tint
+(lev_*, sky_*, vc_target, vc_percent) on the prelit colours. Atlanta, Denver, Minneapolis and St. Louis are covered arenas
+lit like the stock stadium (SX_Kingston's rig and HDR settings). REFLEX_MTX_LIGHT=legacy restores the previous rendering.
+Packages need no re-export; a package with an unknown id gets a neutral preset of its kind.
+
+.rxtrack version 5 (Reflex archive, 2026-11-07; specification core/plan/RXARCHIVE.md)
+A .rxtrack that starts with "RXAR" (not gzip 1F 8B) is a Reflex archive of kind TRAK: one track's own files exactly as the game reads
+them (Database/<level>.dx9.database, .level, .scene and .package or the level's extracted assets), not a terrain package. Base Reflex
+tracks, converted Alive tracks and old Reflex track mods (Beta_*_Track_Slot_* sets) all convert into it without loss:
+  core/tools/rxpack.c   rxpack track <root> <level> <out>   rxpack tracks <root> <dir>   rxpack mod <mod folder> <out>
+The RXPK packages above (versions 1-4) are unchanged and keep their reader; the two are told apart by their first bytes everywhere
+(fmt_rxar_sniff / RxFiles.IsArchive). A version 5 track in Mods/Tracks is a custom track like a folder of its four files.

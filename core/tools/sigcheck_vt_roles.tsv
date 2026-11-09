@@ -1,0 +1,79 @@
+# sigcheck_vt_roles.tsv -- what the receiver of a generic vtable-slot call is (read by hand from the code); see load_roles() in sigcheck_vt.py
+# columns (TAB): file regex | function regex | receiver regex | slot regex | mode (only / not) | class regex | reason
+.*	.*	.*	0x0	not	^(WreckChecker|SphericalParticleEmitter|YRingParticleEmitter|ParticleEmitter|Engine)$	a generic slot-0 call is the deleting-destructor idiom (delete flag 1); the vf0 of these classes is an update(float) / frame-rate setter, not a destructor, and none is deleted through a generic pointer
+loop_input\.c|loop_input_suspend\.c	(rx_keymap_update|rx_compound_keymap_.*|rx_cumulative_keymap_update|rx_keymaps_update|km_enable|km_enabled)	km|child	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	keymap / compound-keymap child in the keymap code
+loop_player\.c	(pl_keymap_enable|pl_keymap_query|rx_player_analog_348|rx_player_pressed_.*|rx_player_scripted_wreck_type|rx_player_update_camera|rx_player_handle_reset_input)	km|pl_input.*|input\+k_group_map\[\d\]	0x(4|8|10|24)	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	pl_input(slot) + off is a keymap block of the player's input
+loop_cam_misc\.c	(rx_player_analog7_active|cam_keymap_pressed|rx_player_stick7)	km|kx|ky	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	a player keymap
+fx_tutorial_manager\.c	(tut_keymap_value|tut_keymap_enable|rx_tutorial_update)	km	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	a player keymap
+fx_stunt_input\.c	keymap_value	km	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	a keymap
+world_misc\.c	km_value	km	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	a keymap
+anim_rider_stunt\.c	keymap_vf9	km	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	a keymap
+bike_sim\.c	bike_sim_action_value	obj	0x.*	only	^(KeyMap|DebugKeyMap|AnalogKeyMap|CompoundKeyMap|CumulativeKeyMap|KeyMapCommand)$	the action keymap (float value of an action)
+build_mxgame_init\.c|engine_startline\.c	(reg_read_one|rx_stunt_settings_read|rx_environment_settings_read|cfg_find|rx_engine_start_line_tunables)	reg|cfg	0x.*	only	^(Registry|IRegistry)$	the game's registry / config object
+loop_cam_tuning\.c	(r_.*|rx_cam_tuning_parse)	R	0x.*	only	^(XMLReader|IXMLReader)$	the XML reader of the camera tuning file
+build_vehicle_pkgcache\.c|fx_types\.c|loop_engine\.c	(rx_pkgcache_request_db|rx_fx_package_request|rx_engine_frame)	db	0x.*	only	^(Database|IDatabase)$	the package database
+build_activity_world\.c|guest_string_hash\.c|native_reader_load\.c	(rx_int_hash_insert|allocator_.*|custom_.*)	alloc|al	0x.*	only	Allocator$	an allocator object
+build_asset\.c	rx_database_release_asset	io	0x.*	only	AssetIO$	an asset IO object
+build_asset_frame\.c|build_asset_types\.c	(rx_database_remove_handle|rx_asset_handle_type)	h	0x.*	only	AssetHandle$	an asset handle (AssetHandle / IAssetHandle / <Kind>AssetHandle)
+loop_input\.c|loop_engine\.c|loop_hostinput\.c|loop_vehicle\.c	(rx_keymap_sample|rx_keymap_sample_repeat|rx_analog_keymap_sample|rx_analog_keymap_sample_plain|rx_engine_update|rx_engine_frame_head|rx_vehicle_release_controls)	im	0x.*	only	InputManager$	the input manager
+loop_player\.c|loop_cam_build\.c|loop_cam_firstperson\.c|loop_cam_tpc\.c|fx_stunt\.c|fx_terrain\.c|race_driver_update\.c|race_rules\.c	(rx_player_check_reset_terrain|rx_player_update_idle_rider|rx_player_tracker_update|rx_start_gate_camera_place|rx_first_person_camera_vf19|rx_third_person_camera_vf19|tpc_on_rail|rx_fx_stunt_.*|rx_fx_mud_update|rx_ai_lean_start|rx_player_launch|rx_rule_cannonball_update)	v|v2|V|vv	0x(44|94|ac)	only	^RavenVehicle	the player's / rider's vehicle (U32(player, 0x1ac) or PL_VEHICLE)
+bike_sim\.c	(bike_integrate_step|bike_update_fixed_steps)	S	0x(4|18|1c|24|2c|30|34|3c|44)	only	^RavenSimulation	the vehicle's physics simulation (S = U32(L, 0x1a4))
+bike_vehicle\.c	bike_vehicle_pre_step	S|S2	0x(5c|60)	only	^RavenSimulation	S = U32(L, 0x1a4): the simulation
+bike_vehicle\.c	bike_vehicle_post_step	V	0x74	only	^RavenVehicle	V = L - 0x90: the vehicle
+loop_player\.c	rx_player_update_camera	c980	0x70	only	Camera	the player's camera object (U32(p, 0x980), neighbours of the camera update)
+loop_world\.c	rx_replay_cameras_update	best|cur	0x70	only	Camera	a replay camera
+loop_world\.c	director_value	d	0x94	only	Camera	the replay director is a camera object
+race_driver_update\.c|race_driver_ai\.c|waypoint_driver_calls\.h	(rule_update|ai_rule_update|waypoint_rule_update)	r|object	0x14	only	^Rule	a driver's rule
+race_driver_update\.c|race_driver_ai\.c|waypoint_driver_calls\.h	(behavior_update|ai_behavior_update|waypoint_behavior_update)	b|object	0x10	only	^Behavior	a driver's behaviour
+race_braketurn\.c|race_beh1_nav\.c|race_beh1_small\.c	(disable|b1_behavior_vf7|b1_vf7)	b|obj	0x1c	only	^Behavior	a behaviour
+race_challenge_activity\.c	rx_driver_rules_tick	U32d,0xa0\+4\*i	0x14	only	^Rule	a driver's rule list entry
+race_activity\.c	rx_activity_update_drivers	o	0x1c	only	Driver$	a driver
+build_xml_stream\.c	(rx_compressed_stream_.*|source_read)	source|U32s,4	0x.*	only	InputStream$	the source stream (U32(s, 4)) of the compressed stream: an input stream
+build_xml_stream\.c	(rx_compressed_stream_.*)	compression|U32s,8|U32wrapper,8	0x.*	only	^(ICompression|LZXCompression|ZLibCompression)$	the decompressor (U32(s, 8)): an ICompression class
+build_activity_track\.c	stream_.*	s	0x.*	only	^MemoryInputStream$	the track loader's stream: rx_file_stream_open turns the opened file into a MemoryInputStream (the product has no CRT file streams), a TDF asset hands its MemoryInputStream; a failed open is destroyed directly
+loop_player\.c	rx_player_update_reset_point	v	0x88	only	^RavenVehicle	the player vehicle (PL_VEHICLE): the ground probe, bike (float thr) vs four-wheel (uint32_t bits) dispatched on the target address
+vehicle_atv_telemetry\.c	rx_atv_snapshot_values	v	0x(bc|c0)	only	^RavenVehicleATV$	the ATV telemetry snapshot: v is the ATV vehicle (rx_atv_* runs on RavenVehicleATV only)
+vehicle_(atv_runtime|buggy_runtime|truck_pose|utv_runtime)\.c	rx_(atv_vehicle|buggy|truck|utv)_publish_rider	ra|U32v,0x1a0	0x4c	only	^RiderAnimation$	vehicle + 0x1a0 is the rider animation (the simulation is +0x1a4)
+world_veh_motocross\.c	rx_world_motocross_vf35	ra	0x4c	only	^RiderAnimation$	the rider animation of the motocross vehicle
+race_beh2_roam_world\.c	(rx_roam_arrived|rx_behavior_roam_world_update)	U32beh,0x10|RW_VEHICLEbeh	0x3c	only	^RavenVehicle	RW_VEHICLE(beh) / beh->player->vehicle
+race_driver_update\.c	rx_ai_lean_start	v	0x3c	only	^RavenVehicle	v = U32(U32(d, 0x74), 0x1ac): the driver's vehicle
+anim_character\.c	rx_bone_cache_insert	U32map,0x18	0x4	only	Allocator$	U32(map, 0x18): the bone-cache map's allocator (vf1: allocate 0x10)
+race_activity_audio\.c	rx_audio_cue	mod	0x(8|c)	only	^ActivityAudioLogic::.*Modifier$	U32(cue, 0xc): the audio cue's modifier (vf2 test / vf3 apply)
+build_activity_teardown\.c	rx_event_dtor	h	0x0	only	^EventHandlerProxy	U32(node, 8) of an event's handler list: a handler proxy (its deleting destructor)
+build_activity_teardown\.c	(rx_channel_registry_remove|rx_base_channel_dtor)	v	0x0	only	Channel$	U32(node, 0x28) of the channel registry: a channel (its deleting destructor)
+build_asset\.c	rx_database_release_asset	a	0x8	only	Asset$	U32(h, 0x44): the handle's asset (vf2: its AssetIO)
+build_particle\.c	rx_particle_asset_destroy	b	0x8	only	^IDirect3D	an emitter record's Use3D surface buffers (+8 / +0xc): Direct3D COM objects (IUnknown::Release; rx_d3d_call AddRefs them), not a game class
+bike_remote\.c	bike_remote_jump_to_record	S	0x8	only	^RavenSimulation	S = U32(L, 0x1a4): the vehicle's simulation (vf2: the pose)
+loop_hostinput\.c	(rx_input_manager_focus_notify|rx_wndproc)	ctx|object|disp	0x8	only	^XenonCore$	[0xa95844] = g_EngineContext, a XenonCore (rx_engine_context_create): vf2 gives the input manager
+race_braketurn\.c|race_driver_update\.c	(reset|behavior_reset)	b	0x18	only	^Behavior	a driver's behaviour (vf6: reset)
+fx_rdb\.c|anim_scenario_rider\.c	(rx_fx_model_entity_vf9|rx_rider_character_release_animation)	L|reg	0x4	only	^(AudioCollisionManager|VehicleAudioManager)$	[0xa95824] / [0xa95828]: the audio registries (null in the product: anim_entity_dtors.c)
+fx_tutorial_manager\.c	tut_height	U32m,0x24	0x44	only	^RavenVehicle	U32(m, 0x24): the tutorial's vehicle (vf17: its position)
+fx_world\.c	rx_fx_land_animal_vf29	e	0x44	only	^LandAnimal	e: the land animal itself (its vf17)
+fx_worldparticles\.c|scene_fx_entities\.c	(rx_particle_controller_release|rx_placeable_effect_vf9)	mgr	0x14	only	ParticleManager	U32(self, 4): the particle manager (vf5: release a controller)
+loop_entity\.c	terrain_bind	e\+0x90	0x3c	only	^HFTerrainEntity$	e is the HFTerrainEntity (007c9110 / 007c90a0); e + 0x90 its IRenderable sub-object (vf15 binds the height field)
+waypoint_post_steps\.c	rx_post_podium_actors	actor	0x4c	only	<CharacterEntity	U32(cast, 0): a scenario cast actor (the podium riders: character entities)
+build_activity_race\.c	rx_activity_area_update	a	0x.*	only	<Activity	U32(w + 0x21da4)[i]: the world's activities
+fx_animal\.c	rx_fx_land_animal_vf20	P	0x(3c|44)	only	^LandAnimal	P is the land animal itself (LandAnimal*::vf20)
+loop_entity\.c	rx_character_ticker_run	e	0x7[48]	only	^LandAnimalProximity$	the threaded-animal queue holds land animals only (LandAnimalProximity vf29 / vf30, loop_entity.c)
+anim_scenario_intro\.c	rx_scenario_intro_update	sc	0x.*	only	<BaseScenario	sc: the intro scenario object (a BaseScenario)
+fx_tutorial_manager\.c	rx_tutorial_enable_lesson	e	0x(38|44)	only	<Entity	e: a scene entity of type 0x1028 (rx_scene_manager_collect_typed): its vf17 position / vf14 matrix
+loop_player\.c	rx_entity_place_body	body	0x40	only	<Entity	body: a scene entity found by name in a subscene (007d2c80): its vf16 placement
+loop_world\.c	rx_world_update	director	0x4c	only	Camera	U32(world, 0x21dfc): the replay director, a camera
+tdf_owner\.c	rx_tdf_owner_delete	stream	0x0	only	^MemoryInputStream$	U32(s, 0x10): the TDF asset's MemoryInputStream (rx_tdf_asset_io_create)
+build_asset_release\.c	rx_collision_asset_sdtor	c	0x0	only	<Collision::CollisionGeometry	U32(asset, 0x10): the asset's collision geometry (rx_collision_asset_io_create: rx_collision_geometry_load)
+bike_vehicle\.c	bike_vehicle_pre_step	game	0x8	only	^XenonCore$	[0xa95844] = g_EngineContext, a XenonCore: vf2 gives the input manager
+build_activity_race\.c	rx_mxworld_vf3	a	0x.*	only	<Activity	rx_activity_create's new activity
+build_particle\.c	rx_particle_asset_parse	asset	0x10	only	^(XenonSurfaceAsset|SurfaceAsset)$	the asset of a "surface" database handle (rx_database_vf_handle 'surf' 'ace')
+anim_scene\.c	(rx_scene_manager_add_entity|rx_scene_manager_remove_entity)	e	0x.*	only	<Entity	e: the scene entity added / removed
+anim_scenario_intro\.c	rx_scenario_cast_release	U32p,0	0x24	only	<CharacterEntity	U32(p, 0): a scenario cast member's entity (a character)
+phys_coll_shape\.c	phys_box_vf3	self	0x8	only	^RavenPhysics::CollisionShape.*Box$	self: the box shape whose vf3 this is (phys_box_vf3)
+build_asset_release\.c	rx_collision_geometry_split_sdtor	c	0x0	only	<Collision::CollisionGeometry	the split-triangles geometry's children (+0x10 array): collision geometries
+build_asset_release\.c	rx_collision_geometry_composite_sdtor	c	0x0	only	<Collision::CollisionGeometry	the composite geometry's children (+0x48 vector): collision geometries
+race_tag_driver\.c	rx_tag_driver_ai	U32d,0xa0\+4\*i	0x14	only	^Rule	a TagDriver rule list entry (+0xa0, count +0xee4: 00515330)
+race_tag_driver\.c	rx_tag_driver_ai	b	0x10	only	^Behavior	a TagDriver behaviour (+0xe8, count +0xee0: 00515330)
+race_infection\.c	(rx_infection_driver_ai|rx_infection_driver_human)	U32d,0xa0\+4\*i	0x14	only	^Rule	an InfectionDriver rule list entry (+0xa0, count +0xee4: 00516120 / 00515d70)
+race_infection\.c	rx_infection_driver_ai	b	0x10	only	^Behavior	an InfectionDriver behaviour (+0xe8, count +0xee0: 00516120)
+race_snake_driver\.c	rx_snake_driver_human	U32d,0xa0\+4\*i	0x14	only	^Rule	a SnakeDriver rule list entry (+0xa0, count +0xee4: 00514790)
+race_capture\.c	(rx_capture_driver_ai|rx_capture_driver_human)	U32d,0xa0\+4\*i	0x14	only	^Rule	a CaptureDriver rule list entry (+0xa0, count +0xee4: 00516380 / 00516490)
+race_capture\.c	rx_capture_driver_ai	b	0x10	only	^Behavior	a CaptureDriver behaviour (+0xe8, count +0xee0: 00516380)
+race_egghunt\.c	(rx_greed_model_vf28|rx_greed_model_vf16)	e	0x3c	only	^(GreedObjectModel|MXCaptureFlag)$	the tail jump of GreedObjectModel / MXCaptureFlag vf16 / vf28 to their own vf15 (tail_vcall1 on this)

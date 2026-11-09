@@ -1,0 +1,350 @@
+addr	name	size	instr_per_frame	kind	old_group	readable_spec_port
+00401210	Matrix3_ToQuaternion	1022	4468940	physics	world	world_quat.cpp
+0076bf60	DynObj_CollideAll	1435	650654	physics	world	world_phys.cpp
+007db890	Node_EvaluateWorld	1348	443009	physics	world	world_node.cpp
+007db7e0	Node_Invalidate	161	393644	physics	world	world_node.cpp
+0063b830	FloatListeners_Set	181	303310	physics	world	world_wreck.cpp
+00401000	Float_Abs	21	291557	physics	world	world_veh.cpp
+0076d3c0	DynObj_CollideTerrain	1496	182377	physics	world	world_phys.cpp
+0076b4a0	DynObj_CollideStatic	1282	143954	physics	world	world_phys.cpp
+007729f0	World_QueryShapeContacts	1818	92231	physics	world	world_phys_lit4.cpp
+005452d0	Vec4_FromScalars	27	66102	physics	world	
+004dbce0	KeyTrack_FindSegment	285	65954	physics	world	
+00668910	Grid_CellContains	172	55296	physics	world	world_wreck.cpp
+00468300	FUN_00468300	8125	48992	physics	world	world_veh_raven.cpp
+007dc890	Node_SetWorld	1371	45269	physics	world	world_node.cpp
+00401740	Matrix3_ToQuaternionToEsi	25	44853	physics	world	world_quat.cpp
+00401040	Float_Abs_Thunk	8	43521	physics	world	world_veh.cpp
+0076b9b0	DynObj_CollideKinematic	1447	41612	physics	world	world_phys.cpp
+0041e080	FUN_0041e080	4008	41311	physics	world	world_veh.cpp
+00464e80	RavenVehicleMotocross::vf35	5310	40909	physics	world	world_veh_raven.cpp
+004674e0	FUN_004674e0	3124	39904	physics	world	world_veh_raven.cpp
+00667e40	Grid_ReportOverlaps	2050	39675	physics	world	world_wreck.cpp
+006689c0	Grid_TestNeighbours	223	37963	physics	world	world_wreck.cpp
+00462d40	RavenVehicleMotocross::vf62	2465	35305	physics	world	world_veh_raven.cpp
+007f8e00	PackedGrid_SampleUV	291	33747	physics	world	
+00805860	Audio_PostCommand	1206	31698	physics	world	world_node_gen.cpp
+00552b90	FUN_00552b90	128	25148	physics	world	
+00463900	RavenVehicleMotocross::vf29	3761	22411	physics	world	world_veh_raven.cpp
+0041f430	FUN_0041f430	392	21658	physics	world	world_veh.cpp
+00805ff0	Audio_ProcessQueue	282	21363	physics	world	world_node_gen.cpp
+0076c510	DynObj_CollideWater	857	21111	physics	world	world_phys.cpp
+00625390	FUN_00625390	457	20590	physics	world	
+007dcfb0	Node_SetWorldRotation	431	19768	physics	world	world_node.cpp
+00402dc0	FUN_00402dc0	57	19564	physics	world	world_veh.cpp
+004607e0	Vehicle_WheelDeformAndTrackMarks	2613	19308	physics	world	world_veh_raven.cpp
+00805420	Audio_NearestListener	183	19161	physics	world	world_node_gen.cpp
+0063b8f0	FloatListeners_Get	188	15583	physics	world	world_wreck.cpp
+00803ed0	FUN_00803ed0	86	13964	physics	world	world_node_gen.cpp
+007dc560	Node_WorldToLocalPoint	806	13304	physics	world	world_node.cpp
+004db8e0	TerrainTracks_AddContactPoints	1002	12887	physics	world	
+00668650	Grid_CollectHits	64	12539	physics	world	world_wreck.cpp
+0041f650	Matrix3_Transpose	141	12070	physics	world	world_veh.cpp
+00668710	Grid_Neighbours	264	12017	physics	world	world_wreck.cpp
+0075c580	FUN_0075c580	45	11370	physics	world	world_wreck_misc.cpp
+00668820	Grid_CellOf	233	11196	physics	world	world_wreck.cpp
+004db710	TerrainTracks_UpdateContactSlots	459	10448	physics	world	
+0041c6c0	Vec4_Splat	27	10194	physics	world	world_veh.cpp
+0041c640	Vec4_CmpLe_CR6	121	8528	physics	world	world_veh.cpp
+0081c590	FUN_0081c590	3820	7962	physics	world	world_node_gen.cpp
+006373e0	WreckChecker_Update	2787	7605	physics	world	world_wreck_checker.cpp
+0061ca60	FUN_0061ca60	818	7235	physics	world	
+0041f5c0	Matrix3_MulVec3	129	6892	physics	world	world_veh.cpp
+00401630	Vec3_Cross	103	6556	physics	world	world_veh.cpp
+00668690	Grid_Locate	119	6346	physics	world	world_wreck.cpp
+0061d350	FUN_0061d350	1363	6266	physics	world	
+00466bd0	RavenVehicleMotocross::vf57	526	6154	physics	world	world_veh_raven.cpp
+00401700	Vec3_Sub	55	5407	physics	world	world_veh.cpp
+004647c0	RavenVehicleMotocross::vf60	569	5282	physics	world	world_veh_raven.cpp
+0061faa0	FUN_0061faa0	1032	5268	physics	world	
+0068bfb0	FUN_0068bfb0	93	5244	physics	world	world_wreck_audio.cpp
+0080c2c0	FUN_0080c2c0	7	5177	physics	world	world_node_gen.cpp
+0081d480	FUN_0081d480	1404	4764	physics	world	world_node_gen.cpp
+00811b50	CompoundKeyMap::vf4	252	4728	physics	world	world_node_gen.cpp
+006255a0	FUN_006255a0	753	4687	physics	world	
+006230c0	FUN_006230c0	577	4647	physics	world	
+0076ac40	Kinematic_CollideWater	1058	4544	physics	world	world_phys.cpp
+007699e0	World_PreListeners	200	4522	physics	world	world_phys.cpp
+00624ef0	FUN_00624ef0	1156	4382	physics	world	
+007dd1b0	Node_SetWorldPosition	205	4267	physics	world	world_node.cpp
+0080c280	FUN_0080c280	61	4167	physics	world	world_node_gen.cpp
+00811710	KeyMap::vf4	206	4032	physics	world	world_node_gen.cpp
+0061ecd0	FUN_0061ecd0	717	4010	physics	world	
+0061c210	RiderAnimation::vf19	989	4009	physics	world	
+007efef0	FUN_007efef0	344	3709	physics	world	world_node_gen.cpp
+00401760	FUN_00401760	205	3705	physics	world	world_veh.cpp
+00468120	Vehicle_SlipTrackMark	472	3552	physics	world	world_veh_raven.cpp
+004603f0	FUN_004603f0	96	3534	physics	world	world_veh_raven.cpp
+00461220	FUN_00461220	1111	3478	physics	world	world_veh_raven.cpp
+00624560	FUN_00624560	495	3350	physics	world	
+0080ae80	FUN_0080ae80	83	3299	physics	world	world_node_gen.cpp
+00466940	RavenVehicleMotocross::vf37	31	3167	physics	world	world_veh_raven.cpp
+00814f30	XenonInputManager::vf41	98	3132	physics	world	world_node_gen.cpp
+0080a9f0	FUN_0080a9f0	103	3075	physics	world	world_node_gen.cpp
+00770e80	Vehicle_CollectNearbyStatics	388	2900	physics	world	world_phys_lit4.cpp
+0061e3d0	FUN_0061e3d0	679	2771	physics	world	
+0054c020	Player_ActiveCameraEntity	298	2757	physics	world	
+007dd3a0	Node_GetWorldPosition	82	2736	physics	world	world_node.cpp
+00620110	FUN_00620110	1466	2642	physics	world	
+008115f0	KeyMap::vf2	138	2641	physics	world	world_node_gen.cpp
+00811420	KeyMap::vf1	104	2608	physics	world	world_node_gen.cpp
+0061e770	FUN_0061e770	466	2523	physics	world	
+00466ae0	RavenVehicleMotocross::vf43	13	2426	physics	world	world_veh_raven.cpp
+0080afc0	FUN_0080afc0	101	2424	physics	world	world_node_gen.cpp
+0062a490	FUN_0062a490	1260	2420	physics	world	
+00814c00	XenonInputManager::vf31	71	2277	physics	world	world_node_gen.cpp
+004618e0	FUN_004618e0	159	2204	physics	world	world_veh_raven.cpp
+0061f160	FUN_0061f160	2358	1987	physics	world	
+0081ecb0	FUN_0081ecb0	991	1956	physics	world	world_node_gen.cpp
+0041f160	FUN_0041f160	555	1923	physics	world	world_veh.cpp
+0062aa30	FUN_0062aa30	252	1862	physics	world	
+0041f6e0	Matrix3_Inverse	278	1855	physics	world	world_veh.cpp
+0062a9a0	FUN_0062a9a0	137	1851	physics	world	
+007684c0	DynObj_TakeContactResults	144	1762	physics	world	world_phys_lit4.cpp
+00620750	FUN_00620750	779	1753	physics	world	
+0061d8b0	FUN_0061d8b0	596	1714	physics	world	
+0076d9a0	Kinematic_CollideTerrain	934	1648	physics	world	world_phys.cpp
+00811ab0	CompoundKeyMap::vf2	70	1569	physics	world	world_node_gen.cpp
+0041f390	FUN_0041f390	152	1546	physics	world	world_veh.cpp
+004636f0	RavenVehicleMotocross::vf0_o90	482	1523	physics	world	world_veh_raven.cpp
+0055a050	FUN_0055a050	90	1513	physics	world	
+00892170	FUN_00892170	637	1452	physics	world	world_node_gen.cpp
+0063b160	RangedFloat_StepAny	128	1449	physics	world	world_wreck.cpp
+004db5b0	Vector16_EraseRange	136	1416	physics	world	
+00814cd0	XenonInputManager::vf33	152	1292	physics	world	world_node_gen.cpp
+0076a360	Kinematic_Integrate	1336	1258	physics	world	world_phys.cpp
+00466920	RavenVehicleMotocross::vf36	31	1203	physics	world	world_veh_raven.cpp
+0063b0f0	RangedFloat_Step	112	1120	physics	world	world_wreck.cpp
+0076b070	Kinematic_CollideStatic	1059	1114	physics	world	world_phys.cpp
+0076cd00	Kinematic_CollideKeyed	1721	1057	physics	world	world_phys.cpp
+0076c880	Rider_CollideKeyed	1143	1045	physics	world	world_phys.cpp
+0061feb0	FUN_0061feb0	597	1038	physics	world	
+004617b0	FUN_004617b0	297	1035	physics	world	world_veh_raven.cpp
+00768460	DynObj_SetPose	95	1026	physics	world	world_phys_lit4.cpp
+00466960	RavenVehicleMotocross::vf38	31	1003	physics	world	world_veh_raven.cpp
+00769ab0	World_PostListeners	206	972	physics	world	world_phys.cpp
+00637320	WreckChecker::vf0	64	948	physics	world	world_wreck_checker.cpp
+007705b0	RigidBody_ContactImpulse	1354	934	physics	world	world_phys_small.cpp
+0081b6b0	FUN_0081b6b0	2044	892	physics	world	world_node_gen.cpp
+00814e60	XenonInputManager::vf37	73	856	physics	world	world_node_gen.cpp
+00466b70	RavenVehicleMotocross::vf56	84	852	physics	world	world_veh_raven.cpp
+00466a30	RavenVehicleMotocross::vf58	175	824	physics	world	world_veh_raven.cpp
+0041f800	FUN_0041f800	443	813	physics	world	world_veh.cpp
+00466720	RavenVehicleMotocross::vf30	508	808	physics	world	world_veh_raven.cpp
+00617dc0	AnimationEntity::vf16	68	798	physics	world	
+0041feb0	FUN_0041feb0	480	787	physics	world	world_veh.cpp
+0062a420	FUN_0062a420	105	783	physics	world	
+00649bc0	MXThirdPersonCamera::vf22	6	760	physics	world	world_wreck_camera.cpp
+007e9dc0	FUN_007e9dc0	596	745	physics	world	world_node_gen.cpp
+00461680	FUN_00461680	185	745	physics	world	world_veh_raven.cpp
+0081e380	FUN_0081e380	686	742	physics	world	world_node_gen.cpp
+0062a370	FUN_0062a370	175	739	physics	world	
+0076a010	World_SolverDispatch	457	718	physics	world	world_phys.cpp
+0081e630	FUN_0081e630	688	712	physics	world	world_node_gen.cpp
+00461760	FUN_00461760	58	670	physics	world	world_veh_raven.cpp
+006237a0	FUN_006237a0	7	618	physics	world	
+007a0760	rtti_shared_vf_007a0760	3	610	physics	world	world_node_gen.cpp
+007dd320	Node_GetWorldMatrix	52	594	physics	world	world_node.cpp
+00625560	FUN_00625560	56	588	physics	world	
+0056a020	MXActivityRaceStub::vf8	139	587	physics	world	
+0067bb10	AudioCollision_Add	531	580	physics	world	world_wreck_audio.cpp
+0081e0b0	FUN_0081e0b0	705	567	physics	world	world_node_gen.cpp
+0080abd0	AudioEvent_Play	124	550	physics	world	world_node_gen.cpp
+00623960	FUN_00623960	7	544	physics	world	
+006367b0	FUN_006367b0	177	543	physics	world	world_wreck_checker.cpp
+0068e130	CollisionMap_Insert	319	516	physics	world	world_wreck_audio.cpp
+00651000	MXThirdPersonCamera::vf33	146	495	physics	world	world_wreck_camera.cpp
+00621490	FUN_00621490	215	485	physics	world	
+006def20	FUN_006def20	88	468	physics	world	world_wreck_misc.cpp
+00466a20	RavenVehicleMotocross_GetGear	14	456	physics	world	world_veh_raven.cpp
+0046a380	FUN_0046a380	35	454	physics	world	world_veh_raven.cpp
+004669b0	RavenVehicleMotocross::vf40	31	380	physics	world	world_veh_raven.cpp
+00617e60	FUN_00617e60	28	372	physics	world	
+00768750	HandlerList_CompactAndRun	202	360	physics	world	world_phys_small.cpp
+00466980	RavenVehicleMotocross::vf39	41	341	physics	world	world_veh_raven.cpp
+0067ec50	FUN_0067ec50	75	331	physics	world	world_wreck_misc.cpp
+0067eca0	FUN_0067eca0	75	331	physics	world	world_wreck_misc.cpp
+0063b480	ClampedFloat_Write	41	329	physics	world	world_wreck.cpp
+00769bd0	Kinematic_Accelerations	361	314	physics	world	world_phys_lit2.cpp
+00632aa0	FUN_00632aa0	94	294	physics	world	world_wreck_checker.cpp
+0076efc0	Static_ContactResponse	403	284	physics	world	world_phys_lit2.cpp
+0068fc80	CollisionMap_IterNext	99	282	physics	world	world_wreck_audio.cpp
+00508480	FUN_00508480	27	259	physics	world	
+00636870	FUN_00636870	285	254	physics	world	world_wreck_checker.cpp
+0055e960	Activity::vf21	43	245	physics	world	
+00592d80	FUN_00592d80	319	236	physics	world	
+0081beb0	FUN_0081beb0	1747	235	physics	world	world_node_gen.cpp
+00651320	Camera_ImpactKick	444	233	physics	world	world_wreck_camera.cpp
+00617e20	BehaviorLapPacing::vf5	6	217	physics	world	
+00401020	Float_Fmod	21	217	physics	world	world_veh.cpp
+0076f440	RigidBody_ContactImpulsePair	4456	202	physics	world	world_phys_lit.cpp
+00621ab0	FUN_00621ab0	110	197	physics	world	
+006467f0	Camera_ModeIndex	162	196	physics	world	world_wreck_camera.cpp
+0061eac0	FUN_0061eac0	501	191	physics	world	
+0076a1e0	Kinematic_ResetLost	363	184	physics	world	world_phys.cpp
+00548660	FUN_00548660	91	159	physics	world	
+00776920	PtrRemove	195	155	physics	world	world_phys_lit4.cpp
+006298f0	FUN_006298f0	12	152	physics	world	
+00629900	FUN_00629900	12	152	physics	world	
+0051bd60	Entity::vf13	6	145	physics	world	
+00769b80	World_PhysicsUpdate	72	145	physics	world	world_phys.cpp
+008b98c0	FUN_008b98c0	22	141	physics	world	world_node_gen.cpp
+00548fc0	FUN_00548fc0	137	135	physics	world	
+00549050	FUN_00549050	137	135	physics	world	
+00679000	SharedVf_Ret4	3	127	physics	world	world_wreck_misc.cpp
+00773d10	BodyRecordVector_PushBack	152	123	physics	world	world_phys_lit2.cpp
+0076dd50	Kinematic_WaterContact	354	119	physics	world	world_phys_lit2.cpp
+0063b0e0	RangedFloat_Get	10	117	physics	world	world_wreck.cpp
+00466af0	RavenVehicleMotocross::vf44	13	114	physics	world	world_veh_raven.cpp
+007e3be0	rtti_shared_vf_007e3be0	1	113	physics	world	world_node_gen.cpp
+00777110	BodyRecord_FillN	114	113	physics	world	world_phys_small.cpp
+0041cce0	PhysicsEntity::vf22	6	112	physics	world	world_veh.cpp
+00544cc0	FUN_00544cc0	136	103	physics	world	
+0067c2c0	AudioCollision_Update	142	103	physics	world	world_wreck_audio.cpp
+00776ef0	BodySort_Loop	233	102	physics	world	world_phys_lit4.cpp
+0067c350	AudioCollision_UpdateRoll	792	101	physics	world	world_wreck_audio.cpp
+008519a0	FUN_008519a0	70	91	physics	world	world_node_gen.cpp
+006206d0	FUN_006206d0	118	89	physics	world	
+0067ac80	CollisionKey_Less	71	88	physics	world	world_wreck_audio.cpp
+00548f20	FUN_00548f20	69	81	physics	world	
+00548f70	FUN_00548f70	69	81	physics	world	
+00593220	FUN_00593220	167	75	physics	world	
+0055eb10	BaseScenario::vf8	12	74	physics	world	
+0047bd10	VehicleDamageBehaviorManager::vf0	97	74	physics	world	world_veh_raven.cpp
+00702ad0	StringMap_Find	127	69	physics	world	world_wreck_misc.cpp
+00773110	World_BoxFreeOfDynamics	209	67	physics	world	world_phys_lit2.cpp
+004039a0	PhysicsEntity::vf30	383	62	physics	world	world_veh.cpp
+0055ebd0	MXActivityFreeRide::vf8	41	60	physics	world	
+00620fc0	FUN_00620fc0	103	59	physics	world	
+00586c10	FUN_00586c10	125	54	physics	world	
+0078fbe0	ReflexAlignedAlloc	105	52	physics	world	world_node_gen.cpp
+00651940	Camera_StartKick	89	52	physics	world	world_wreck_camera.cpp
+007686b0	Kinematic_IsSlower	152	52	physics	world	world_phys_small.cpp
+006510a0	Camera_ImpactShake	640	50	physics	world	world_wreck_camera.cpp
+0067bac0	AudioCollisionManager::vf0	76	49	physics	world	world_wreck_audio.cpp
+006b6d80	FUN_006b6d80	695	41	physics	world	world_wreck_misc.cpp
+004dbfa0	FUN_004dbfa0	47	39	physics	world	
+006d7870	KeyMap::vf11	14	36	physics	world	world_wreck_misc.cpp
+0076e460	Dynamic_ContactResponse	594	35	physics	world	world_phys_lit2.cpp
+005c3380	FUN_005c3380	53	34	physics	world	
+007fa030	FUN_007fa030	124	34	physics	world	world_node_gen.cpp
+00548b70	FUN_00548b70	117	33	physics	world	
+006243d0	FUN_006243d0	394	33	physics	world	
+0067bd30	AudioCollision_Play	1419	32	physics	world	world_wreck_audio.cpp
+008115e0	KeyMap::vf8	14	32	physics	world	world_node_gen.cpp
+004db570	FUN_004db570	31	31	physics	world	
+00418f30	PhysicsHandle_Body	69	29	physics	world	world_veh.cpp
+0061e120	FUN_0061e120	687	27	physics	world	
+004020c0	FUN_004020c0	88	27	physics	world	world_veh.cpp
+004dbe80	FUN_004dbe80	78	26	physics	world	
+00402090	Rainbow::EventHandler::vf6	10	25	physics	world	world_veh.cpp
+005de600	rtti_shared_vf_005de600	3	24	physics	world	
+0067c930	AudioCollision_EventIsOurs	88	23	physics	world	world_wreck_audio.cpp
+0041cf30	FUN_0041cf30	98	23	physics	world	world_veh.cpp
+0041cea0	FUN_0041cea0	134	21	physics	world	world_veh.cpp
+0080a810	FUN_0080a810	126	21	physics	world	world_node_gen.cpp
+00777db0	BodySort_Insertion	204	21	physics	world	world_phys_lit4.cpp
+0061dfd0	FUN_0061dfd0	331	21	physics	world	
+0080c760	FUN_0080c760	173	21	physics	world	world_node_gen.cpp
+0083d3d0	FUN_0083d3d0	83	21	physics	world	world_node_gen.cpp
+00811db0	CumulativeKeyMap::vf4	9	19	physics	world	world_node_gen.cpp
+00545340	FUN_00545340	45	16	physics	world	
+0063b500	ClampedFloat_Diff	52	14	physics	world	world_wreck.cpp
+0063b590	ClampedFloat_Add	93	14	physics	world	world_wreck.cpp
+00767f80	Recip_Eax	13	14	physics	world	world_phys_small.cpp
+00617f00	FUN_00617f00	45	13	physics	world	
+005cf8f0	UIContainer::vf14	124	13	physics	world	
+0078fc50	ReflexAlignedFree	93	12	physics	world	world_node_gen.cpp
+00613420	FUN_00613420	42	10	physics	world	
+0054ee80	FUN_0054ee80	93	10	physics	world	
+004dbed0	FUN_004dbed0	74	9	physics	world	
+0076e090	KeyedObj_ContactResponse	961	9	physics	world	world_phys_lit2.cpp
+00703d50	SharedVf_Type10	6	8	physics	world	world_wreck_misc.cpp
+006b7560	FUN_006b7560	47	7	physics	world	world_wreck_misc.cpp
+00548b00	FUN_00548b00	58	7	physics	world	
+00769d40	Kinematic_ApplyLinearLock	255	7	physics	world	world_phys_lit2.cpp
+00769e40	Kinematic_ApplyAngularLock	255	7	physics	world	world_phys_lit2.cpp
+0041ad80	Cursor_Advance4	8	6	physics	world	world_quat.cpp
+006235e0	FUN_006235e0	12	5	physics	world	
+006aa460	ClipRecorder_FillEntry	169	4	physics	world	world_wreck_misc.cpp
+0041f030	FUN_0041f030	291	4	physics	world	world_veh.cpp
+008151e0	XenonInputManager::vf46	84	4	physics	world	world_node_gen.cpp
+0080bce0	AudioEvent_SetChannel	92	3	physics	world	world_node_gen.cpp
+0061dd60	FUN_0061dd60	617	3	physics	world	
+0080c440	FUN_0080c440	80	3	physics	world	world_node_gen.cpp
+0080cd90	FUN_0080cd90	81	3	physics	world	world_node_gen.cpp
+005860e0	FUN_005860e0	390	3	physics	world	
+0080da40	FUN_0080da40	123	2	physics	world	world_node_gen.cpp
+0080a990	FUN_0080a990	95	2	physics	world	world_node_gen.cpp
+0067b890	AudioCollision_SoundName	129	2	physics	world	world_wreck_audio.cpp
+0067d310	AudioTable_Name	90	2	physics	world	world_wreck_audio.cpp
+0080b460	FUN_0080b460	41	1	physics	world	world_node_gen.cpp
+006745d0	FUN_006745d0	172	1	physics	world	world_wreck_misc.cpp
+0080c970	FUN_0080c970	196	1	physics	world	world_node_gen.cpp
+006516a0	Camera_StartShake	669	1	physics	world	world_wreck_camera.cpp
+00467490	RavenVehicleMotocross::vf54	65	1	physics	world	world_veh_raven.cpp
+006258a0	FUN_006258a0	277	1	physics	world	
+006abbc0	ClipRecorder_FillEntries	124	1	physics	world	world_wreck_misc.cpp
+0080bc80	FMODEvent::vf1	64	1	physics	world	world_node_gen.cpp
+00621b90	FUN_00621b90	470	1	physics	world	
+00638150	WreckChecker_Excess	103	1	physics	world	world_wreck_checker.cpp
+00617f30	RiderAnimation::vf12	6	1	physics	world	
+0065cab0	ForestSystem::vf22	6	1	physics	world	world_wreck_misc.cpp
+0041fe60	FUN_0041fe60	75	1	physics	world	world_veh.cpp
+0061e950	FUN_0061e950	312	1	physics	world	
+0047bb40	FUN_0047bb40	79	1	physics	world	world_veh_raven.cpp
+00554da0	FUN_00554da0	77	1	physics	world	
+00674440	FUN_00674440	163	1	physics	world	world_wreck_misc.cpp
+0063b650	WrappedFloat_Add	100	0	physics	world	world_wreck.cpp
+00467440	RavenVehicleMotocross::vf53	35	0	physics	world	world_veh_raven.cpp
+0054e8f0	FUN_0054e8f0	262	0	physics	world	
+00653300	MXThirdPersonCamera::vf34	477	0	physics	world	world_wreck_camera.cpp
+00623310	FUN_00623310	493	0	physics	world	
+0068c360	FUN_0068c360	118	0	physics	world	world_wreck_audio.cpp
+00621030	FUN_00621030	173	0	physics	world	
+00467470	RavenVehicleATV::vf12	17	0	physics	world	world_veh_raven.cpp
+006ab930	ClipRecorder_LogStunt	124	0	physics	world	world_wreck_misc.cpp
+006b0480	FUN_006b0480	80	0	physics	world	world_wreck_misc.cpp
+005866b0	FUN_005866b0	80	0	physics	world	
+00637ff0	WreckChecker_ClassAnim	7	0	physics	world	world_wreck_checker.cpp
+0080b160	FUN_0080b160	169	0	physics	world	world_node_gen.cpp
+00770b00	Kinematic_Activate	503	0	physics	world	world_phys_lit2.cpp
+0054e890	FUN_0054e890	91	0	physics	world	
+00581cb0	ActivityAudioLogic::vf14	54	0	physics	world	
+00586660	FUN_00586660	76	0	physics	world	
+0063b6c0	ShortProperty_Set	24	0	physics	world	world_wreck.cpp
+006aacf0	ClipRecorder_Candidate	206	0	physics	world	world_wreck_misc.cpp
+0080c810	FUN_0080c810	101	0	physics	world	world_node_gen.cpp
+00679420	FUN_00679420	61	0	physics	world	world_wreck_misc.cpp
+00622e30	FUN_00622e30	554	0	physics	world	
+0080cdf0	FUN_0080cdf0	100	0	physics	world	world_node_gen.cpp
+0067abc0	FUN_0067abc0	134	0	physics	world	world_wreck_misc.cpp
+00805570	FUN_00805570	149	0	physics	world	world_node_gen.cpp
+00637ee0	WreckChecker_TypeClass	7	0	physics	world	world_wreck_checker.cpp
+0054e330	FUN_0054e330	87	0	physics	world	
+00681840	FUN_00681840	55	0	physics	world	world_wreck_audio.cpp
+00621320	FUN_00621320	216	0	physics	world	
+006ab8a0	ClipRecorder_LogWreck	137	0	physics	world	world_wreck_misc.cpp
+0054ed10	FUN_0054ed10	168	0	physics	world	
+005d57e0	FUN_005d57e0	42	0	physics	world	
+00674540	FUN_00674540	140	0	physics	world	world_wreck_misc.cpp
+0080c400	FUN_0080c400	55	0	physics	world	world_node_gen.cpp
+0080a770	FUN_0080a770	155	0	physics	world	world_node_gen.cpp
+00621b20	FUN_00621b20	74	0	physics	world	
+00767f90	Vec3_ReciprocalOf	71	0	physics	world	world_phys_small.cpp
+00679540	FUN_00679540	74	0	physics	world	world_wreck_misc.cpp
+00768590	PtrVector_ClearValue	88	0	physics	world	world_phys_lit4.cpp
+00581c30	ActivityAudioLogic::vf13	98	0	physics	world	
+0076a8b0	Kinematic_Deactivate	229	0	physics	world	world_phys_lit2.cpp
+006aaca0	ClipRecorder_CandidateOfType	69	0	physics	world	world_wreck_misc.cpp
+00617d20	AnimationEntity::vf14	19	0	physics	world	
+00621400	FUN_00621400	137	0	physics	world	
+00768550	PtrVector_PushIfRoom	50	0	physics	world	world_phys_lit4.cpp
+00592b20	MXSeriesEvent_OnAdvancePostEvent	5	0	physics	world	
+0063b540	ClampedFloat_Set	73	0	physics	world	world_wreck.cpp
+00403ba0	rtti_shared_vf_00403ba0	7	0	physics	world	world_veh.cpp
+005a4150	rtti_shared_vf_005a4150	3	0	physics	world	
+00830130	FUN_00830130	41	0	physics	world	world_node_gen.cpp
+007774f0	PtrRemoveCopy	130	0	physics	world	world_phys_lit4.cpp
+00819cc0	CollisionEntity::vf13	7	0	physics	world	world_node_gen.cpp
+00403b90	PhysicsEntity::vf12	7	0	physics	world	world_veh.cpp

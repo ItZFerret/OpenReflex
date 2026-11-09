@@ -1,0 +1,302 @@
+# Database operations of the reference boot (National NAT_Concord, 12 riders, AI 95, baton), in execution order: from the
+# trace of core/oracle/build_trace.cpp (REFLEX_BUILD_TRACE) and, for each package, its +0x98 value in the world image.
+# register | db <name> <dir> <p5> <p6> | pkg <database> <package> <progress> <p98> | new <type> <name> <serial> | unload <database> <package>
+# | cacheon | cacheadd <dir> <pattern> (Database::vf34 / vf38, the background cache of the HR_ databases)
+# | requests <n> (the requests the loader served: vf4 / vf5 / vf6 / vf14 / vf15 / vf16 / vf17 calls).
+# new: Database::vf23 on the main thread when the load serial is <serial> (also between two assets of a package load).
+register
+db EngineDependencies Database\ 0 0
+pkg EngineDependencies EngineDependencies 0 0
+cacheon
+db MXUI Database\ 1 0
+pkg MXUI Base 0 0
+pkg MXUI BaseLocalized.ENG 0 1
+pkg MXUI Intro.ENG 0 1
+new material Shared0 79
+new material BackgroundNoiseSpecial 81
+new material PinStripe01 82
+db MXTables_Default Database\ 1 0
+pkg MXTables_Default MXTables_Default 0 0
+db Rider Database\ 1 0
+pkg Rider Rider 0 0
+cacheadd Database\ HR_Rider*
+cacheadd Database\ HR_ATV*
+cacheadd Database\ HR_MX*
+cacheadd Database\ HR_*
+db Animations Database\ 0 0
+db RiderPhysics Database\ 0 0
+db CameraTweaks Database\ 0 0
+db AIData Database\ 0 0
+db SnakeDatabase Database\ 0 0
+db StuntDatabase Database\ 0 0
+db UI_Compound Database\ 0 0
+db Music Database\ 0 0
+db VehicleEngineAudio Database\ 0 0
+pkg VehicleEngineAudio EngineState 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_MX50cc 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_MX125cc 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_MX250cc 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_MX250f 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_MX450f 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_ATV450f 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_UTV660cc 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_Pro2V8 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_ProLiteLS7 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_SuperBuggy16V 0 0
+pkg VehicleEngineAudio MXVehicleEngineSize_Undefined 0 0
+pkg Music MusicConfig 0 0
+db UIAudio Database\ 0 0
+pkg UIAudio SFX 0 0
+db VehicleFoleyAudio Database\ 0 0
+pkg VehicleFoleyAudio GeneralFoley 0 0
+db CrowdSoundProjects Database\ 0 0
+pkg CrowdSoundProjects Crowd_Config 0 0
+db AudioDependencies Database\ 0 0
+pkg AudioDependencies AudioDependencies 0 0
+db AudioLocalizedTutorial Database\ 0 0
+pkg AudioLocalizedTutorial XML 0 0
+db AudioLocalizedActivity Database\ 0 0
+db AudioLocalizedChallenges Database\ 0 0
+pkg Animations Animations 0 0
+pkg RiderPhysics RiderPhysics 0 0
+pkg SnakeDatabase SnakePackage 0 0
+pkg AIData AIData 0 0
+pkg StuntDatabase StuntData 0 0
+pkg UI_Compound Shared 101edf7c 0
+pkg UI_Compound UI_CompoundBase 101edf80 0
+new model StatusBoardPoster 1026
+db MXTables_DLC003 .\Database\ 1 0
+pkg MXTables_DLC003 MXTables_DLC003 0 0
+db MXTables_DLC004 .\Database\ 1 0
+pkg MXTables_DLC004 MXTables_DLC004 0 0
+db MXTables_DLC005 .\Database\ 1 0
+pkg MXTables_DLC005 MXTables_DLC005 0 0
+db MXUI_DLC001 .\Database\ 1 0
+pkg MXUI_DLC001 MXUI_DLC001.ENG 0 0
+db MXUI_DLC003 .\Database\ 1 0
+pkg MXUI_DLC003 MXUI_DLC003.ENG 0 0
+db MXUI_DLC004 .\Database\ 1 0
+pkg MXUI_DLC004 MXUI_DLC004.ENG 0 0
+db MXUI_DLC005 .\Database\ 1 0
+pkg MXUI_DLC005 MXUI_DLC005.ENG 0 0
+pkg Music TrackList 0 0
+pkg Music ScenarioTrackList 0 0
+pkg MXUI FrontEndIntro.ENG 0 1
+new material 1x1White 1062
+new material LegalIcons 1063
+new material FmodIcon 1064
+db UI_CompoundExtras Database\ 1 0
+pkg UI_CompoundExtras Base 0 0
+db RiderUIAnimations Database\ 1 0
+pkg RiderUIAnimations Base 0 0
+pkg MXUI Shared.ENG 0 1
+new material MX_MousePointer_02 1170
+new material 1x1Transparent 1186
+pkg MXUI InGame.ENG 0 1
+new material HUDTextures0 1289
+new material Shared1 1292
+new material CompassTile 1299
+new material IconTrophyBronze 1309
+new material IconTrophySilver 1310
+new material IconTrophyGold 1311
+new material StatusLockedMini 1324
+pkg MXUI FrontEnd.ENG 0 1
+new material LockIcon 1480
+new material RavenLogo 1484
+new material TrophyMiniStatus 1502
+new material ControllerImages0 1525
+new material ControllerImages1 1526
+db MX_Forks Database\ 1 0
+db HR_MX_Forks Database\ 1 0
+db MX_Wheels Database\ 1 0
+db HR_MX_Wheels Database\ 1 0
+db MX_GraphicKits Database\ 1 0
+db HR_MX_GraphicKits Database\ 1 0
+db MXs Database\ 1 0
+db HR_MXs Database\ 1 0
+db MX_Tires Database\ 1 0
+db HR_MX_Tires Database\ 1 0
+db MX_Handlebars Database\ 1 0
+db HR_MX_Handlebars Database\ 1 0
+db MX_Exhausts Database\ 1 0
+db HR_MX_Exhausts Database\ 1 0
+pkg MX_GraphicKits MX_MarsF_Lite_THQ_Red 0 1
+pkg MXs MarsF_Lite 0 1
+pkg MX_Handlebars MX_Hbar_Stock_2 0 1
+pkg MX_Handlebars MX_Hbar_Stock 0 1
+pkg MX_Tires MX_Tire_THQ 0 1
+pkg MX_Wheels MX_Rim_Excel_Silver_Silver 0 1
+pkg MX_Exhausts MX_Exh_StockF_Alm 0 1
+pkg MX_Exhausts MX_Exh_StockF 0 1
+pkg MX_Forks MX_Fork_Stock 0 1
+pkg MXUI HudNationalSinglePlayer.ENG 0 1
+db Rider_Boots_Materials Database\ 1 0
+db HR_Rider_Boots_Materials Database\ 1 0
+db Rider_Boots_Models Database\ 1 0
+db HR_Rider_Boots_Models Database\ 1 0
+db Rider_CPs_Materials Database\ 1 0
+db HR_Rider_CPs_Materials Database\ 1 0
+db Rider_CPs_Models Database\ 1 0
+db HR_Rider_CPs_Models Database\ 1 0
+db Rider_Jerseys_Materials Database\ 1 0
+db HR_Rider_Jerseys_Materials Database\ 1 0
+db Rider_Jerseys_Models Database\ 1 0
+db HR_Rider_Jerseys_Models Database\ 1 0
+db Rider_Helmets_Materials Database\ 1 0
+db HR_Rider_Helmets_Materials Database\ 1 0
+db Rider_Helmets_Models Database\ 1 0
+db HR_Rider_Helmets_Models Database\ 1 0
+db Rider_Goggles_Materials Database\ 1 0
+db HR_Rider_Goggles_Materials Database\ 1 0
+db Rider_Goggles_Models Database\ 1 0
+db HR_Rider_Goggles_Models Database\ 1 0
+db Rider_Skin_Materials Database\ 1 0
+pkg Rider_Boots_Materials Boots_Answer_White 0 1
+pkg Rider_Boots_Models Boots_Answer 0 1
+pkg Rider_CPs_Materials ChestProtector_Answer_Red 0 1
+pkg Rider_CPs_Models CPs_Answer 0 1
+pkg Rider_Jerseys_Materials Jersey_Answer_Alpha_Red 0 1
+pkg Rider_Jerseys_Models Jerseys_BaseModel 0 1
+pkg Rider_Helmets_Materials Helmet_Answer_Alpha_Red 0 1
+pkg Rider_Helmets_Models Helmet_Answer 0 1
+pkg Rider_Goggles_Materials Goggles_Answer_Red 0 1
+pkg Rider_Goggles_Models Goggles_Answer 0 1
+pkg Rider_Skin_Materials Rider_Skin_White 0 1
+db MXUI_Streaming Database\ 1 0
+pkg MXUI_Streaming ArcadePosters_AP_NAT_ConcordA 0 1
+pkg MX_GraphicKits MX_MercuryF_Lite_Rainbow_Orng 0 1
+pkg MXs MercuryF_Lite 0 1
+pkg MX_Handlebars MX_Hbar_Tag_T2_Silver 0 1
+pkg MX_Handlebars MX_Hbar_Tag_T2 0 1
+pkg MX_Tires MX_Tire_Maxxis_SX 0 1
+pkg MX_Wheels MX_Rim_Excel_Black_Black 0 1
+pkg MX_Exhausts MX_Exh_ProCircuit_Ti4R 0 1
+pkg MX_Forks MX_Fork_ProAction 0 1
+pkg Rider_Boots_Materials Boots_Oneal_White 0 1
+pkg Rider_Boots_Models Boots_Oneal 0 1
+pkg Rider_Jerseys_Materials Jersey_Oneal_GreenWhite 0 1
+pkg Rider_Helmets_Materials Helmet_Thor_ChampGrnBlk 0 1
+pkg Rider_Helmets_Models Helmet_Thor 0 1
+pkg Rider_Goggles_Materials Goggles_Scott_Green 0 1
+pkg Rider_Goggles_Models Goggles_Scott 0 1
+pkg MX_GraphicKits MX_Neptune_Lite_FLU_Icon_Black 0 1
+pkg MXs Neptune_Lite 0 1
+pkg MX_Handlebars MX_Hbar_Renthal_Titanium 0 1
+pkg MX_Handlebars MX_Hbar_Renthal 0 1
+pkg MX_Wheels MX_Rim_Excel_Silver_Black 0 1
+pkg MX_Exhausts MX_Exh_FMF_Powercore2_FactoryFatty_125 0 1
+pkg MX_Exhausts MX_Exh_FMF_125 0 1
+pkg MX_Forks MX_Fork_RG3 0 1
+pkg Rider_Boots_Materials Boots_Oneal_Black 0 1
+pkg Rider_Jerseys_Materials Jersey_NoFear_Nineties 0 1
+pkg Rider_Helmets_Materials Helmet_NoFear_VertigoPurple 0 1
+pkg Rider_Helmets_Models Helmet_NoFear 0 1
+pkg Rider_Goggles_Materials Goggles_Smith_BlackPink_Clear 0 1
+pkg Rider_Goggles_Models Goggles_Smith 0 1
+pkg MX_GraphicKits MX_MercuryF_Lite_FLU_FMF_Orange 0 1
+pkg MX_Handlebars MX_Hbar_ProTaper_SE_Titanium 0 1
+pkg MX_Handlebars MX_Hbar_ProTaper_SE 0 1
+pkg MX_Exhausts MX_Exh_Yosh_TRCPro_Titanium 0 1
+pkg MX_Exhausts MX_Exh_Yosh_TRCPro 0 1
+pkg MX_Forks MX_Fork_FactoryConnection 0 1
+pkg Rider_Boots_Materials Boots_Gaerne_Green 0 1
+pkg Rider_Boots_Models Boots_Gaerne 0 1
+pkg Rider_Helmets_Materials Helmet_TLD_SE2_MachGreen 0 1
+pkg Rider_Helmets_Models Helmet_TLD_SE2 0 1
+db MX_Hguards Database\ 1 0
+db HR_MX_Hguards Database\ 1 0
+pkg MX_GraphicKits MX_MarsF_Lite_OneTechno_White 0 1
+pkg MX_Hguards MX_Hguards 0 1
+pkg MX_Tires MX_Tire_Rainbow 0 1
+pkg Rider_Boots_Materials Boots_NoFear_White 0 1
+pkg Rider_Boots_Models Boots_NoFear 0 1
+pkg Rider_CPs_Materials ChestProtector_Thor_WHT 0 1
+pkg Rider_CPs_Models CPs_Thor 0 1
+pkg Rider_Jerseys_Materials Jersey_MSR_Disorder 0 1
+pkg Rider_Helmets_Materials Helmet_Thor_White 0 1
+pkg Rider_Goggles_Materials Goggles_Scott_White 0 1
+pkg MX_GraphicKits MX_MarsF_Lite_THQ_Black 0 1
+pkg MX_Handlebars MX_Hbar_Renthal_Black 0 1
+pkg MX_Tires MX_Tire_Kenda_SouthwickMX 0 1
+pkg MX_Exhausts MX_Exh_ProCircuit_Ti4 0 1
+pkg MX_Exhausts MX_Exh_ProCircuit 0 1
+pkg Rider_Jerseys_Materials Jersey_Fly_Kinetic_AMP 0 1
+pkg Rider_Goggles_Materials Goggles_Answer_Black 0 1
+pkg MX_GraphicKits MX_Earth_Lite_Alpstrs_Blue 0 1
+pkg MXs Earth_Lite 0 1
+pkg MX_Handlebars MX_Hbar_ProTaper_Silver 0 1
+pkg MX_Handlebars MX_Hbar_ProTaper 0 1
+pkg MX_Tires MX_Tire_Kenda_WashougalMX 0 1
+pkg MX_Exhausts MX_Exh_FMF_Powercore_Gnarly_125 0 1
+pkg MX_Forks MX_Fork_ProCircuit 0 1
+pkg Rider_Boots_Materials Boots_Answer_Black 0 1
+pkg Rider_Jerseys_Materials Jersey_MSR_Blue 0 1
+pkg Rider_Helmets_Materials Helmet_Answer_Alpha_Blue 0 1
+pkg Rider_Goggles_Materials Goggles_MSR_Blue 0 1
+pkg Rider_Goggles_Models Goggles_MSR 0 1
+pkg MX_Handlebars MX_Hbar_Renthal_FatBar_Titanium 0 1
+pkg MX_Handlebars MX_Hbar_Renthal_FatBar 0 1
+pkg MX_Wheels MX_Rim_Excel_Black_Silver 0 1
+pkg Rider_Boots_Materials Boots_MSR_White 0 1
+pkg Rider_Boots_Models Boots_MSR 0 1
+pkg Rider_CPs_Materials ChestProtector_MSR_Smoke 0 1
+pkg Rider_CPs_Models CPs_MSR 0 1
+pkg Rider_Jerseys_Materials Jersey_MSR_OrgBrn 0 1
+pkg Rider_Helmets_Materials Helmet_Bell_Orange 0 1
+pkg Rider_Helmets_Models Helmet_Bell_Moto8 0 1
+pkg Rider_Goggles_Materials Goggles_Blur_Black 0 1
+pkg Rider_Goggles_Models Goggles_Blur 0 1
+pkg MX_GraphicKits MX_EarthF_Lite_Rainbow_Red 0 1
+pkg MXs EarthF_Lite 0 1
+pkg MX_Handlebars MX_Hbar_Renthal_Blue 0 1
+pkg MX_Wheels MX_Rim_Excel_Gold_Gold 0 1
+pkg MX_Exhausts MX_Exh_FMF_Factory41_Blue 0 1
+pkg MX_Exhausts MX_Exh_FMF_Factory41 0 1
+pkg Rider_Boots_Materials Boots_Alpinestars_White 0 1
+pkg Rider_Boots_Models Boots_Alpinestars 0 1
+pkg Rider_Goggles_Materials Goggles_Smith_BlackYellow_Clear 0 1
+pkg MX_GraphicKits MX_MarsF_Lite_Rainbow_Black 0 1
+pkg MX_Handlebars MX_Hbar_Stock_1 0 1
+pkg MX_Exhausts MX_Exh_Yosh_TRCPro_CarbonFiber 0 1
+pkg Rider_Boots_Materials Boots_Alpinestars_Black 0 1
+pkg Rider_Jerseys_Materials Jersey_Thor_Core_BLK 0 1
+pkg Rider_Helmets_Materials Helmet_Thor_CarbonBlack 0 1
+pkg Rider_Goggles_Materials Goggles_Spy_Asphalt 0 1
+pkg Rider_Goggles_Models Goggles_Spy 0 1
+pkg MX_GraphicKits MX_Mercury_Lite_Rainbow_Black 0 1
+pkg MXs Mercury_Lite 0 1
+pkg MX_Tires MX_Tire_Sedona 0 1
+pkg MX_Exhausts MX_Exh_FMF_Titamium2_FactoryFatty_125 0 1
+pkg Rider_Boots_Materials Boots_Fox_Red 0 1
+pkg Rider_Boots_Models Boots_Fox 0 1
+pkg Rider_Jerseys_Materials Jersey_TLD_SEGreen 0 1
+pkg Rider_Helmets_Materials Helmet_TLD_Air_DetroitWht 0 1
+pkg Rider_Helmets_Models Helmet_TLD_Air 0 1
+pkg Rider_Goggles_Materials Goggles_Oakley_Red 0 1
+pkg Rider_Goggles_Models Goggles_Oakley 0 1
+pkg MX_GraphicKits MX_VenusF_Lite_Rainbow_White 0 1
+pkg MXs VenusF_Lite 0 1
+pkg MX_Tires MX_Tire_Maxxis_SM 0 1
+db Rider_NBs_Materials Database\ 1 0
+db HR_Rider_NBs_Materials Database\ 1 0
+db Rider_NBs_Models Database\ 1 0
+db HR_Rider_NBs_Models Database\ 1 0
+pkg Rider_Boots_Materials Boots_Shift_Black 0 1
+pkg Rider_Boots_Models Boots_Shift 0 1
+pkg Rider_Jerseys_Materials Jersey_Shift_Faction_Yellow 0 1
+pkg Rider_Helmets_Materials Helmet_One_Kombat_CodeBlkWhtYel 0 1
+pkg Rider_Helmets_Models Helmet_One_Kombat 0 1
+pkg Rider_Goggles_Materials Goggles_Fox_Black 0 1
+pkg Rider_Goggles_Models Goggles_Fox 0 1
+pkg Rider_NBs_Materials NeckBrace_Leatt_Black 0 1
+pkg Rider_NBs_Models NeckBrace_Leatt 0 1
+db NAT_Concord Database\ 0 0
+pkg NAT_Concord Shared 101f1908 0
+pkg NAT_Concord NAT_ConcordBase 101f190c 0
+pkg AudioLocalizedActivity Audio_ACTIVITY_NATIONALS 0 1
+pkg AudioLocalizedActivity Audio_Loc_NATIONAL.ENG 0 1
+pkg AudioLocalizedActivity Audio_Loc_OVERTHROW.ENG 0 1
+pkg AudioLocalizedActivity Audio_Loc_ELIMINATION.ENG 0 1
+pkg CrowdSoundProjects Crowd_Large_Outdoor 0 0
+unload MXUI_Streaming ArcadePosters_AP_NAT_ConcordA
+requests 281

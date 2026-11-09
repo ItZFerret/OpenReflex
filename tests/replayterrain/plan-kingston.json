@@ -1,0 +1,285 @@
+{
+ "event": "Supercross/SX_Kingston",
+ "ai": 5,
+ "ride": 30,
+ "gameAt": 15,
+ "prefix": "kingston",
+ "fps": 60,
+ "shots": [
+  {
+   "name": "game",
+   "kind": "game",
+   "frames": 8
+  },
+  {
+   "name": "high",
+   "kind": "replay",
+   "cam": "Free",
+   "back": "10",
+   "pos": [
+    12,
+    45,
+    -30
+   ],
+   "look": [
+    0,
+    0,
+    25
+   ],
+   "fov": 60,
+   "fx": "auto",
+   "frames": 8,
+   "pair": true
+  },
+  {
+   "name": "high_nofx",
+   "kind": "replay",
+   "cam": "Free",
+   "back": "10",
+   "pos": [
+    12,
+    45,
+    -30
+   ],
+   "look": [
+    0,
+    0,
+    25
+   ],
+   "fov": 60,
+   "fx": "off",
+   "frames": 8,
+   "pair": true
+  },
+  {
+   "name": "high_low",
+   "kind": "replay",
+   "cam": "Free",
+   "back": "28",
+   "pos": [
+    -8,
+    22,
+    -18
+   ],
+   "look": [
+    0,
+    0,
+    30
+   ],
+   "fov": 60,
+   "fx": "auto",
+   "frames": 8,
+   "pair": true
+  },
+  {
+   "name": "chase",
+   "kind": "replay",
+   "cam": "Chase",
+   "back": "6",
+   "play": 0.5,
+   "fx": "auto",
+   "frames": 2,
+   "pair": true
+  },
+  {
+   "name": "chase_nofx",
+   "kind": "replay",
+   "cam": "Chase",
+   "back": "6",
+   "play": 0.5,
+   "fx": "off",
+   "frames": 2
+  },
+  {
+   "name": "orbit_play",
+   "kind": "replay",
+   "cam": "Orbit",
+   "back": "14",
+   "play": 0.5,
+   "fx": "auto",
+   "frames": 2,
+   "pair": true
+  },
+  {
+   "name": "chase_held",
+   "kind": "replay",
+   "cam": "Chase",
+   "back": "6",
+   "fx": "auto",
+   "frames": 6,
+   "pair": true
+  },
+  {
+   "name": "photo_live_mb",
+   "kind": "photo",
+   "back": "live",
+   "pos": [
+    10,
+    14,
+    55
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 9,
+   "focusMode": 2,
+   "focus": 55,
+   "aperture": 8,
+   "mb": 0.25,
+   "frames": 40,
+   "saved": true,
+   "pair": true
+  },
+  {
+   "name": "photo_live_off",
+   "kind": "photo",
+   "back": "live",
+   "pos": [
+    10,
+    14,
+    55
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 9,
+   "focusMode": 2,
+   "focus": 55,
+   "aperture": 8,
+   "mb": 0,
+   "frames": 8
+  },
+  {
+   "name": "photo_mid_mb",
+   "kind": "photo",
+   "back": "12",
+   "pos": [
+    10,
+    14,
+    55
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 9,
+   "focusMode": 2,
+   "focus": 55,
+   "aperture": 8,
+   "mb": 0.25,
+   "frames": 40,
+   "saved": true,
+   "pair": true
+  },
+  {
+   "name": "photo_mid_off",
+   "kind": "photo",
+   "back": "12",
+   "pos": [
+    10,
+    14,
+    55
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 9,
+   "focusMode": 2,
+   "focus": 55,
+   "aperture": 8,
+   "mb": 0,
+   "frames": 8
+  },
+  {
+   "name": "photo_fast_mb",
+   "kind": "photo",
+   "back": "fast",
+   "pos": [
+    10,
+    14,
+    55
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 9,
+   "focusMode": 2,
+   "focus": 55,
+   "aperture": 8,
+   "mb": 0.25,
+   "frames": 40,
+   "saved": true,
+   "pair": true
+  },
+  {
+   "name": "photo_fast_off",
+   "kind": "photo",
+   "back": "fast",
+   "pos": [
+    10,
+    14,
+    55
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 9,
+   "focusMode": 2,
+   "focus": 55,
+   "aperture": 8,
+   "mb": 0,
+   "frames": 8
+  },
+  {
+   "name": "photo_air_mb",
+   "kind": "photo",
+   "back": "air",
+   "pos": [
+    16,
+    6,
+    16
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 30,
+   "focusMode": 1,
+   "mb": 0.25,
+   "frames": 40,
+   "saved": true,
+   "pair": true
+  },
+  {
+   "name": "photo_air_off",
+   "kind": "photo",
+   "back": "air",
+   "pos": [
+    16,
+    6,
+    16
+   ],
+   "look": [
+    0,
+    2.5,
+    0
+   ],
+   "fov": 30,
+   "focusMode": 1,
+   "mb": 0,
+   "frames": 8
+  }
+ ]
+}

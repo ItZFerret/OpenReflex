@@ -1,0 +1,251 @@
+addr	name	size	instr_per_frame	kind	old_group	readable_spec_port
+0042c650	Vec4Atan	550	4964581	physics	math	math.cpp
+0042c880	Vec4Atan2	371	3285910	physics	math	math.cpp
+0042c240	Vec4Sin_RangeReduced	321	2785880	physics	math	math.cpp
+0042ca00	QuatSlerp_Simd	231	2142984	physics	math	math.cpp
+008455f0	RavenPhysics::CollisionShapeBox::vf2	1148	1235394	physics	collision	collision_shapes.cpp
+00882d90	BroadphaseGrid_QueryCells	613	716300	physics	collision	collision_grid.cpp
+00846700	RavenPhysics::CollisionShapeDynamicCylinder::vf2	1188	669330	physics	collision	collision_shapes.cpp
+007c5440	TerrainSampleWindow	1284	566778	physics	collision	collision_terrain.cpp
+008486f0	CompositeChildPosition	261	526817	physics	collision	collision_shapes.cpp
+008fa106	_ftol2	117	522384	physics	math	math_crt.cpp
+00854650	Mat3_MulABt	370	495672	physics	mechanism	mechanism_kernels.cpp
+0069b2f0	Vec4FloorToInt	263	468369	physics	collision	collision_terrain.cpp
+00853740	Mat3_Mul	445	425513	physics	mechanism	mechanism_solver.cpp
+00882980	BroadphaseGrid_Remove	862	397596	physics	collision	collision_grid.cpp
+0042ccd0	Vec4Floor	255	364658	physics	math	math.cpp
+008732d0	CollisionPair_CompositeVsComposite	623	350159	physics	collision	collision_pairs.cpp
+0042ce40	QuatSlerp_Packed	1993	344117	physics	math	math_quat.cpp
+00848650	CompositeChildRotation	158	337703	physics	collision	collision_shapes.cpp
+008821e0	Int4BelowFlags	176	333205	physics	collision	collision_grid.cpp
+008826d0	BroadphaseGrid_Insert	681	331573	physics	collision	collision_grid.cpp
+00883020	BroadphaseGrid_QueryBoxes	966	331264	physics	collision	collision_grid.cpp
+00857c90	RavenPhysics::Matrix3x3::vf2	98	223873	physics	mechanism	mechanism_matrix.cpp
+007c6160	TerrainTriangles	1407	207592	physics	collision	collision_terrain.cpp
+00882170	Int4GreaterMask	102	188816	physics	collision	collision_grid.cpp
+007c5e80	TerrainHeightNormal	735	184508	physics	collision	collision_terrain.cpp
+00848340	RavenPhysics::CollisionShapeComposite::vf3	723	167188	physics	collision	collision_shapes.cpp
+00861ba0	CollisionPair_SphereVsBox	4600	143579	physics	collision	collision_lifted.cpp
+00858440	RavenPhysics::Matrix4x3::vf2	411	140487	physics	mechanism	mechanism_matrix.cpp
+0085ddd0	Collision_ContactDispatch	3609	132279	physics	mechanism	mechanism_dispatch.cpp
+00855ee0	FUN_00855ee0	3162	119211	physics	mechanism	mechanism_kernels.cpp
+00841c90	FUN_00841c90	1684	112390	physics	collision	collision_lifted.cpp
+00854490	Mat3_MulVec	130	111536	physics	mechanism	mechanism_kernels.cpp
+008540a0	Mat6_MulVec	541	107898	physics	mechanism	mechanism_kernels.cpp
+0042c230	SqrtF	15	102846	physics	math	math_crt.cpp
+008f9efe	__security_check_cookie	15	96455	physics	math	math_crt.cpp
+0069b400	Vec4StoreAligned	74	93943	physics	collision	collision_terrain.cpp
+00854ac0	Mat4x3_MulMat3t	494	92532	physics	mechanism	mechanism_kernels.cpp
+00840440	FUN_00840440	1835	87162	physics	collision	collision_lifted.cpp
+007c51e0	TerrainCellSetup	260	83581	physics	collision	collision_terrain.cpp
+00882290	Int4Min	105	83447	physics	collision	collision_grid.cpp
+00859f90	RavenPhysics::ConstraintSlidingRotor::vf2	2119	83414	physics	mechanism	mechanism_constraints.cpp
+00882300	Int4Max	105	83301	physics	collision	collision_grid.cpp
+00859250	Mat3_Invert	231	82739	physics	mechanism	mechanism_products.cpp
+00855590	Mat3x4_MulMat3x4t	423	77673	physics	mechanism	mechanism_kernels.cpp
+00855240	Mat4x3_MulMat4x3t	842	73621	physics	mechanism	mechanism_kernels.cpp
+00856b40	FUN_00856b40	1754	72945	physics	mechanism	mechanism_kernels.cpp
+0085c770	Mechanism_AddForceAtPoint	318	71155	physics	mechanism	mechanism_forces.cpp
+008597e0	Mat6_Invert	543	69146	physics	mechanism	mechanism_products.cpp
+00426a50	FUN_00426a50	671	64400	physics	math	math_rider.cpp
+0085ac20	RavenPhysics::ConstraintSlidingRotor::vf7	1376	60450	physics	mechanism	mechanism_constraints.cpp
+0085a8f0	RavenPhysics::ConstraintSlidingRotor::vf6	788	60066	physics	mechanism	mechanism_constraints.cpp
+00857e50	Matrix3x3_FromQuaternion	403	59649	physics	mechanism	mechanism_kernels.cpp
+0042db20	FUN_0042db20	751	54357	physics	math	math_vec.cpp
+00854cb0	Mat3x4_MulMat4t	582	52683	physics	mechanism	mechanism_kernels.cpp
+00854f00	Mat6_MulABt	301	50150	physics	mechanism	mechanism_products.cpp
+008657d0	CollisionPair_BoxVsBox	9412	46437	physics	collision	collision_lifted.cpp
+0085cb70	Mechanism_Prepare	987	44915	physics	mechanism	mechanism_solver.cpp
+00860e90	FUN_00860e90	3015	43884	physics	collision	collision_lifted.cpp
+008fa0d0	_ftol2_sse	28	43680	physics	math	math_crt.cpp
+008581a0	RavenPhysics::Matrix3x3::vf5	63	40525	physics	mechanism	mechanism_matrix.cpp
+007c52f0	TerrainCellOffsets	135	39756	physics	collision	collision_terrain.cpp
+00845480	CollisionShapeCircle::vf2	52	37937	physics	collision	collision_shapes.cpp
+00857750	Mat4x6_MulVecSub	411	36810	physics	mechanism	mechanism_kernels.cpp
+00857d00	Matrix3x3_FromQuaternion2	331	36722	physics	mechanism	mechanism_kernels.cpp
+007c3510	TerrainTracks_AddPoint	4164	36227	physics	collision	collision_lifted.cpp
+00853a30	Mat4x6_MulVec	404	36135	physics	mechanism	mechanism_kernels.cpp
+00429910	FUN_00429910	292	35378	physics	math	
+0042b000	FUN_0042b000	142	34922	physics	math	
+0042c390	Vec4Cos_RangeReduced	694	32364	physics	math	
+00862da0	CollisionPair_SphereVsCylinder	3138	31766	physics	collision	collision_lifted.cpp
+00853180	Noise1D	154	31095	physics	mechanism	mechanism_misc.cpp
+00840b70	FUN_00840b70	4372	30046	physics	collision	collision_lifted.cpp
+00873540	FUN_00873540	2900	28855	physics	collision	collision_lifted.cpp
+00857a00	Mat6x4_MulVecSub	296	27692	physics	mechanism	mechanism_kernels.cpp
+00858160	RavenPhysics::Matrix3x3::vf4	63	27017	physics	mechanism	mechanism_matrix.cpp
+0085d100	Mechanism_IntegratePoses	355	26763	physics	mechanism	mechanism_core.cpp
+00853e80	Mat6x4_MulVec	282	26341	physics	mechanism	mechanism_kernels.cpp
+008716b0	Triangles_CircleContact	4511	25558	physics	collision	collision_lifted.cpp
+0042caf0	Vec4_SplatLane	66	23940	frame	math	
+007c5380	FUN_007c5380	188	23104	physics	collision	collision_terrain.cpp
+00858fe0	Mat_Congruence	88	22458	physics	mechanism	mechanism_solver.cpp
+007c5aa0	FUN_007c5aa0	494	22138	physics	collision	collision_lifted.cpp
+0085cf80	Mechanism_Solve	369	21445	physics	mechanism	mechanism_solver.cpp
+008656c0	CollisionPair_ShapeVsComposite	264	20442	physics	collision	collision_pairs.cpp
+00857b30	Mat6_MulVecSub	183	19587	physics	mechanism	mechanism_solver.cpp
+00857590	Mat_MulVecSub	156	18912	physics	mechanism	mechanism_solver.cpp
+00858220	RavenPhysics::Matrix3x4::vf2	207	18574	physics	mechanism	mechanism_matrix.cpp
+00858f80	RavenPhysics::Matrix5x6::vf2	91	18321	physics	mechanism	mechanism_matrix.cpp
+0085ca40	Mechanism_ComposeForces	297	17730	physics	mechanism	mechanism_core.cpp
+0042d6b0	FUN_0042d6b0	69	17482	physics	math	
+0085b5a0	RavenPhysics::ConstraintSlidingRotor::vf5	420	16717	physics	mechanism	mechanism_constraints.cpp
+00857c30	RavenPhysics::Matrix3x3::vf1	45	16463	physics	mechanism	mechanism_matrix.cpp
+00846380	RavenPhysics::CollisionShapeStaticBox::vf3	774	16349	physics	collision	collision_lifted.cpp
+00859340	Mat4_Invert	473	16210	physics	mechanism	mechanism_products.cpp
+0084a1a0	BroadphaseGrid_Update	72	16167	physics	collision	collision_grid.cpp
+008581e0	RavenPhysics::Matrix3x3::vf6	54	16041	physics	mechanism	mechanism_matrix.cpp
+0085bc30	RavenPhysics::ConstraintFixedBody::vf7	665	15872	physics	mechanism	mechanism_constraints.cpp
+007c5120	TerrainMaterialAt	192	14836	physics	collision	collision_lifted.cpp
+00848ef0	RavenPhysics::CollisionShapeStaticComposite::vf8	205	14669	physics	collision	collision_lifted.cpp
+00857ff0	Matrix3x3_Skew	157	14184	physics	mechanism	mechanism_kernels.cpp
+00858c70	RavenPhysics::Matrix5x6::vf4	119	14184	physics	mechanism	mechanism_matrix.cpp
+00854910	FUN_00854910	327	14015	physics	mechanism	mechanism_products.cpp
+0086fac0	Triangles_DynamicRayContact	7145	13766	physics	collision	collision_lifted.cpp
+00857bf0	RavenPhysics::Matrix3x3::vf3	53	13677	physics	mechanism	mechanism_matrix.cpp
+00852f40	Vec3_RotateAboutAxis	568	13119	physics	mechanism	mechanism_misc.cpp
+0042f1d0	FUN_0042f1d0	82	12833	physics	math	
+00858a80	RavenPhysics::Matrix4x6::vf2	43	12833	physics	mechanism	mechanism_matrix.cpp
+007c2ab0	DeformablePatch_AddStamp	2234	12494	physics	collision	collision_lifted.cpp
+0085b8b0	RavenPhysics::ConstraintFixedBody::vf2	588	12326	physics	mechanism	mechanism_constraints.cpp
+008439f0	XenonCore::vf2	4	12296	physics	collision	collision_shapes.cpp
+00846230	FUN_00846230	235	11684	physics	collision	collision_lifted.cpp
+00848800	CompositeSetChildPosition	261	11249	physics	collision	collision_shapes.cpp
+00847630	FUN_00847630	253	11201	physics	collision	collision_lifted.cpp
+0085a7e0	RavenPhysics::ConstraintSlidingRotor::vf3	264	11144	physics	mechanism	mechanism_constraints.cpp
+00858090	Matrix3x3_SkewT	157	10638	physics	mechanism	mechanism_kernels.cpp
+00853900	Mat_MulVec	258	10047	physics	mechanism	mechanism_solver.cpp
+00853bd0	Mat4_MulVec	196	9456	physics	mechanism	mechanism_kernels.cpp
+00855740	Mat_Coupling	172	9456	physics	mechanism	mechanism_solver.cpp
+0085d270	Mechanism_IntegrateVelocities	135	8865	physics	mechanism	mechanism_core.cpp
+0085c530	Mechanism_Rotate	361	8343	physics	mechanism	mechanism_forces.cpp
+0085b750	RavenPhysics::ConstraintFixedBody::vf1	347	8275	physics	mechanism	mechanism_constraints.cpp
+00855190	FUN_00855190	161	8105	physics	mechanism	mechanism_products.cpp
+008583c0	RavenPhysics::Matrix4x3::vf5	78	8105	physics	mechanism	mechanism_matrix.cpp
+008639f0	FUN_008639f0	1397	7785	physics	collision	collision_lifted.cpp
+00848910	CompositeSetChildRotation	170	7449	physics	collision	collision_shapes.cpp
+0042de70	FUN_0042de70	1761	7238	physics	math	
+007c73e0	TerrainSegment_CoarseTraversal	2337	7134	physics	collision	collision_lifted.cpp
+0085c0d0	RavenPhysics::ConstraintFixedBody::vf5	296	6585	physics	mechanism	mechanism_constraints.cpp
+0085c9d0	Mechanism_ClearForces	102	5911	physics	mechanism	mechanism_core.cpp
+008588d0	Matrix4x6_CopyFrom	133	5910	physics	mechanism	mechanism_matrix.cpp
+0085bb00	RavenPhysics::ConstraintFixedBody::vf3	293	5910	physics	mechanism	mechanism_constraints.cpp
+00855090	FUN_00855090	93	5741	physics	mechanism	mechanism_products.cpp
+0042bd90	FUN_0042bd90	69	5608	physics	math	
+00863f70	CollisionPair_SphereVsTriangles	1253	5162	physics	collision	collision_lifted.cpp
+00420770	FUN_00420770	6188	5148	physics	math	
+007c7d10	TerrainSegment_CellIntersect	1681	4811	physics	collision	collision_lifted.cpp
+007c6cc0	TerrainSegmentQuery	1678	4556	physics	collision	collision_lifted.cpp
+00858d90	Matrix5x6_CopyFrom	237	4306	physics	mechanism	mechanism_kernels.cpp
+00858660	RavenPhysics::Matrix4x3::vf4	78	4053	physics	mechanism	mechanism_matrix.cpp
+00869d40	CollisionPair_BoxVsTriangles	1180	4052	physics	collision	collision_lifted.cpp
+00867ca0	CollisionPair_BoxVsCylinder	8338	3772	physics	collision	collision_lifted.cpp
+00422960	FUN_00422960	2372	3768	physics	math	
+0042f2e0	RavenPhysics::Vec6::vf0	34	3715	physics	mechanism	mechanism_matrix.cpp
+007c5950	FUN_007c5950	336	3619	physics	collision	collision_lifted.cpp
+007c83b0	TerrainSegment_FineTraversal	1745	3437	physics	collision	collision_lifted.cpp
+0085c500	Mechanism_Translate	40	3338	physics	mechanism	mechanism_core.cpp
+007cda90	FUN_007cda90	18	3254	physics	collision	collision_terrain.cpp
+00858bd0	RavenPhysics::Matrix6x4::vf2	43	3208	physics	mechanism	mechanism_matrix.cpp
+0085d300	Mechanism_NodesSlot6	47	3040	physics	mechanism	mechanism_core.cpp
+0085c6d0	Mechanism_NodesSlot2	47	3039	physics	mechanism	mechanism_core.cpp
+0085c700	Mechanism_NodesSlot3	47	3039	physics	mechanism	mechanism_core.cpp
+0085d330	Mechanism_NodesSlot7	47	3039	physics	mechanism	mechanism_core.cpp
+004232b0	FUN_004232b0	1507	2846	physics	math	
+00854a90	FUN_00854a90	39	2702	physics	mechanism	mechanism_products.cpp
+00420160	FUN_00420160	1543	2687	physics	math	
+0086e090	CollisionPair_CylinderVsTriangles	1727	2674	physics	collision	collision_lifted.cpp
+00423df0	FUN_00423df0	741	2587	physics	math	
+00858620	RavenPhysics::Matrix4x4::vf1	56	2533	physics	mechanism	mechanism_matrix.cpp
+00845a80	CollisionShapeBox_Corners	200	2519	physics	collision	collision_shapes.cpp
+0042f970	RavenPhysics::ConstraintSlidingRotor::vf8	41	2195	physics	mechanism	mechanism_constraints.cpp
+0042f9a0	RavenPhysics::ConstraintSlidingRotor::vf9	41	2195	physics	mechanism	mechanism_constraints.cpp
+0042f230	FUN_0042f230	53	2026	physics	math	
+0042f2a0	FUN_0042f2a0	53	2026	physics	math	
+0085ee70	FUN_0085ee70	8215	1845	physics	mechanism	mechanism_dispatch.cpp
+007c66f0	FUN_007c66f0	1477	1765	physics	collision	collision_lifted.cpp
+00858e80	RavenPhysics::Matrix5x6::vf1	60	1604	physics	mechanism	mechanism_matrix.cpp
+0042f3b0	RavenPhysics::Vec3::vf1	23	1520	physics	mechanism	mechanism_matrix.cpp
+008472d0	FUN_008472d0	857	1328	physics	collision	collision_lifted.cpp
+00872860	CollisionPair_ShapeVsCompositeB	267	1306	physics	collision	collision_pairs.cpp
+00845f90	FUN_00845f90	671	1232	physics	collision	collision_lifted.cpp
+00423b80	FUN_00423b80	619	1099	physics	math	
+0042fcd0	RavenPhysics::ConstraintFixedBody::vf8	41	1098	physics	mechanism	mechanism_constraints.cpp
+0042fd00	RavenPhysics::ConstraintFixedBody::vf9	41	1098	physics	mechanism	mechanism_constraints.cpp
+00424370	FUN_00424370	146	1079	physics	math	
+00845a70	RavenPhysics::CollisionShapeBox::vf3	7	1065	physics	collision	collision_shapes.cpp
+0042f310	RavenPhysics::Vec6::vf1	33	1013	physics	mechanism	mechanism_matrix.cpp
+00845b50	FUN_00845b50	945	943	physics	collision	collision_lifted.cpp
+00429a40	FUN_00429a40	1673	911	physics	math	
+007c7350	TerrainSegment_CoarseReject	130	865	physics	collision	collision_lifted.cpp
+004263a0	FUN_004263a0	1420	857	physics	math	
+00425b20	FUN_00425b20	2166	794	physics	math	
+00421fa0	FUN_00421fa0	480	724	physics	math	
+0042c1f0	PowF	27	712	physics	math	math_crt.cpp
+008588c0	RavenPhysics::Matrix4x6::vf3	13	675	physics	mechanism	mechanism_matrix.cpp
+008454d0	FUN_008454d0	156	653	physics	collision	collision_shapes.cpp
+0042a310	FUN_0042a310	938	577	physics	math	
+007c4560	TerrainTracks_CutStrip	202	510	physics	collision	collision_lifted.cpp
+0085c730	Mechanism_SetNodeLinearVelocity	29	509	physics	mechanism	mechanism_core.cpp
+008523b0	Segment_PlaneIntersect	285	486	physics	mechanism	mechanism_misc.cpp
+00423a50	FUN_00423a50	293	476	physics	math	
+0086bd80	CollisionPair_CylinderVsCylinder	8974	472	physics	collision	collision_lifted.cpp
+00845f20	CollisionShapeBox_ContainsPoint	98	443	physics	collision	collision_shapes.cpp
+00422450	FUN_00422450	244	432	physics	math	
+00873010	CollisionPair_CompositeVsHFTerrain	692	416	physics	collision	collision_lifted.cpp
+00422850	FUN_00422850	272	381	physics	math	
+00425920	FUN_00425920	497	372	physics	math	
+00858d80	RavenPhysics::Matrix5x6::vf3	13	338	physics	mechanism	mechanism_matrix.cpp
+0085c750	Mechanism_SetNodeAngularVelocity	32	319	physics	mechanism	mechanism_core.cpp
+00426d00	FUN_00426d00	10692	318	physics	math	
+0042a6c0	FUN_0042a6c0	1496	314	physics	math	
+00422180	FUN_00422180	369	309	physics	math	
+00422350	FUN_00422350	76	280	physics	math	
+00423980	FUN_00423980	195	269	physics	math	
+004223a0	FUN_004223a0	165	249	physics	math	
+0085dcf0	Contacts_Average	220	246	physics	mechanism	mechanism_misc.cpp
+00422700	FUN_00422700	248	239	physics	math	
+00426930	FUN_00426930	271	237	physics	math	
+004238a0	FUN_004238a0	221	232	physics	math	
+007cf450	FUN_007cf450	137	231	physics	collision	collision_lifted.cpp
+0042c1d0	CeilF	22	228	physics	math	math_crt.cpp
+007cda50	FUN_007cda50	39	217	physics	collision	collision_terrain.cpp
+0086b4d0	CollisionPair_BoxVsHFTerrain	800	210	physics	collision	collision_lifted.cpp
+0042d670	FUN_0042d670	57	188	physics	math	
+0088be10	FUN_0088be10	25	187	physics	collision	collision_grid.cpp
+0042ef70	SimulationClock_Advance	318	185	physics	math	
+0088bd50	FUN_0088bd50	19	164	physics	collision	collision_grid.cpp
+0084fe70	FUN_0084fe70	113	147	physics	collision	collision_lifted.cpp
+00422800	FUN_00422800	74	102	physics	math	
+00847f60	RavenPhysics::CollisionShapeComposite::vf2	986	100	physics	collision	collision_lifted.cpp
+00422300	FUN_00422300	76	97	physics	math	
+00846f10	FUN_00846f10	949	91	physics	collision	collision_lifted.cpp
+00422550	FUN_00422550	62	80	physics	math	
+00422590	FUN_00422590	62	80	physics	math	
+008454c0	FUN_008454c0	5	74	physics	collision	collision_shapes.cpp
+0088bd90	FUN_0088bd90	6	70	physics	collision	collision_grid.cpp
+00425640	FUN_00425640	441	69	physics	math	
+00848af0	RavenPhysics::CollisionShapeComposite::vf4	215	55	physics	collision	collision_lifted.cpp
+00848bd0	RavenPhysics::CollisionShapeComposite::vf5	152	43	physics	collision	collision_lifted.cpp
+00846bb0	FUN_00846bb0	183	40	physics	collision	collision_shapes.cpp
+00842fa0	FUN_00842fa0	73	37	physics	collision	collision_lifted.cpp
+004241f0	FUN_004241f0	248	26	physics	math	
+00425800	FUN_00425800	287	20	physics	math	
+00843fc0	RavenPhysics::CollisionShapeSphere::vf4	42	13	physics	collision	collision_shapes.cpp
+00846c70	FUN_00846c70	659	11	physics	collision	collision_lifted.cpp
+004252a0	FUN_004252a0	849	11	physics	math	
+004296d0	FUN_004296d0	34	10	physics	math	
+00843ff0	RavenPhysics::CollisionShapeSphere::vf5	20	8	physics	collision	collision_shapes.cpp
+004240e0	FUN_004240e0	259	8	physics	math	
+0042e5f0	FUN_0042e5f0	35	5	physics	math	
+00425600	FUN_00425600	56	4	physics	math	
+0042aca0	FUN_0042aca0	306	4	physics	math	
+00690e00	FUN_00690e00	104	4	physics	collision	collision_lifted.cpp
+007c34b0	TerrainTracks_AllocSlotDefault	95	4	physics	collision	collision_lifted.cpp
+0042a240	FUN_0042a240	199	2	physics	math	
+007c5c90	FUN_007c5c90	490	1	physics	collision	collision_lifted.cpp
+0084fe00	FUN_0084fe00	104	1	physics	collision	collision_lifted.cpp
+0085c4b0	Mechanism_SetVelocity	73	1	physics	mechanism	mechanism_core.cpp
+004225d0	FUN_004225d0	297	0	physics	math	
+0042ade0	FUN_0042ade0	131	0	physics	math	
+008423d0	FUN_008423d0	95	0	physics	collision	collision_lifted.cpp

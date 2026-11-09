@@ -1,0 +1,9 @@
+{
+ "event": "FreeRide/FR_Alpine", "prefix": "PG_Alpine", "settle": 8, "adapt": 2.5, "perf": 5,
+ "modes": ["original-dd0", "original-dd1", "original-dd2", "original-dd0", "original-dd1", "original-dd2", "original-dd0", "original-dd1", "original-dd2",
+           "original-dd0", "original-dd1", "original-dd2", "original-dd0", "original-dd1", "original-dd2"],
+ "views": [
+  {"name": "forest", "cam": "path", "frame": "forest", "tree": 3, "offset": [0, 0, 0], "yaw": 70, "pitch": -4, "fov": 70, "t": 4,
+   "frames": 1, "step": 0.0, "ground": 6}
+ ]
+}

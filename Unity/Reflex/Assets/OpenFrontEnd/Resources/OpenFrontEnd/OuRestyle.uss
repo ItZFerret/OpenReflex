@@ -1,0 +1,769 @@
+/* OPEN REFLEX, every front-end screen in the CAREER MENU'S LOOK (w-restyle). The career pages (OuCareer.uss, OuCareerKit.cs) are the model:
+   warm grey / dark glass, ORANGE title bars with dark condensed caps, GOLD for the focus, dotted patch buttons, a dark legend band along the
+   bottom, one eased lift on focus, square corners, condensed type with a hard drop shadow on the big words.
+
+   This sheet is loaded LAST (OuTheme.Apply, OptUi.CreateDocument) and only re-skins the shared classes the other screens already use (OuModern.uss
+   widgets: stat tiles, boards, dialogs, cards, pills; OuFrontEnd.uss: hub, chips, browser, setup; OuGarage.uss: the garage's rows, strip, stage),
+   so the screens keep their code, names and strings. Where a rule has to beat OuGarage.uss (attached by the garage screen after this sheet) it
+   carries one more class (.mxa-layer). Reference size 1920 x 1080 (see OuModern.uss: the panel scales by height).
+
+   focus = GOLD fill with dark type (rows, cards, chips, tabs) or gold bar + gold type on a dark patch (the big buttons): never the logo red. */
+
+.ou-frontend.mxa-root {
+    --oc-ink: rgb(14, 15, 15);
+    --oc-orange: rgb(204, 95, 41);
+    --oc-orange-hot: rgb(240, 120, 52);
+    --oc-gold: rgb(226, 172, 64);
+    --oc-gold-lo: rgb(176, 128, 40);
+    --oc-paper: rgb(224, 224, 200);
+    --oc-dim: rgb(176, 175, 156);
+    --oc-glass: rgba(12, 22, 24, 0.70);
+    --oc-glass-hi: rgba(18, 30, 33, 0.88);
+    --oc-line: rgba(224, 224, 200, 0.14);
+    --oc-plate: rgba(34, 34, 32, 0.94);
+    --oc-plate-hi: rgba(52, 51, 47, 0.98);
+
+    /* the older sheets' palette, re-pointed: their accent (red) is the orange, their focus fill is the gold */
+    --ou-red: rgb(204, 95, 41);
+    --ou-red-hot: rgb(240, 120, 52);
+    --ou-red-deep: rgb(120, 56, 24);
+    --ou-red-wash: rgba(204, 95, 41, 0.20);
+    --ou-focus-fill: rgb(226, 172, 64);
+    --ou-gold: rgb(226, 172, 64);
+    --ou-glass: rgba(12, 22, 24, 0.72);
+    --ou-glass-hi: rgba(18, 30, 33, 0.90);
+    --ou-surface: rgba(14, 24, 26, 0.94);
+    --ou-surface-hi: rgba(26, 38, 41, 0.95);
+    --ou-line: rgba(224, 224, 200, 0.14);
+    --ou-glass-line: rgba(224, 224, 200, 0.14);
+    --ou-text: rgb(224, 224, 200);
+    --ou-muted: rgb(176, 175, 156);
+    --ou-faint: rgba(176, 175, 156, 0.70);
+    --ou-silver: rgb(208, 208, 190);
+    --ou-green: rgb(128, 212, 92);
+
+    color: var(--oc-paper);
+}
+
+/* ------------------------------------------------------------------ the layers behind the pages: the dim stage with its halftone */
+
+.ou-frontend.mxa-root .mxa-dim, .ou-frontend.mxa-root .mxa-dim.mxa-options-open {
+    background-color: rgba(24, 23, 21, 0.88);
+    background-image: url("Textures/OcDots.png");
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgba(255, 255, 240, 0.03);
+}
+
+.ou-frontend.mxa-root .mxa-screen-import, .ou-frontend.mxa-root .mxa-screen-install, .ou-frontend.mxa-root .mxa-screen-servers, .ou-frontend.mxa-root .mxa-screen-plugins {
+    background-color: rgba(24, 23, 21, 0.72);
+}
+
+.ou-frontend.mxa-root .ou-scrim { background-color: rgba(14, 13, 12, 0.66); }
+
+/* ------------------------------------------------------------------ type */
+
+.ou-frontend.mxa-root .ou-header-title, .ou-frontend.mxa-root .mxa-screen-title, .ou-frontend.mxa-root .mxa-title, .ou-frontend.mxa-root .ou-hero-title, .ou-frontend.mxa-root .ou-dialog-title,
+.ou-frontend.mxa-root .ou-place-num, .ou-frontend.mxa-root .ou-place-suffix, .ou-frontend.mxa-root .ou-stat-value, .ou-frontend.mxa-root .ou-credit-name, .ou-frontend.mxa-root .ou-criterion-value,
+.ou-frontend.mxa-root .ou-detail-title, .ou-frontend.mxa-root .ou-setup-title, .ou-frontend.mxa-root .ou-loading-title, .ou-frontend.mxa-root .ou-stage-name, .ou-frontend.mxa-root .ou-stage-model-name,
+.ou-frontend.mxa-root .ou-continue-title, .ou-frontend.mxa-root .ou-garage-card-name, .ou-frontend.mxa-root .ou-empty-title, .ou-frontend.mxa-root .ou-opt-side-title, .ou-frontend.mxa-root .ou-sr-group-title {
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+    color: var(--oc-paper);
+}
+
+.ou-frontend.mxa-root .ou-card2-title, .ou-frontend.mxa-root .ou-gcard-title, .ou-frontend.mxa-root .ou-setup-ride-name, .ou-frontend.mxa-root .ou-gchip-title, .ou-frontend.mxa-root .ou-lbm-track-name {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+/* ------------------------------------------------------------------ header (OuTheme.Header): the orange line over the big title */
+
+.ou-frontend.mxa-root .ou-header { height: 112px; align-items: flex-end; margin-bottom: 8px; flex-shrink: 0; }
+.ou-frontend.mxa-root .ou-header-mark { display: none; }
+.ou-frontend.mxa-root .ou-header-titles { flex-direction: column-reverse; }
+.ou-frontend.mxa-root .ou-header-title { font-size: 72px; letter-spacing: 1px; margin: 0; white-space: nowrap; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-header-crumb {
+    font-size: 24px; letter-spacing: 6px; color: var(--oc-orange-hot); margin: 0 0 -2px 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+
+.ou-frontend.mxa-root .mxa-head { height: 112px; align-items: flex-end; border-left-width: 0; padding-left: 0; margin-bottom: 8px; }
+.ou-frontend.mxa-root .mxa-screen-title { font-size: 72px; letter-spacing: 1px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); margin-bottom: -6px; }
+.ou-frontend.mxa-root .mxa-title { font-size: 64px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+
+/* ------------------------------------------------------------------ the legend band (OuLayout puts .ou-legend-band behind the hint bar) */
+
+.ou-frontend.mxa-root .ou-legend-band {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 84px;
+    background-color: rgba(16, 16, 15, 0.98); border-top-width: 2px; border-top-color: rgba(224, 224, 200, 0.12);
+}
+.ou-frontend.mxa-root .mxa-hints .mxa-hint { margin-left: 56px; flex-direction: row; align-items: center; }
+.ou-frontend.mxa-root .mxa-hint-label {
+    font-size: 26px; letter-spacing: 3px; color: var(--oc-paper); margin-left: 12px; text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.6);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-key { margin-right: 0; }
+.ou-frontend.mxa-root .ou-status-text {
+    font-size: 24px; letter-spacing: 3px; color: var(--oc-dim);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-bottom-fade { display: none; }
+
+/* ------------------------------------------------------------------ the big buttons: patch plates (pause, results, popups, installs) */
+
+.ou-frontend.mxa-root .mxa-main-button {
+    height: 76px; margin-bottom: 10px; padding: 0 30px; border-radius: 0; justify-content: flex-start; align-items: center; flex-direction: row;
+    background-color: var(--oc-plate); background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07);
+    background-repeat: repeat repeat; background-size: 16px 16px;
+    border-left-width: 8px; border-left-color: rgba(204, 95, 41, 0.0);
+    transition-property: background-color, translate, border-left-color; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .mxa-main-button > .mxa-button-label {
+    font-size: 46px; letter-spacing: 2px; color: var(--oc-orange); white-space: nowrap; margin-top: -4px; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; transition-property: color; transition-duration: 0.14s;
+}
+.ou-frontend.mxa-root .mxa-main-button:hover { background-color: rgba(52, 51, 47, 0.96); }
+.ou-frontend.mxa-root .mxa-main-button:focus { background-color: var(--oc-plate-hi); border-left-color: var(--oc-gold); translate: 12px 0; }
+.ou-frontend.mxa-root .mxa-main-button:focus > .mxa-button-label { color: var(--oc-gold); }
+.ou-frontend.mxa-root .mxa-main-button:disabled { opacity: 0.4; }
+.ou-frontend.mxa-root .ou-primary { border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-button-row > .mxa-main-button { margin-right: 14px; }
+.ou-frontend.mxa-root .ou-button-row > .mxa-main-button > .mxa-button-label { font-size: 40px; }
+.ou-frontend.mxa-root .ou-button-row > .mxa-main-button:focus { translate: 0 -6px; }
+.ou-frontend.mxa-root .mxa-main-button > .mxa-key { margin-left: 16px; }
+
+/* a quiet link-style action */
+.ou-frontend.mxa-root .mxa-link {
+    padding: 8px 20px; border-radius: 0; margin-left: 10px; background-color: var(--oc-plate);
+    border-left-width: 6px; border-left-color: rgba(204, 95, 41, 0.0); flex-direction: row; align-items: center;
+    transition-property: background-color, translate, border-left-color; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .mxa-link > .mxa-button-label {
+    font-size: 22px; letter-spacing: 3px; color: var(--oc-dim);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-link:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .mxa-link:focus { background-color: var(--oc-plate-hi); border-left-color: var(--oc-gold); translate: 6px 0; }
+.ou-frontend.mxa-root .mxa-link:focus > .mxa-button-label { color: var(--oc-gold); }
+
+/* the page's main action (START EVENT, RIDE NOW, DONE ...): the orange block of the title bars, gold when it has the focus */
+.ou-frontend.mxa-root .ou-cta, .ou-frontend.mxa-root .mxa-start.ou-cta, .ou-frontend.mxa-root .mxa-start.ou-cta:focus {
+    height: 76px; border-radius: 0; border-width: 0; justify-content: center; align-items: flex-start; padding: 0 30px; flex-shrink: 0;
+    background-color: var(--oc-orange);
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .ou-cta > .ou-backdrop { display: none; }
+.ou-frontend.mxa-root .ou-cta:hover, .ou-frontend.mxa-root .mxa-start.ou-cta:hover { background-color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-cta:focus, .ou-frontend.mxa-root .mxa-start.ou-cta:focus { background-color: var(--oc-gold); translate: 10px 0; }
+.ou-frontend.mxa-root .ou-cta > .mxa-button-label, .ou-frontend.mxa-root .mxa-start.ou-cta > .mxa-button-label {
+    font-size: 44px; letter-spacing: 3px; color: var(--oc-ink); margin-top: -4px; text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-cta:focus > .mxa-button-label, .ou-frontend.mxa-root .mxa-start.ou-cta:focus > .mxa-button-label { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-cta:disabled { opacity: 0.4; }
+
+.ou-frontend.mxa-root .mxa-start, .ou-frontend.mxa-root .mxa-secondary {
+    border-radius: 0; height: 64px; border-width: 0; border-left-width: 8px; border-left-color: rgba(204, 95, 41, 0.0);
+    background-color: var(--oc-plate); background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07);
+    background-repeat: repeat repeat; background-size: 16px 16px;
+}
+.ou-frontend.mxa-root .mxa-start { border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .mxa-start:focus, .ou-frontend.mxa-root .mxa-secondary:focus { background-color: var(--oc-plate-hi); border-left-color: var(--oc-gold); border-width: 0; border-left-width: 8px; }
+.ou-frontend.mxa-root .mxa-start > .mxa-button-label, .ou-frontend.mxa-root .mxa-secondary > .mxa-button-label {
+    font-size: 30px; letter-spacing: 2px; color: var(--oc-orange); text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-start:focus > .mxa-button-label, .ou-frontend.mxa-root .mxa-secondary:focus > .mxa-button-label { color: var(--oc-gold); }
+
+/* chips: small plates (hub's GAME LIBRARY / CREDITS / QUIT, the browser's tools) */
+.ou-frontend.mxa-root .ou-chip {
+    height: 46px; padding: 0 20px; margin-left: 8px; border-radius: 0; border-width: 0; border-left-width: 5px; border-left-color: rgba(204, 95, 41, 0.0);
+    background-color: var(--oc-plate); background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07);
+    background-repeat: repeat repeat; background-size: 16px 16px; justify-content: center;
+    transition-property: background-color, translate, border-left-color; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .ou-chip > .mxa-button-label {
+    font-size: 24px; letter-spacing: 3px; color: var(--oc-paper); text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.6);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-chip:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .ou-chip:focus { background-color: var(--oc-gold); border-left-color: var(--oc-ink); translate: 0 -3px; }
+.ou-frontend.mxa-root .ou-chip:focus > .mxa-button-label { color: var(--oc-ink); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+.ou-frontend.mxa-root .ou-chip-accent { border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-chip-accent > .mxa-button-label { color: var(--oc-orange-hot); }
+
+.ou-frontend.mxa-root .ou-seg { height: 52px; padding: 4px; border-radius: 0; background-color: rgba(0, 0, 0, 0.45); border-width: 2px; border-color: var(--oc-line); margin-right: 18px; }
+.ou-frontend.mxa-root .ou-seg-item { padding: 0 22px; border-radius: 0; }
+.ou-frontend.mxa-root .ou-seg-item > .mxa-button-label {
+    font-size: 22px; letter-spacing: 3px; color: var(--oc-dim);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-seg-on { background-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-seg-on > .mxa-button-label { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-seg-item:focus { background-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-seg-item:focus > .mxa-button-label { color: var(--oc-ink); }
+
+.ou-frontend.mxa-root .ou-search { height: 52px; border-radius: 0; background-color: rgba(0, 0, 0, 0.45); border-width: 2px; border-color: var(--oc-line); }
+.ou-frontend.mxa-root .ou-search:focus { border-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-search-lens { border-color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-search-handle { background-color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-search-field > #unity-text-input { color: var(--oc-paper); font-size: 22px; }
+
+/* tags and badges: the career's dark tag, the orange one */
+.ou-frontend.mxa-root .ou-pill {
+    border-radius: 0; padding: 3px 12px 2px 12px; font-size: 20px; letter-spacing: 3px; color: var(--oc-paper); background-color: rgba(0, 0, 0, 0.5);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-pill-good { color: var(--oc-ink); background-color: var(--ou-green); }
+.ou-frontend.mxa-root .ou-pill-warn, .ou-frontend.mxa-root .ou-pill-gold { color: var(--oc-ink); background-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-pill-bad { color: var(--oc-paper); background-color: rgb(176, 52, 40); }
+.ou-frontend.mxa-root .ou-badge { border-radius: 0; font-size: 20px; letter-spacing: 3px; padding: 3px 12px 2px 12px; color: var(--oc-ink); background-color: var(--oc-orange);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-badge-dark { background-color: rgba(0, 0, 0, 0.55); color: var(--oc-paper); border-width: 0; }
+.ou-frontend.mxa-root .ou-badge-outline { background-color: rgba(0, 0, 0, 0); color: var(--oc-paper); border-width: 2px; border-color: var(--oc-line); }
+.ou-frontend.mxa-root .ou-eyebrow, .ou-frontend.mxa-root .ou-eyebrow2 {
+    color: var(--oc-orange-hot); letter-spacing: 6px;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-eyebrow { font-size: 20px; }
+
+/* ------------------------------------------------------------------ value rows (options, setup, garage): tinted rows, gold when focused */
+
+.ou-frontend.mxa-root .mxa-row {
+    height: 64px; margin-bottom: 4px; border-radius: 0; border-left-width: 0; padding: 0 18px 0 20px; background-color: rgba(255, 255, 255, 0.045);
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .mxa-row:hover { background-color: rgba(255, 255, 255, 0.10); }
+.ou-frontend.mxa-root .mxa-row:focus { background-color: var(--oc-gold); translate: 8px 0; border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .mxa-row-label {
+    font-size: 26px; letter-spacing: 1px; color: var(--oc-paper);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-row:focus > .mxa-row-label { color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-value { font-size: 28px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .mxa-row:focus .mxa-value { color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-arrow { color: rgba(224, 224, 200, 0.34); }
+.ou-frontend.mxa-root .mxa-row:focus .mxa-arrow { color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-slider { background-color: rgba(224, 224, 200, 0.16); border-radius: 0; height: 12px; }
+.ou-frontend.mxa-root .mxa-slider-fill { background-color: var(--oc-dim); border-radius: 0; height: 12px; }
+.ou-frontend.mxa-root .mxa-row:focus .mxa-slider { background-color: rgba(14, 15, 15, 0.30); }
+.ou-frontend.mxa-root .mxa-row:focus .mxa-slider-fill, .ou-frontend.mxa-root .mxa-row:focus > .mxa-row-value > .mxa-slider > .mxa-slider-fill { background-color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-row:disabled { opacity: 0.4; }
+.ou-frontend.mxa-root .mxa-note, .ou-frontend.mxa-root .mxa-install-text {
+    font-size: 22px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; letter-spacing: 0.5px; padding-left: 4px;
+}
+.ou-frontend.mxa-root .mxa-note-fun { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .mxa-error { color: rgb(240, 120, 96); font-size: 22px; }
+.ou-frontend.mxa-root .mxa-install-status.mxa-ok, .ou-frontend.mxa-root .mxa-dir.mxa-ok { color: var(--ou-green); }
+.ou-frontend.mxa-root .mxa-rider-name > #unity-text-input { border-radius: 0; background-color: rgba(0, 0, 0, 0.45); color: var(--oc-paper); border-color: var(--oc-line); border-width: 2px; }
+.ou-frontend.mxa-root .mxa-row:focus .mxa-rider-name > #unity-text-input { border-color: var(--oc-ink); background-color: rgba(14, 15, 15, 0.20); color: var(--oc-ink); }
+
+/* section headings inside a page: the orange chip of the career pages' .oc-heading */
+.ou-frontend.mxa-root .mxa-panel-title, .ou-frontend.mxa-root .ou-panel-title {
+    font-size: 24px; letter-spacing: 5px; color: var(--oc-ink); background-color: var(--oc-orange); padding: 4px 16px 2px 16px; margin: 6px 0 12px 0;
+    align-self: flex-start; white-space: normal;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-section { height: 40px; margin: 16px 0 8px 0; }
+.ou-frontend.mxa-root .ou-section-mark { display: none; }
+.ou-frontend.mxa-root .ou-section-title {
+    font-size: 24px; letter-spacing: 5px; color: var(--oc-ink); background-color: var(--oc-orange); padding: 4px 16px 2px 16px;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+
+/* ------------------------------------------------------------------ tabs (options, garage, setup): plates, the open one orange, gold under the pad */
+
+.ou-frontend.mxa-root .mxa-tabs { margin-left: 40px; padding: 0; border-radius: 0; background-color: rgba(0, 0, 0, 0); border-width: 0; flex-shrink: 1; flex-wrap: wrap; }
+.ou-frontend.mxa-root .mxa-tab {
+    padding: 10px 22px 8px 22px; margin: 0 6px 6px 0; border-radius: 0; border-bottom-width: 0; background-color: var(--oc-plate);
+    background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .mxa-tab > .mxa-button-label {
+    font-size: 28px; letter-spacing: 2px; color: var(--oc-dim); text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.6);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-tab:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .mxa-tab:hover > .mxa-button-label { color: var(--oc-paper); }
+.ou-frontend.mxa-root .mxa-tab-on, .ou-frontend.mxa-root .mxa-tab-on:hover { background-color: var(--oc-orange); background-image: none; }
+.ou-frontend.mxa-root .mxa-tab-on > .mxa-button-label, .ou-frontend.mxa-root .mxa-tab-on:hover > .mxa-button-label { color: var(--oc-ink); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+
+.ou-frontend.mxa-root .ou-gtabs { height: 64px; margin: 0 0 12px 0; border-bottom-width: 0; }
+.ou-frontend.mxa-root .ou-gtabs-key { font-size: 18px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-gtab {
+    height: 64px; margin: 0 4px 0 0; border-radius: 0; background-color: var(--oc-plate);
+    background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .ou-gtab > .mxa-button-label {
+    font-size: 30px; letter-spacing: 2px; color: var(--oc-dim); text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.6);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-gtab:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .ou-gtab:hover > .mxa-button-label { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-gtab-bar { display: none; }
+.ou-frontend.mxa-root .ou-gtab-on, .ou-frontend.mxa-root .ou-gtab-on:hover { background-color: var(--oc-orange); background-image: none; }
+.ou-frontend.mxa-root .ou-gtab-on > .mxa-button-label, .ou-frontend.mxa-root .ou-gtab-on:hover > .mxa-button-label { color: var(--oc-ink); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+.ou-frontend.mxa-root .ou-gtab:focus { background-color: var(--oc-gold); background-image: none; }
+.ou-frontend.mxa-root .ou-gtab:focus > .mxa-button-label { color: var(--oc-ink); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+
+/* ------------------------------------------------------------------ panels: dark glass, a thin line, no rounding; the orange cap */
+
+.ou-frontend.mxa-root .mxa-panel, .ou-frontend.mxa-root .ou-panel, .ou-frontend.mxa-root .ou-card-panel, .ou-frontend.mxa-root .ou-garage-panel, .ou-frontend.mxa-root .ou-sidebar,
+.ou-frontend.mxa-root .ou-stage, .ou-frontend.mxa-root .ou-lbm-tracks {
+    background-color: var(--oc-glass); border-width: 2px; border-color: var(--oc-line); border-radius: 0;
+}
+.ou-frontend.mxa-root .mxa-panel, .ou-frontend.mxa-root .ou-card-panel { border-top-width: 10px; border-top-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-card-panel { margin-top: 18px; }
+.ou-frontend.mxa-root .mxa-panel { padding: 28px; }
+
+/* an orange title bar (OcUi.Panel's, also for the panels that name themselves with a label of this class) */
+.ou-frontend.mxa-root .ou-bar {
+    background-color: var(--oc-orange); height: 60px; justify-content: center; padding: 0 22px; flex-shrink: 0;
+}
+.ou-frontend.mxa-root .ou-bar-title {
+    font-size: 44px; letter-spacing: 1px; color: var(--oc-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -4px;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+
+/* ------------------------------------------------------------------ cards and list rows: tinted rows, gold fill and a lift on focus */
+
+.ou-frontend.mxa-root .ou-card2, .ou-frontend.mxa-root .mxa-layer .ou-gcard {
+    min-height: 84px; margin: 0 6px 6px 0; padding: 10px 16px 10px 14px; border-radius: 0; border-left-width: 0;
+    background-color: rgba(255, 255, 255, 0.045);
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .ou-card2:hover, .ou-frontend.mxa-root .mxa-layer .ou-gcard:hover { background-color: rgba(255, 255, 255, 0.10); }
+.ou-frontend.mxa-root .ou-card2:focus, .ou-frontend.mxa-root .mxa-layer .ou-gcard:focus { background-color: var(--oc-gold); border-left-color: var(--oc-gold); translate: 10px 0; }
+.ou-frontend.mxa-root .ou-card2-title, .ou-frontend.mxa-root .mxa-layer .ou-gcard-title { font-size: 36px; letter-spacing: 0.5px; color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-card2-sub, .ou-frontend.mxa-root .mxa-layer .ou-gcard-sub {
+    font-size: 22px; letter-spacing: 2px; color: var(--oc-dim);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-card2:focus > .ou-card2-copy > .ou-card2-title, .ou-frontend.mxa-root .mxa-layer .ou-gcard:focus > .ou-gcard-copy > .ou-gcard-title { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-card2:focus > .ou-card2-copy > .ou-card2-sub, .ou-frontend.mxa-root .mxa-layer .ou-gcard:focus > .ou-gcard-copy > .ou-gcard-sub { color: rgba(14, 15, 15, 0.72); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard-off > .ou-gcard-copy > .ou-gcard-title { color: rgba(224, 224, 200, 0.6); }
+.ou-frontend.mxa-root .ou-card2:focus .ou-pill, .ou-frontend.mxa-root .mxa-layer .ou-gcard:focus .ou-pill { background-color: rgba(14, 15, 15, 0.82); color: var(--oc-paper); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard:focus .ou-pill-good, .ou-frontend.mxa-root .ou-card2:focus .ou-pill-good { color: var(--oc-ink); background-color: var(--ou-green); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard:focus .ou-pill-gold, .ou-frontend.mxa-root .ou-card2:focus .ou-pill-gold { color: var(--oc-ink); background-color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-card2-thumb { border-radius: 0; }
+
+/* the strip under the stage (garage parts / gear) and the livery strip */
+.ou-frontend.mxa-root .mxa-layer .ou-gchip {
+    border-radius: 0; border-left-width: 6px; border-left-color: rgba(224, 224, 200, 0.16); background-color: var(--oc-plate);
+    background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+}
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:focus { background-color: var(--oc-gold); background-image: none; border-left-color: var(--oc-ink); translate: 0 -6px; }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip-on { border-left-color: var(--ou-green); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip-title { color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; font-size: 30px; }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip-line { color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:focus > .ou-gchip-title { color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:focus > .ou-gchip-line { color: rgba(14, 15, 15, 0.72); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:focus .ou-pill { background-color: rgba(14, 15, 15, 0.82); color: var(--oc-paper); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:focus .ou-pill-good { color: var(--oc-ink); background-color: var(--ou-green); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip:focus .ou-pill-gold { color: var(--oc-ink); background-color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .mxa-layer .ou-gchip-off > .ou-gchip-title { color: rgba(224, 224, 200, 0.6); }
+.ou-frontend.mxa-root .ou-strip-chip { border-radius: 0; background-color: var(--oc-plate); border-width: 0; border-left-width: 5px; border-left-color: rgba(224, 224, 200, 0.16); }
+.ou-frontend.mxa-root .ou-strip-label { color: var(--oc-paper); font-size: 20px; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-strip-chip:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .ou-strip-on { background-color: var(--oc-orange); border-left-color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-strip-on > .ou-strip-label { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-strip-card { border-radius: 0; background-color: var(--oc-plate); border-width: 0; }
+.ou-frontend.mxa-root .ou-strip-card.ou-strip-on { background-color: var(--oc-plate); border-width: 3px; border-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-strip-card.ou-strip-on > .ou-strip-label { background-color: var(--oc-gold); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-strip-title, .ou-frontend.mxa-root .mxa-layer .ou-strip-title {
+    color: var(--oc-orange-hot); font-size: 20px; letter-spacing: 5px; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+
+/* the browser's grid cards: dark glass, gold frame and a gold caption on focus */
+.ou-frontend.mxa-root .ou-card { border-radius: 0; background-color: var(--oc-glass); border-width: 3px; border-color: rgba(224, 224, 200, 0.10); }
+.ou-frontend.mxa-root .ou-card:hover { border-color: rgba(224, 224, 200, 0.34); }
+.ou-frontend.mxa-root .ou-card-on { border-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-card:focus { border-color: var(--oc-gold); background-color: var(--oc-gold); translate: 0 -4px; }
+.ou-frontend.mxa-root .ou-card-name { color: var(--oc-paper); font-size: 24px; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-card-sub { color: var(--oc-dim); font-size: 18px; -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-card:focus .ou-card-name { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-card-on .ou-card-sub { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-card:focus .ou-card-sub { color: rgba(14, 15, 15, 0.72); }
+.ou-frontend.mxa-root .ou-view-list > .ou-card:focus { translate: 8px 0; }
+.ou-frontend.mxa-root .ou-card-badge { font-size: 16px; }
+.ou-frontend.mxa-root .ou-card-thumb { background-color: rgb(24, 23, 21); }
+.ou-frontend.mxa-root .ou-card-thumb-empty { background-color: rgb(34, 30, 26); }
+.ou-frontend.mxa-root .ou-card-dlc { background-color: var(--oc-orange); }
+
+/* ------------------------------------------------------------------ browser: filters, detail */
+
+.ou-frontend.mxa-root .ou-filter-group {
+    font-size: 20px; letter-spacing: 5px; color: var(--oc-orange-hot); margin: 20px 0 8px 10px;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-filter { height: 48px; border-radius: 0; border-left-width: 6px; border-left-color: rgba(204, 95, 41, 0.0); margin: 0 6px 3px 0; background-color: rgba(255, 255, 255, 0.03);
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic; }
+.ou-frontend.mxa-root .ou-filter > .mxa-button-label { font-size: 24px; letter-spacing: 1px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-filter-count { font-size: 20px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-filter-count-add { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-filter:hover { background-color: rgba(255, 255, 255, 0.10); }
+.ou-frontend.mxa-root .ou-filter-on { background-color: rgba(204, 95, 41, 0.22); border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-filter-on > .mxa-button-label { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-filter:focus { background-color: var(--oc-gold); border-left-color: var(--oc-gold); translate: 6px 0; }
+.ou-frontend.mxa-root .ou-filter:focus > .mxa-button-label, .ou-frontend.mxa-root .ou-filter:focus > .ou-filter-count { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-count { font-size: 22px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-detail-title { font-size: 44px; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); }
+.ou-frontend.mxa-root .ou-detail-shot { height: 222px; }
+.ou-frontend.mxa-root .ou-detail-body .mxa-note, .ou-frontend.mxa-root .ou-detail-text, .ou-frontend.mxa-root .ou-detail-body .ou-detail-text { font-size: 20px; }
+.ou-frontend.mxa-root .ou-detail-sub { font-size: 19px; letter-spacing: 2px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-detail-shot, .ou-frontend.mxa-root .ou-detail-map { border-radius: 0; }
+.ou-frontend.mxa-root .ou-fav-toggle > .mxa-button-label { font-size: 20px; }
+.ou-frontend.mxa-root .ou-empty-mark { display: none; }
+.ou-frontend.mxa-root .ou-empty-title { font-size: 56px; }
+.ou-frontend.mxa-root .ou-empty-text { font-size: 24px; color: var(--oc-dim); }
+
+/* ------------------------------------------------------------------ setup and leaderboards */
+
+.ou-frontend.mxa-root .ou-setup-hero { border-radius: 0; border-width: 2px; border-color: var(--oc-line); border-top-width: 10px; border-top-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-setup-map { border-radius: 0; }
+.ou-frontend.mxa-root .ou-setup-title { font-size: 72px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-setup-sub { font-size: 22px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-schip { border-radius: 0; border-width: 0; border-left-width: 6px; border-left-color: var(--oc-orange); background-color: var(--oc-glass); padding: 8px 18px 8px 16px; }
+.ou-frontend.mxa-root .ou-schip-accent { background-color: rgba(204, 95, 41, 0.22); border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-schip-label { font-size: 18px; letter-spacing: 4px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-schip-value { font-size: 26px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-setup-summary-small .ou-schip-value { font-size: 22px; }
+.ou-frontend.mxa-root .ou-setup-ride { border-radius: 0; border-width: 2px; background-color: var(--oc-glass); }
+.ou-frontend.mxa-root .ou-setup-ride-pic { border-radius: 0; }
+.ou-frontend.mxa-root .ou-setup-ride-name { font-size: 40px; color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-lbm-track { border-radius: 0; border-left-width: 6px; background-color: rgba(255, 255, 255, 0.045); }
+.ou-frontend.mxa-root .ou-lbm-track:hover { background-color: rgba(255, 255, 255, 0.10); }
+.ou-frontend.mxa-root .ou-lbm-track-on { background-color: rgba(204, 95, 41, 0.22); border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-lbm-track:focus { background-color: var(--oc-gold); border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-lbm-track-name { font-size: 24px; color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-lbm-track:focus > .ou-lbm-track-copy > .ou-lbm-track-name, .ou-frontend.mxa-root .ou-lbm-track:focus > .ou-lbm-track-times > .ou-lbm-track-time { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-lbm-track-sub { font-size: 18px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-lbm-track-time { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-lbm-track-me { font-size: 18px; color: var(--oc-orange-hot); }
+
+/* library / install / session pages */
+.ou-frontend.mxa-root .mxa-library-card { border-radius: 0; background-color: var(--oc-glass); border-width: 2px; border-color: var(--oc-line); border-top-width: 10px; border-top-color: var(--oc-orange); }
+.ou-frontend.mxa-root .mxa-library-platform { color: var(--oc-orange-hot); font-size: 22px; letter-spacing: 4px; }
+.ou-frontend.mxa-root .mxa-library-secret { border-color: rgba(204, 95, 41, 0.6); }
+.ou-frontend.mxa-root .mxa-dir:focus { background-color: var(--oc-gold); color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-dir.mxa-dir-current { background-color: rgba(204, 95, 41, 0.18); }
+.ou-frontend.mxa-root .mxa-controls-row:focus { background-color: rgba(226, 172, 64, 0.22); }
+.ou-frontend.mxa-root .unity-scroller--vertical .unity-base-slider__dragger, .ou-frontend.mxa-root .mxa-root .unity-scroller--vertical .unity-base-slider__dragger { background-color: rgba(224, 224, 200, 0.30); }
+
+/* ------------------------------------------------------------------ the HUB: patch plates over the 3D scene (shared classes only) */
+
+.ou-frontend.mxa-root .ou-hub-button {
+    height: 84px; margin-bottom: 8px; padding-left: 34px; border-left-width: 8px; border-left-color: rgba(204, 95, 41, 0.0);
+    background-color: rgba(26, 26, 24, 0.82); background-image: url("Textures/OcTile.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.06);
+    background-repeat: repeat repeat; background-size: 16px 16px;
+    transition-property: background-color, border-left-color; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.ou-frontend.mxa-root .ou-hub-button > .ou-backdrop { display: none; }
+.ou-frontend.mxa-root .ou-hub-button:hover { background-color: rgba(52, 51, 47, 0.92); }
+/* focus: a lighter plate and the gold bar in the border that is there all the time: nothing moves, nothing changes its width */
+.ou-frontend.mxa-root .ou-hub-button:focus { background-color: var(--oc-plate-hi); border-left-color: var(--oc-gold); -unity-background-image-tint-color: rgba(255, 255, 255, 0.12); }
+.ou-frontend.mxa-root .ou-hub-button > .mxa-button-label {
+    font-size: 54px; letter-spacing: 2px; color: var(--oc-orange); text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.75); margin: -8px 0 -6px 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; transition-property: color; transition-duration: 0.14s;
+}
+.ou-frontend.mxa-root .ou-hub-button:focus > .mxa-button-label { color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-hub-caption {
+    font-size: 18px; letter-spacing: 3px; color: var(--oc-dim); text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.6);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-hub-button:focus > .ou-hub-caption { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-continue-copy { background-color: rgba(10, 14, 15, 0.70); }
+.ou-frontend.mxa-root .ou-continue-title { font-size: 46px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-continue-sub, .ou-frontend.mxa-root .ou-garage-card-sub {
+    font-size: 20px; letter-spacing: 2px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-garage-card-name { font-size: 40px; }
+.ou-frontend.mxa-root .ou-garage-card:hover { border-color: rgba(224, 224, 200, 0.34); }
+.ou-frontend.mxa-root .ou-garage-card:focus { border-color: var(--oc-gold); background-color: var(--oc-glass-hi); }
+.ou-frontend.mxa-root .ou-number-hash { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-number { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-crash-card { border-top-color: rgb(176, 52, 40); }
+
+/* ------------------------------------------------------------------ the garage stage (the 3D view's side) */
+
+.ou-frontend.mxa-root .ou-stage-glow { -unity-background-image-tint-color: rgba(204, 95, 41, 0.20); }
+.ou-frontend.mxa-root .ou-stage-make, .ou-frontend.mxa-root .ou-sr-make, .ou-frontend.mxa-root .ou-sr-card-make, .ou-frontend.mxa-root .mxa-layer .ou-stage-make { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-stage-sub, .ou-frontend.mxa-root .mxa-layer .ou-garage-status, .ou-frontend.mxa-root .mxa-layer .ou-stage-hint2, .ou-frontend.mxa-root .ou-stage-hint { color: var(--oc-dim); }
+.ou-frontend.mxa-root .mxa-layer .ou-stage-number2 { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .mxa-layer .ou-gbar { border-radius: 0; background-color: rgba(224, 224, 200, 0.14); }
+.ou-frontend.mxa-root .mxa-layer .ou-gbar-base { background-color: var(--oc-paper); }
+.ou-frontend.mxa-root .mxa-layer .ou-gbar-bonus { background-color: var(--oc-gold); }
+.ou-frontend.mxa-root .mxa-layer .ou-gstat-label { color: var(--oc-dim); }
+.ou-frontend.mxa-root .mxa-layer .ou-stage-credits { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-gshowroom { border-radius: 0; background-color: var(--oc-plate); border-width: 0; border-left-width: 8px; border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-gshowroom:hover { background-color: var(--oc-plate-hi); }
+.ou-frontend.mxa-root .ou-gshowroom:focus { background-color: var(--oc-gold); border-left-color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-gshowroom > .mxa-button-label { color: var(--oc-orange); text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-gshowroom:focus > .mxa-button-label { color: var(--oc-ink); text-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+.ou-frontend.mxa-root .ou-gshowroom-arrow { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-gshowroom:focus > .ou-gshowroom-arrow, .ou-frontend.mxa-root .ou-gshowroom:focus > .ou-gshowroom-sub { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-sr-equipped { background-color: var(--oc-orange); color: var(--oc-ink); border-radius: 0; font-size: 18px; }
+.ou-frontend.mxa-root .ou-sr-group-count { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-sr-active-chip { background-color: rgba(204, 95, 41, 0.22); border-color: var(--oc-orange); }
+
+/* ------------------------------------------------------------------ stat tiles, the big place, boards (OuWidgets): the career's */
+
+.ou-frontend.mxa-root .ou-stats { margin: 6px 0 14px 0; }
+.ou-frontend.mxa-root .ou-stat { padding: 8px 20px 8px 18px; margin: 0 12px 12px 0; border-radius: 0; border-left-width: 6px; border-left-color: var(--oc-orange); background-color: var(--oc-glass); min-width: 150px; }
+.ou-frontend.mxa-root .ou-stat-label { font-size: 20px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-stat-value { font-size: 58px; color: var(--oc-paper); margin-top: -6px; }
+.ou-frontend.mxa-root .ou-stat-good { border-left-color: var(--ou-green); }
+.ou-frontend.mxa-root .ou-stat-good > .ou-stat-value { color: var(--ou-green); }
+.ou-frontend.mxa-root .ou-stat-gold { border-left-color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-stat-gold > .ou-stat-value { color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-place { margin: 0 0 6px 0; height: 168px; align-items: flex-end; }
+.ou-frontend.mxa-root .ou-place-num { font-size: 190px; margin: -34px 0 0 0; text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-place-suffix { font-size: 70px; color: var(--oc-orange-hot); margin: 0 0 22px 6px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-place-1 > .ou-place-num { color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-place-2 > .ou-place-num { color: rgb(214, 220, 228); }
+.ou-frontend.mxa-root .ou-place-3 > .ou-place-num { color: rgb(214, 140, 78); }
+
+.ou-frontend.mxa-root .ou-board-head { height: 46px; background-color: var(--oc-orange); margin-bottom: 6px; }
+.ou-frontend.mxa-root .ou-board-head > Label, .ou-frontend.mxa-root .ou-board-head > .ou-board-cell { font-size: 22px; letter-spacing: 4px; color: var(--oc-ink); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-board-row { height: 66px; margin-bottom: 5px; border-left-width: 0; background-color: var(--oc-glass); }
+.ou-frontend.mxa-root .ou-board-row:hover { background-color: var(--oc-glass-hi); }
+.ou-frontend.mxa-root .ou-board-row:focus { background-color: var(--oc-gold); translate: 8px 0; border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-board-cell { font-size: 31px; letter-spacing: 0.5px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-board-status { font-size: 24px; letter-spacing: 3px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-board-time { color: var(--ou-green); }
+.ou-frontend.mxa-root .ou-board-best { font-size: 28px; color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-board-rank { background-color: rgba(0, 0, 0, 0.42); color: var(--oc-paper); font-size: 40px; }
+.ou-frontend.mxa-root .ou-board-head > .ou-board-rank { background-color: rgba(0, 0, 0, 0); height: auto; font-size: 22px; }
+.ou-frontend.mxa-root .ou-board-rank-1 { background-color: rgb(255, 215, 0); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-rank-2 { background-color: rgb(192, 192, 192); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-rank-3 { background-color: rgb(168, 92, 15); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-you { background-color: rgba(226, 172, 64, 0.30); border-left-width: 6px; border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-board-you:focus { background-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-cell { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-time { color: var(--ou-green); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-status { color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-best { color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-rank { background-color: rgba(0, 0, 0, 0.42); color: var(--oc-paper); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-rank-1 { background-color: rgb(255, 215, 0); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-rank-2 { background-color: rgb(192, 192, 192); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-you > .ou-board-rank-3 { background-color: rgb(168, 92, 15); color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-row:focus > .ou-board-cell, .ou-frontend.mxa-root .ou-board-you:focus > .ou-board-cell { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-board-row:focus > .ou-board-status, .ou-frontend.mxa-root .ou-board-row:focus > .ou-board-time { color: rgba(14, 15, 15, 0.78); }
+.ou-frontend.mxa-root .ou-board-row:focus > .ou-board-rank-1, .ou-frontend.mxa-root .ou-board-row:focus > .ou-board-rank-2, .ou-frontend.mxa-root .ou-board-row:focus > .ou-board-rank-3 { color: var(--oc-ink); }
+
+/* the page layout: the career's side column + main */
+.ou-frontend.mxa-root .ou-page-side { width: 640px; margin-right: 40px; }
+.ou-frontend.mxa-root .ou-hero-title { font-size: 72px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-hero-sub { font-size: 28px; letter-spacing: 4px; color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-lead { font-size: 31px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; letter-spacing: 0.5px; }
+
+/* ------------------------------------------------------------------ dialogs: the title is the orange bar (position: absolute over the top of the card) */
+
+.ou-frontend.mxa-root .ou-dialog {
+    border-radius: 0; border-top-width: 0; border-width: 2px; border-color: var(--oc-line); background-color: var(--oc-glass-hi);
+    padding: 92px 48px 36px 48px;
+}
+.ou-frontend.mxa-root .ou-dialog { background-color: rgba(16, 27, 30, 0.97); }
+.ou-frontend.mxa-root .ou-dialog-title {
+    position: absolute; left: 0; right: 0; top: 0; height: 64px; margin: 0; padding: 0 48px; font-size: 50px; letter-spacing: 1px; color: var(--oc-ink);
+    background-color: var(--oc-orange); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 0 0 rgba(0, 0, 0, 0); -unity-text-align: middle-left;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-dialog-gold > .ou-dialog-title { background-color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-dialog-silver > .ou-dialog-title { background-color: rgb(192, 192, 192); }
+.ou-frontend.mxa-root .ou-dialog-bronze > .ou-dialog-title { background-color: rgb(196, 112, 40); }
+.ou-frontend.mxa-root .ou-dialog-fail > .ou-dialog-title { background-color: rgb(120, 126, 138); }
+.ou-frontend.mxa-root .ou-dialog-lead { font-size: 32px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; letter-spacing: 0.5px; }
+.ou-frontend.mxa-root .ou-dialog-text { font-size: 28px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-dialog .ou-eyebrow2 { font-size: 24px; }
+.ou-frontend.mxa-root .ou-dialog-gold .ou-eyebrow2 { color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-dialog-silver .ou-eyebrow2 { color: rgb(214, 220, 228); }
+.ou-frontend.mxa-root .ou-dialog-bronze .ou-eyebrow2 { color: rgb(214, 140, 78); }
+.ou-frontend.mxa-root .ou-criterion { border-radius: 0; border-left-width: 6px; background-color: rgba(255, 255, 255, 0.05); }
+.ou-frontend.mxa-root .ou-criterion-gold { border-left-color: rgb(255, 215, 0); }
+.ou-frontend.mxa-root .ou-criterion-silver { border-left-color: rgb(192, 192, 192); }
+.ou-frontend.mxa-root .ou-criterion-bronze { border-left-color: rgb(196, 112, 40); }
+.ou-frontend.mxa-root .ou-criterion-hit { background-color: rgba(226, 172, 64, 0.26); }
+.ou-frontend.mxa-root .ou-criterion-label { font-size: 20px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-criterion-value { font-size: 44px; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); }
+.ou-frontend.mxa-root .mxa-layer .ou-gdialog-root .ou-dialog { background-color: rgba(16, 27, 30, 0.97); width: 800px; }
+
+/* ------------------------------------------------------------------ credits */
+
+.ou-frontend.mxa-root .ou-credit { border-radius: 0; border-left-width: 8px; border-left-color: var(--oc-orange); background-color: var(--oc-glass); margin-bottom: 8px; }
+.ou-frontend.mxa-root .ou-credit:focus { background-color: var(--oc-glass-hi); border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-credit:focus > .ou-credit-name { color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-credit-name { font-size: 48px; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); }
+.ou-frontend.mxa-root .ou-credit-role { font-size: 24px; letter-spacing: 5px; color: var(--oc-orange-hot); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-credit-note { font-size: 28px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-legal { border-radius: 0; background-color: var(--oc-glass); border-left-width: 6px; border-left-color: var(--oc-dim); }
+.ou-frontend.mxa-root .ou-legal-text { font-size: 24px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+
+/* ------------------------------------------------------------------ options: the side card, the page bar */
+
+.ou-frontend.mxa-root .mxa-options-page { padding: 78px 0 18px 0; position: relative; border-top-width: 2px; border-top-color: var(--oc-line); }
+.ou-frontend.mxa-root .ou-opt-page-bar { position: absolute; left: 0; right: 0; top: 0; height: 60px; margin: 0; padding: 0 22px; -unity-text-align: middle-left; }
+.ou-frontend.mxa-root .mxa-options-scroll { padding: 0 24px 0 24px; }
+.ou-frontend.mxa-root .ou-opt-side { padding: 84px 28px 28px 28px; position: relative; border-top-width: 2px; border-top-color: var(--oc-line); }
+.ou-frontend.mxa-root .ou-opt-side > .ou-pill {
+    position: absolute; left: 0; right: 0; top: 0; height: 60px; margin: 0; padding: 0 22px; font-size: 40px; letter-spacing: 2px; color: var(--oc-ink);
+    background-color: var(--oc-orange); -unity-text-align: middle-left;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-opt-side-title { font-size: 52px; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); }
+.ou-frontend.mxa-root .ou-opt-side-help { font-size: 30px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; letter-spacing: 0.5px; }
+.ou-frontend.mxa-root .mxa-options-section { margin-top: 24px; }
+
+/* the controls page */
+.ou-frontend.mxa-root .mxa-ctl-cell { border-radius: 0; background-color: rgba(255, 255, 255, 0.07); }
+.ou-frontend.mxa-root .mxa-ctl-custom { border-left-color: var(--oc-orange); }
+.ou-frontend.mxa-root .mxa-ctl-cell:focus { background-color: var(--oc-gold); }
+.ou-frontend.mxa-root .mxa-ctl-cell-label { color: var(--oc-paper); font-size: 22px; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .mxa-ctl-cell:focus > .mxa-ctl-cell-label { color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-ctl-headcell { font-size: 20px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .mxa-ctl-sub { font-size: 18px; color: var(--oc-dim); }
+.ou-frontend.mxa-root .mxa-ctl-box { border-radius: 0; background-color: var(--oc-glass-hi); border-left-color: var(--oc-orange); border-width: 2px; border-left-width: 10px; border-color: var(--oc-line); }
+.ou-frontend.mxa-root .mxa-ctl-modal { background-color: rgba(14, 13, 12, 0.72); }
+.ou-frontend.mxa-root .mxa-ctl-modal-kicker { color: var(--oc-orange-hot); font-size: 20px; letter-spacing: 5px; }
+.ou-frontend.mxa-root .mxa-ctl-modal-title { font-size: 44px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .mxa-ctl-modal-text { font-size: 26px; color: var(--oc-dim); }
+
+/* ------------------------------------------------------------------ loading pages */
+
+.ou-frontend.mxa-root .ou-loading2 { background-color: rgb(24, 23, 21); background-image: url("Textures/OcDots.png"); -unity-background-scale-mode: stretch-to-fill; -unity-background-image-tint-color: rgba(255, 255, 255, 0.035); }
+.ou-frontend.mxa-root .ou-loading2-text { font-size: 28px; letter-spacing: 8px; color: var(--oc-paper); text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .ou-loading2-bar { height: 12px; border-radius: 0; background-color: rgba(14, 15, 15, 0.7); border-width: 2px; border-color: var(--oc-line); }
+.ou-frontend.mxa-root .ou-loading2-fill { background-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-spinner { border-color: rgba(224, 224, 200, 0.14); border-top-color: var(--oc-orange); }
+
+.ou-frontend.mxa-root .ou-loading-copy > .ou-eyebrow { font-size: 28px; letter-spacing: 8px; color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-loading-title { font-size: 120px; text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.75); }
+.ou-frontend.mxa-root .ou-loading-bar { height: 14px; width: 520px; background-color: rgba(14, 15, 15, 0.7); border-width: 2px; border-color: var(--oc-line); }
+.ou-frontend.mxa-root .ou-loading-bar-fill { --shape-fill: rgb(204, 95, 41); --shape-skew: 0; }
+.ou-frontend.mxa-root .ou-loading-sub { font-size: 24px; letter-spacing: 5px; color: var(--oc-paper); text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); }
+.ou-frontend.mxa-root .ou-progress { border-radius: 0; height: 14px; background-color: rgba(14, 15, 15, 0.7); }
+.ou-frontend.mxa-root .ou-progress-fill > .ou-backdrop { --shape-fill: rgb(204, 95, 41); --shape-skew: 0; }
+
+/* the pause's trick library rows */
+.ou-frontend.mxa-root .ou-trick-row { border-radius: 0; border-left-width: 0; background-color: rgba(255, 255, 255, 0.045); }
+.ou-frontend.mxa-root .ou-trick-row:focus { background-color: var(--oc-gold); border-left-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-trick-row:focus > .ou-trick-name, .ou-frontend.mxa-root .ou-trick-row:focus > .ou-trick-tier { color: var(--oc-ink); }
+.ou-frontend.mxa-root .ou-trick-tier { color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .ou-trick-name { color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); }
+
+/* ------------------------------------------------------------------ the install / library / session pages: the panel's title is its orange bar */
+
+.ou-frontend.mxa-root .mxa-panel.mxa-install { padding: 96px 32px 28px 32px; border-top-width: 2px; border-top-color: var(--oc-line); }
+/* the list of an install / library page takes what the panel has left (its basis is nothing, not its content: a long list used to push the button row out of the panel),
+   the button row keeps its size and the panel keeps clear of the status bar */
+.ou-frontend.mxa-root .mxa-panel.mxa-install { flex-shrink: 1; min-height: 0; margin-bottom: 24px; }
+.ou-frontend.mxa-root .mxa-panel.mxa-install > .mxa-library-list, .ou-frontend.mxa-root .mxa-panel.mxa-install > .mxa-dir-list { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 120px; }
+.ou-frontend.mxa-root .mxa-panel.mxa-install > .mxa-install-buttons { flex-shrink: 0; margin-top: 12px; }
+.ou-frontend.mxa-root .mxa-panel > .mxa-screen-title {
+    position: absolute; left: 0; right: 0; top: 0; height: 64px; margin: 0; padding: 0 32px; font-size: 50px; letter-spacing: 1px; color: var(--oc-ink);
+    background-color: var(--oc-orange); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 0 0 rgba(0, 0, 0, 0); -unity-text-align: middle-left;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-track-title { font-size: 44px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); }
+.ou-frontend.mxa-root .mxa-library-state { font-size: 20px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .mxa-library-description { font-size: 24px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.ou-frontend.mxa-root .mxa-dir-header { font-size: 20px; letter-spacing: 5px; color: var(--oc-orange-hot); }
+.ou-frontend.mxa-root .mxa-dir { font-size: 26px; color: var(--oc-paper); }
+
+/* ------------------------------------------------------------------ over the 3D menu scene (hub, garage): more solid glass, shadowed type */
+
+.ou-frontend.mxa-root .ou-card-panel { background-color: rgba(10, 18, 20, 0.95); }
+.ou-frontend.mxa-root .ou-garage-panel { background-color: rgba(10, 18, 20, 0.95); }
+.ou-frontend.mxa-root .ou-garage-card:focus { background-color: rgba(18, 30, 33, 0.97); }
+.ou-frontend.mxa-root .ou-stage-3d .ou-stage-bottom { background-color: rgba(8, 10, 10, 0.50); }
+.ou-frontend.mxa-root .ou-stage-id, .ou-frontend.mxa-root .ou-stage-bottom, .ou-frontend.mxa-root .ou-stage-top {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.85);
+}
+.ou-frontend.mxa-root .ou-hub-left .ou-hub-caption { text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9); }
+
+/* the hub's left column: the logo, the big rows and the chips share one left edge and one width (the rows' 600 px) */
+.ou-frontend.mxa-root .ou-hub-left { justify-content: flex-start; padding-top: 150px; }   /* (the logo stays where it is from the hub to PLAY and back) */
+.ou-frontend.mxa-root .ou-hub-left > .ou-hub-logo { margin: 0 0 34px 0; }   /* (OuFrontEnd.uss pulled it 14 px left to make up for the 18 px the logo pads itself with) */
+.ou-frontend.mxa-root .ou-hub-logo > .ou-logo { padding-left: 0; }   /* (the logo's artwork starts at the menu's left edge) */
+.ou-frontend.mxa-root .ou-hub-small { flex-direction: row; align-self: flex-start; flex-shrink: 0; min-width: 608px; margin: 14px 0 0 0; }   /* (608: the chips' 8 px gaps, one trailing: 600 px of chips like the rows) */
+.ou-frontend.mxa-root .ou-hub-small > .ou-chip {
+    flex-grow: 1; flex-shrink: 0; margin: 0 8px 0 0; height: 46px; padding: 0 14px 0 9px;   /* (the 5 px bar on the left, so the label's space is even) */
+}
+.ou-frontend.mxa-root .ou-hub-small > .ou-chip > .mxa-button-label {
+    flex-grow: 1; flex-shrink: 0; margin: 0; padding: 0 0 0 2px; font-size: 22px; letter-spacing: 2px; white-space: nowrap; overflow: visible;
+    -unity-text-align: middle-center;
+}
+.ou-frontend.mxa-root .ou-hub-small-back > .ou-chip { flex-grow: 0; min-width: 150px; }
+.ou-frontend.mxa-root .ou-hub-eyebrow {
+    font-size: 22px; letter-spacing: 6px; color: var(--oc-orange-hot); margin: 0 0 10px 0; padding: 0; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-hub-live > .ou-hub-caption { color: var(--oc-gold); }
+/* players right now (OpenShell.Presence.cs): under the chips, quiet; hidden without counts */
+.ou-frontend.mxa-root .ou-hub-presence { flex-direction: row; align-items: center; align-self: flex-start; margin: 16px 0 0 2px; }
+.ou-frontend.mxa-root .ou-hub-presence-stat { flex-direction: row; align-items: center; margin: 0 26px 0 0; }
+.ou-frontend.mxa-root .ou-hub-presence-dot { width: 9px; height: 9px; border-radius: 5px; margin: 0 10px 0 0; background-color: rgb(92, 214, 120); }
+.ou-frontend.mxa-root .ou-hub-presence-online > .ou-hub-presence-dot { background-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-hub-presence-num {
+    font-size: 24px; letter-spacing: 1px; color: var(--oc-paper); margin: 0 7px 0 0; padding: 0; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-hub-presence-word {
+    font-size: 18px; letter-spacing: 4px; color: var(--oc-dim); margin: 2px 0 0 0; padding: 0; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.9);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+
+/* the options over the 3D scene: the scene must not read through the page */
+.ou-frontend.mxa-root .mxa-dim.mxa-options-open { background-color: rgba(24, 23, 21, 0.96); }
+
+/* ------------------------------------------------------------------ the rider's portrait (OpenRiderPortrait): the hub's MOTOCARD card and the garage's RIDER tab */
+
+.ou-frontend.mxa-root .ou-portrait {
+    width: 112px; height: 136px; flex-shrink: 0; margin-right: 22px; overflow: hidden;
+    background-color: rgba(8, 14, 16, 0.96); background-image: url("Textures/OcDots.png"); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07);
+    border-width: 2px; border-color: var(--oc-line);
+}
+.ou-frontend.mxa-root .ou-portrait-pic { position: absolute; left: 0; right: 0; top: 0; bottom: 8px; -unity-background-scale-mode: scale-and-crop; }
+.ou-frontend.mxa-root .ou-portrait-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background-color: var(--oc-orange); }
+.ou-frontend.mxa-root .ou-garage-card:focus .ou-portrait { border-color: var(--oc-gold); }
+.ou-frontend.mxa-root .ou-garage-card:focus .ou-portrait-bar { background-color: var(--oc-gold); }
+
+/* the head of the garage's RIDER tab: the portrait, the name, the jersey number and the credits as a motocard */
+.ou-frontend.mxa-root .ou-gmoto {
+    flex-direction: row; align-items: center; padding: 14px 18px 14px 14px; margin: 6px 0 10px 0;
+    background-color: var(--oc-glass-hi); border-top-width: 8px; border-top-color: var(--oc-orange); border-left-width: 2px; border-right-width: 2px; border-bottom-width: 2px;
+    border-left-color: var(--oc-line); border-right-color: var(--oc-line); border-bottom-color: var(--oc-line);
+}
+.ou-frontend.mxa-root .ou-gmoto .ou-portrait { width: 120px; height: 148px; margin-right: 20px; }
+.ou-frontend.mxa-root .ou-gmoto-copy { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.ou-frontend.mxa-root .ou-gmoto-name {
+    font-size: 44px; color: var(--oc-paper); margin: -2px 0 0 0; padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7);
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-gmoto-line { flex-direction: row; align-items: baseline; margin: 0; }
+.ou-frontend.mxa-root .ou-gmoto-number {
+    font-size: 30px; letter-spacing: 1px; color: var(--oc-orange-hot); margin: 0 16px 0 0; padding: 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-gmoto-credits {
+    font-size: 22px; letter-spacing: 3px; color: var(--oc-gold); margin: 0; padding: 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .ou-gmoto-sub {
+    font-size: 17px; letter-spacing: 2px; color: var(--oc-dim); margin: 4px 0 0 0; padding: 0; white-space: normal;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+
+.ou-frontend.mxa-root .ou-garage-card-copy { min-width: 0; }
+.ou-frontend.mxa-root .ou-garage-card-copy .ou-garage-card-sub { white-space: normal; }
+
+/* ------------------------------------------------------------------ the camera preset editor over a race (ReflexOptionsMenu.Cameras.cs): the race shows beside it */
+
+.ou-frontend.mxa-root .mxa-dim.mxa-options-open.rx-cam-live { background-color: rgba(0, 0, 0, 0); background-image: none; }
+.ou-frontend.mxa-root .rx-cam-live .rx-cam-side { display: none; }
+.ou-frontend.mxa-root .rx-cam-live .rx-cam-editor { max-width: 720px; background-color: rgba(12, 22, 24, 0.84); }
+.ou-frontend.mxa-root .rx-cam-live > .mxa-head { max-width: 760px; }
+.ou-frontend.mxa-root .mxa-link.rx-cam-delete > .mxa-button-label { color: rgb(255, 120, 104); }
+.ou-frontend.mxa-root .mxa-link.rx-cam-full > .mxa-button-label { color: var(--oc-dim); }

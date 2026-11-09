@@ -1,0 +1,10 @@
+{ "event": "Supercross/SX_Kingston", "ai": 0, "ride": 6, "prefix": "sx", "settle": 2, "fps": 60, "shots": [
+  { "name": "chase_off",  "face": "replay", "cam": "Chase", "back": 3, "fx": "off" },
+  { "name": "chase_lens", "face": "replay", "cam": "Chase", "back": 3, "fx": "lens+flare" },
+  { "name": "chase_auto", "face": "replay", "cam": "Chase", "back": 3, "fx": "auto", "play": 0.4 },
+  { "name": "heli_off",   "face": "replay", "cam": "Helicopter", "back": 3, "fx": "off" },
+  { "name": "heli_auto",  "face": "replay", "cam": "Helicopter", "back": 3, "fx": "auto" },
+  { "name": "up_off",     "face": "replay", "cam": "Free", "back": 3, "fx": "off", "sun": true, "sunLow": 20 },
+  { "name": "up_lens",    "face": "replay", "cam": "Free", "back": 3, "fx": "lens+flare", "sun": true, "sunLow": 20 },
+  { "name": "enh_off",    "face": "replay", "cam": "Chase", "back": 3, "fx": "off" }
+] }

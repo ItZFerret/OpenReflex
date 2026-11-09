@@ -1,0 +1,972 @@
+/* The OPEN REFLEX modern layer: loaded after OuMenu / OuFrontEnd / OuReflex / OuControls on every menu document (OuTheme.Apply,
+   OuUi.CreateDocument, OptUi.CreateDocument) and scoped to .ou-frontend, so it only refines what those sheets define.
+
+   DESIGN SYSTEM (reference size 1920 x 1080, scaled by height: 720p .. 4K, 16:9 .. ultrawide; the content frame and the safe area
+   are OuLayout's job)
+     type scale   display 96 / h1 60 / h2 44 / h3 34 / body 24 / label 21 / caption 18  (nothing smaller than 18 on a screen read from a sofa)
+     spacing      an 8 px grid: 8 / 16 / 24 / 32 / 48
+     colour       the logo's hot red for focus and primary, white / silver text on near-black glass, green for good times, gold for
+                  the player's own and medals
+     motion       0.14 s ease-out-cubic on focus (translate + colour), 0.32 s entrances (OuMotion.Enter staggers the children); every
+                  transition is switched off by REDUCE MOTION (.ou-reduce-motion on the root)
+     focus        the focused item is ALWAYS the red one (buttons, cards, rows) with a bar, a lift and brighter type: unmistakable from
+                  across a room with a controller; hover only lightens. */
+
+.ou-frontend {
+    --ou-surface: rgba(12, 13, 17, 0.92);
+    --ou-surface-hi: rgba(26, 28, 34, 0.94);
+    --ou-glass-line: rgba(255, 255, 255, 0.10);
+    --ou-focus-fill: rgb(228, 24, 32);
+    --ou-gold: rgb(255, 205, 72);
+    --ou-silver-medal: rgb(214, 220, 228);
+    --ou-bronze: rgb(214, 140, 78);
+    --ou-green: rgb(128, 222, 92);
+    --ou-amber: rgb(255, 190, 56);
+    --ou-warn: rgb(255, 98, 84);
+}
+
+.ou-reduce-motion, .ou-reduce-motion * {
+    transition-duration: 0s;
+}
+
+
+/* ------------------------------------------------------------------ type families (the shell's: Barlow Condensed for display and labels, Barlow for text) */
+
+.ou-frontend .ou-display, .ou-frontend .ou-card2-title, .ou-frontend .ou-hero-title, .ou-frontend .ou-dialog-title, .ou-frontend .ou-stat-value,
+.ou-frontend .ou-place-num, .ou-frontend .ou-place-suffix, .ou-frontend .ou-credit-name, .ou-frontend .ou-criterion-value {
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-label, .ou-frontend .ou-card2-sub, .ou-frontend .ou-pill, .ou-frontend .ou-stat-label, .ou-frontend .ou-board-head > Label,
+.ou-frontend .ou-board-cell, .ou-frontend .ou-hero-sub, .ou-frontend .ou-eyebrow2, .ou-frontend .ou-criterion-label, .ou-frontend .ou-credit-role,
+.ou-frontend .ou-loading2-text {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-lead, .ou-frontend .ou-dialog-lead, .ou-frontend .ou-dialog-text, .ou-frontend .ou-credit-note, .ou-frontend .ou-legal-text {
+    -unity-font-definition: url("Fonts/Barlow-Medium.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-board-rank.ou-display { font-size: 34px; }
+
+/* ------------------------------------------------------------------ frame: the safe area / content frame is applied in code (OuLayout) */
+
+.ou-frontend .mxa-layer {
+    padding: 44px 96px 112px 96px;
+}
+
+.ou-frontend .mxa-dim {
+    background-color: rgba(6, 7, 9, 0.74);
+}
+
+.ou-frontend .mxa-dim.mxa-options-open {
+    background-color: rgba(6, 7, 9, 0.94);
+}
+
+/* the button hints: key caps, big enough to read from the couch */
+.ou-frontend .mxa-hints {
+    bottom: 36px;
+}
+
+.ou-frontend .mxa-hint {
+    margin-left: 32px;
+}
+
+.ou-frontend .mxa-key {
+    font-size: 18px;
+    padding: 4px 12px;
+    min-width: 34px;
+    -unity-text-align: middle-center;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.24);
+    border-bottom-width: 3px;
+}
+
+.ou-frontend .mxa-hint-label {
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: rgba(246, 246, 244, 0.78);
+}
+
+/* pad glyphs: a round cap in the pad's own colour (Xbox A green, B red, X blue, Y yellow; PlayStation the same way) */
+.ou-frontend .mxa-key-pad {
+    min-width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 17px;
+    border-bottom-width: 1px;
+    -unity-text-align: middle-center;
+    color: rgb(12, 13, 17);
+}
+.ou-frontend .mxa-key-a { background-color: rgb(110, 214, 92); border-color: rgb(160, 240, 140); }
+.ou-frontend .mxa-key-b { background-color: rgb(240, 84, 76); border-color: rgb(255, 150, 140); }
+.ou-frontend .mxa-key-x { background-color: rgb(86, 156, 245); border-color: rgb(150, 200, 255); }
+.ou-frontend .mxa-key-y { background-color: rgb(250, 208, 70); border-color: rgb(255, 230, 140); }
+.ou-frontend .mxa-key-shoulder { border-radius: 8px; width: auto; padding: 0 10px; background-color: rgba(255, 255, 255, 0.82); border-color: rgb(255, 255, 255); }
+.ou-frontend .mxa-key-menu { border-radius: 8px; width: auto; padding: 0 10px; background-color: rgba(255, 255, 255, 0.82); border-color: rgb(255, 255, 255); }
+
+.ou-frontend .ou-statusbar {
+    bottom: 34px;
+}
+
+.ou-frontend .ou-status-text {
+    font-size: 18px;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.ou-frontend .ou-header {
+    height: 96px;
+    margin-bottom: 24px;
+}
+
+.ou-frontend .ou-header-mark {
+    width: 18px;
+    height: 72px;
+    margin-right: 26px;
+}
+
+.ou-frontend .ou-header-title {
+    font-size: 64px;
+    margin: -8px 0 -6px 0;
+}
+
+.ou-frontend .ou-header-crumb {
+    font-size: 19px;
+    letter-spacing: 4px;
+    color: rgba(246, 246, 244, 0.7);
+}
+
+/* ------------------------------------------------------------------ the big buttons: pause, results, career, popups */
+
+.ou-frontend .mxa-main-button {
+    flex-shrink: 0;
+    height: 68px;
+    margin-bottom: 8px;
+    padding: 0 28px 0 28px;
+    border-radius: 4px;
+    border-left-width: 6px;
+    border-left-color: rgba(255, 255, 255, 0.14);
+    background-color: rgba(18, 20, 25, 0.82);
+    transition-property: translate, background-color, border-left-color;
+    transition-duration: 0.14s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-frontend .mxa-main-button > .mxa-button-label {
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: rgba(246, 246, 244, 0.72);
+    white-space: nowrap;
+}
+
+.ou-frontend .mxa-main-button:hover {
+    background-color: rgba(40, 43, 52, 0.9);
+}
+
+.ou-frontend .mxa-main-button:focus {
+    background-color: var(--ou-focus-fill);
+    border-left-color: rgb(255, 255, 255);
+    translate: 12px 0;
+}
+
+.ou-frontend .mxa-main-button:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .mxa-main-button:disabled {
+    opacity: 0.4;
+}
+
+/* the primary action of a page: gold-lit when it is the default */
+.ou-frontend .ou-primary {
+    border-left-color: var(--ou-gold);
+}
+
+.ou-frontend .ou-button-row {
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-button-row > .mxa-main-button {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: 16px;
+}
+
+.ou-frontend .ou-button-row > .mxa-main-button:last-child {
+    margin-right: 0;
+}
+
+.ou-frontend .ou-button-row > .mxa-main-button:focus {
+    translate: 0 -4px;
+}
+
+/* ------------------------------------------------------------------ value rows (options, setup, garage) */
+
+.ou-frontend .mxa-row {
+    height: 64px;
+    border-left-width: 5px;
+    padding: 0 14px 0 16px;
+    transition-property: background-color, border-left-color, translate;
+    transition-duration: 0.12s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-frontend .mxa-row:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.ou-frontend .mxa-row:focus {
+    background-color: rgba(255, 255, 255, 0.11);
+    border-left-color: var(--ou-focus-fill);
+    translate: 6px 0;
+}
+
+.ou-frontend .mxa-row-label {
+    font-size: 23px;
+    letter-spacing: 1px;
+    color: rgba(246, 246, 244, 0.78);
+}
+
+.ou-frontend .mxa-value {
+    font-size: 25px;
+    min-width: 168px;
+}
+
+.ou-frontend .mxa-value-narrow {
+    min-width: 76px;
+}
+
+.ou-frontend .mxa-arrow {
+    font-size: 44px;
+    color: rgba(246, 246, 244, 0.28);
+}
+
+.ou-frontend .mxa-row:focus .mxa-arrow {
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .mxa-slider {
+    width: 300px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.ou-frontend .mxa-slider-fill {
+    height: 10px;
+    border-radius: 5px;
+    transition-property: width;
+    transition-duration: 0.1s;
+}
+
+.ou-frontend .mxa-row:disabled {
+    opacity: 0.4;
+}
+
+.ou-frontend .mxa-note {
+    font-size: 19px;
+    color: rgba(246, 246, 244, 0.6);
+}
+
+.ou-frontend .mxa-panel-title {
+    font-size: 19px;
+    letter-spacing: 4px;
+    color: rgba(246, 246, 244, 0.7);
+}
+
+/* a quiet link-style action inside a page */
+.ou-frontend .mxa-link {
+    padding: 8px 18px;
+    border-radius: 4px;
+    margin-left: 10px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.ou-frontend .mxa-link > .mxa-button-label {
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: rgba(246, 246, 244, 0.78);
+}
+
+.ou-frontend .mxa-link:focus {
+    background-color: var(--ou-focus-fill);
+}
+
+/* ------------------------------------------------------------------ tabs (options, garage) */
+
+.ou-frontend .mxa-tab > .mxa-button-label {
+    font-size: 24px;
+    letter-spacing: 2px;
+}
+
+.ou-frontend .mxa-tab {
+    padding: 12px 22px;
+}
+
+/* ------------------------------------------------------------------ panels and cards */
+
+.ou-frontend .mxa-panel {
+    background-color: var(--ou-surface);
+    border-radius: 6px;
+    border-top-width: 3px;
+    border-top-color: var(--ou-focus-fill);
+    padding: 28px;
+}
+
+.ou-card2 {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    min-height: 92px;
+    margin-bottom: 8px;
+    padding: 12px 24px 12px 20px;
+    border-radius: 4px;
+    border-left-width: 6px;
+    border-left-color: rgba(255, 255, 255, 0.14);
+    background-color: rgba(18, 20, 25, 0.84);
+    transition-property: translate, background-color, border-left-color;
+    transition-duration: 0.14s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-card2:hover {
+    background-color: rgba(40, 43, 52, 0.92);
+}
+
+.ou-card2:focus {
+    background-color: var(--ou-focus-fill);
+    border-left-color: rgb(255, 255, 255);
+    translate: 12px 0;
+}
+
+.ou-card2:disabled {
+    opacity: 0.42;
+}
+
+.ou-card2-thumb {
+    width: 150px;
+    height: 84px;
+    flex-shrink: 0;
+    margin-right: 22px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.06);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.ou-card2-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-card2-title {
+    font-size: 36px;
+    color: rgb(246, 246, 244);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ou-card2-sub {
+    font-size: 21px;
+    letter-spacing: 2px;
+    color: rgba(246, 246, 244, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ou-card2:focus > .ou-card2-copy > .ou-card2-sub {
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.ou-card2-tags {
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    margin-left: 16px;
+}
+
+/* pills: a small status or fact (LOCKED, 3 LAPS, FINISHED, DNF) */
+.ou-pill {
+    flex-shrink: 0;
+    padding: 5px 14px;
+    margin-left: 8px;
+    border-radius: 14px;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: rgba(246, 246, 244, 0.86);
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ou-pill-good { color: rgb(16, 22, 14); background-color: var(--ou-green); }
+.ou-pill-warn { color: rgb(30, 18, 4); background-color: var(--ou-amber); }
+.ou-pill-bad  { color: rgb(255, 255, 255); background-color: rgb(190, 40, 40); }
+.ou-pill-gold { color: rgb(30, 22, 4); background-color: var(--ou-gold); }
+
+.ou-eyebrow2 {
+    font-size: 19px;
+    letter-spacing: 5px;
+    color: var(--ou-red-hot);
+}
+
+/* ------------------------------------------------------------------ pages: a hero column and a content column */
+
+.ou-page {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-page-side {
+    width: 560px;
+    flex-shrink: 0;
+    margin-right: 56px;
+    justify-content: flex-start;
+}
+
+.ou-page-main {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.ou-page-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-hero-title {
+    font-size: 76px;
+    color: rgb(255, 255, 255);
+    white-space: normal;
+    margin: 0 0 8px 0;
+}
+
+.ou-hero-sub {
+    font-size: 26px;
+    letter-spacing: 3px;
+    color: rgba(246, 246, 244, 0.78);
+    white-space: normal;
+    margin-bottom: 16px;
+}
+
+.ou-lead {
+    font-size: 27px;
+    color: rgba(246, 246, 244, 0.9);
+    white-space: normal;
+    margin-bottom: 28px;
+}
+
+/* stat tiles: a label over a big number */
+.ou-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.ou-stat {
+    min-width: 168px;
+    margin: 0 12px 12px 0;
+    padding: 14px 22px 12px 18px;
+    border-radius: 4px;
+    border-left-width: 4px;
+    border-left-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(18, 20, 25, 0.84);
+}
+
+.ou-stat-label {
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: rgba(246, 246, 244, 0.7);
+}
+
+.ou-stat-value {
+    font-size: 46px;
+    color: rgb(255, 255, 255);
+    white-space: nowrap;
+}
+
+.ou-stat-good { border-left-color: var(--ou-green); }
+.ou-stat-good > .ou-stat-value { color: var(--ou-green); }
+.ou-stat-gold { border-left-color: var(--ou-gold); }
+.ou-stat-gold > .ou-stat-value { color: var(--ou-gold); }
+
+/* the big place number */
+.ou-place {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.ou-place-num {
+    font-size: 188px;
+    color: rgb(255, 255, 255);
+    margin: -22px 0 -26px 0;
+}
+
+.ou-place-suffix {
+    font-size: 64px;
+    color: rgba(246, 246, 244, 0.7);
+    margin: 0 0 4px 8px;
+}
+
+.ou-place-1 > .ou-place-num { color: var(--ou-gold); }
+.ou-place-2 > .ou-place-num { color: var(--ou-silver-medal); }
+.ou-place-3 > .ou-place-num { color: var(--ou-bronze); }
+
+/* ------------------------------------------------------------------ leaderboard rows (race results, career standings) */
+
+.ou-board {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-board-head {
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    height: 44px;
+    padding: 0 0 0 0;
+    margin-bottom: 6px;
+}
+
+.ou-board-head > Label {
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: rgba(246, 246, 244, 0.7);
+}
+
+.ou-board-row {
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+    height: 62px;
+    margin-bottom: 4px;
+    border-left-width: 5px;
+    border-left-color: rgba(255, 255, 255, 0.0);
+    background-color: rgba(18, 20, 25, 0.84);
+    transition-property: background-color, border-left-color, translate;
+    transition-duration: 0.12s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-board-row:focus {
+    background-color: rgba(60, 64, 76, 0.96);
+    border-left-color: var(--ou-focus-fill);
+    translate: 6px 0;
+}
+
+.ou-board-cell {
+    font-size: 27px;
+    color: rgb(246, 246, 244);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -unity-text-align: middle-left;
+    margin-right: 12px;
+}
+
+.ou-board-rank {
+    width: 76px;
+    flex-shrink: 0;
+    height: 100%;
+    margin-right: 18px;
+    -unity-text-align: middle-center;
+    font-size: 34px;
+    background-color: rgba(0, 0, 0, 0.42);
+}
+
+.ou-board-name { flex-grow: 1; flex-shrink: 1; min-width: 120px; }
+.ou-board-status { width: 190px; flex-shrink: 0; font-size: 21px; letter-spacing: 2px; color: rgba(246, 246, 244, 0.78); }
+.ou-board-time, .ou-board-best { width: 168px; flex-shrink: 0; -unity-text-align: middle-right; }
+.ou-board-time { color: var(--ou-green); }
+.ou-board-best { font-size: 24px; color: rgba(246, 246, 244, 0.86); }
+.ou-board-points { width: 150px; flex-shrink: 0; -unity-text-align: middle-right; }
+
+.ou-board-head > .ou-board-rank { background-color: rgba(0, 0, 0, 0); height: auto; font-size: 18px; }
+
+.ou-board-rank-1 { background-color: var(--ou-gold); color: rgb(30, 22, 4); }
+.ou-board-rank-2 { background-color: var(--ou-silver-medal); color: rgb(20, 22, 26); }
+.ou-board-rank-3 { background-color: var(--ou-bronze); color: rgb(30, 14, 4); }
+
+/* the local rider: the board's light row with dark type */
+.ou-board-you {
+    background-color: rgba(240, 240, 237, 0.95);
+}
+
+.ou-board-you:focus {
+    background-color: rgb(255, 255, 255);
+}
+
+.ou-board-you > .ou-board-cell { color: rgb(16, 18, 22); }
+.ou-board-you > .ou-board-time { color: rgb(30, 110, 18); }
+.ou-board-you > .ou-board-status { color: rgba(16, 18, 22, 0.72); }
+.ou-board-you > .ou-board-best { color: rgba(16, 18, 22, 0.8); }
+.ou-board-you > .ou-board-rank { background-color: rgba(0, 0, 0, 0.16); }
+.ou-board-you > .ou-board-rank-1 { background-color: var(--ou-gold); }
+.ou-board-you > .ou-board-rank-2 { background-color: var(--ou-silver-medal); }
+.ou-board-you > .ou-board-rank-3 { background-color: var(--ou-bronze); }
+
+/* ------------------------------------------------------------------ dialogs and popups (challenge pages, confirmations) */
+
+.ou-scrim {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(4, 5, 7, 0.62);
+}
+
+.ou-dialog-wrap {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.ou-dialog {
+    width: 1040px;
+    max-width: 92%;
+    padding: 40px 48px 36px 48px;
+    background-color: var(--ou-surface);
+    border-radius: 6px;
+    border-top-width: 5px;
+    border-top-color: var(--ou-focus-fill);
+}
+
+.ou-dialog-gold { border-top-color: var(--ou-gold); }
+.ou-dialog-silver { border-top-color: var(--ou-silver-medal); }
+.ou-dialog-bronze { border-top-color: var(--ou-bronze); }
+.ou-dialog-fail { border-top-color: rgb(120, 126, 138); }
+
+.ou-dialog-title {
+    font-size: 64px;
+    color: rgb(255, 255, 255);
+    white-space: normal;
+    margin: 0 0 6px 0;
+}
+
+.ou-dialog-lead {
+    font-size: 30px;
+    color: rgba(246, 246, 244, 0.94);
+    white-space: normal;
+    margin: 0 0 22px 0;
+}
+
+.ou-dialog-text {
+    font-size: 25px;
+    color: rgba(246, 246, 244, 0.82);
+    white-space: normal;
+    margin: 0 0 20px 0;
+}
+
+.ou-criteria {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-bottom: 24px;
+}
+
+.ou-criterion {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: 12px;
+    padding: 14px 18px 12px 18px;
+    border-left-width: 5px;
+    border-left-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.ou-criterion:last-child { margin-right: 0; }
+.ou-criterion-gold { border-left-color: var(--ou-gold); }
+.ou-criterion-silver { border-left-color: var(--ou-silver-medal); }
+.ou-criterion-bronze { border-left-color: var(--ou-bronze); }
+.ou-criterion-hit { background-color: rgba(255, 255, 255, 0.14); }
+
+.ou-criterion-label {
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: rgba(246, 246, 244, 0.72);
+}
+
+.ou-criterion-value {
+    font-size: 40px;
+    color: rgb(255, 255, 255);
+    white-space: nowrap;
+}
+
+.ou-payout {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-bottom: 24px;
+}
+
+/* ------------------------------------------------------------------ the loading page */
+
+.ou-loading2 {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgb(6, 7, 9);
+}
+
+.ou-loading2-center {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.ou-loading2-bar {
+    width: 520px;
+    height: 8px;
+    margin-top: 28px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+
+.ou-loading2-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background-color: var(--ou-focus-fill);
+}
+
+.ou-loading2-text {
+    font-size: 24px;
+    letter-spacing: 6px;
+    color: rgba(246, 246, 244, 0.82);
+    margin-top: 18px;
+}
+
+.ou-spinner {
+    width: 88px;
+    height: 88px;
+    border-radius: 44px;
+    border-width: 6px;
+    border-color: rgba(255, 255, 255, 0.14);
+    border-top-color: var(--ou-focus-fill);
+    margin-bottom: 8px;
+}
+
+/* ------------------------------------------------------------------ entrances: OuMotion.Enter adds .ou-in one frame later */
+
+.ou-enter {
+    opacity: 0;
+    translate: 0 28px;
+    transition-property: opacity, translate;
+    transition-duration: 0.34s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-enter-left {
+    translate: -48px 0;
+}
+
+.ou-enter.ou-in {
+    opacity: 1;
+    translate: 0 0;
+}
+
+.ou-fade {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.28s;
+    transition-timing-function: ease-out;
+}
+
+.ou-fade.ou-in {
+    opacity: 1;
+}
+
+/* ------------------------------------------------------------------ credits */
+
+.ou-credits {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-credit {
+    flex-shrink: 0;
+    padding: 18px 28px 16px 24px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border-left-width: 6px;
+    border-left-color: rgba(255, 255, 255, 0.14);
+    background-color: rgba(18, 20, 25, 0.84);
+}
+
+.ou-credit:focus {
+    background-color: rgba(60, 64, 76, 0.96);
+    border-left-color: var(--ou-focus-fill);
+}
+
+.ou-credit-name {
+    font-size: 44px;
+    color: rgb(255, 255, 255);
+}
+
+.ou-credit-role {
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--ou-red-hot);
+}
+
+.ou-credit-note {
+    font-size: 24px;
+    color: rgba(246, 246, 244, 0.8);
+    white-space: normal;
+    margin-top: 6px;
+}
+
+.ou-legal {
+    flex-shrink: 0;
+    margin-top: 18px;
+    padding: 18px 24px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-left-width: 4px;
+    border-left-color: rgba(255, 255, 255, 0.3);
+}
+
+.ou-legal-text {
+    font-size: 21px;
+    color: rgba(246, 246, 244, 0.82);
+    white-space: normal;
+}
+
+/* the career's practice choice pages */
+.ou-frontend .ou-practice { width: 760px; }
+.ou-frontend .ou-practice > .mxa-main-button { height: auto; min-height: 68px; padding-top: 8px; padding-bottom: 8px; }
+.ou-frontend .ou-practice > .mxa-main-button > .mxa-button-label { white-space: normal; font-size: 33px; -unity-text-align: middle-left; }
+.ou-frontend .ou-practice > .ou-lead { margin-bottom: 24px; }
+
+/* ------------------------------------------------------------------ the options pages: the list and the focused row's card */
+
+.ou-frontend .ou-opt-body {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    margin-top: 22px;
+}
+
+.ou-frontend .mxa-options-page {
+    width: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 1240px;
+    max-height: 100%;
+    margin-top: 0;
+    margin-right: 32px;
+}
+
+.ou-frontend .ou-opt-side {
+    width: 520px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    min-height: 260px;
+}
+
+.ou-frontend .ou-opt-side > .ou-pill {
+    align-self: flex-start;
+    margin-left: 0;
+    margin-bottom: 14px;
+}
+
+.ou-frontend .ou-opt-side-title {
+    font-size: 44px;
+    color: rgb(255, 255, 255);
+    white-space: normal;
+    margin-bottom: 12px;
+}
+
+.ou-frontend .ou-opt-side-help {
+    font-size: 24px;
+    color: rgba(246, 246, 244, 0.88);
+    white-space: normal;
+    -unity-font-definition: url("Fonts/Barlow-Medium.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .mxa-options-section {
+    margin-top: 28px;
+}
+
+.ou-frontend .ou-board-you > .ou-board-rank { color: rgb(16, 18, 22); }
+.ou-frontend .ou-board-you > .ou-board-rank-1, .ou-frontend .ou-board-you > .ou-board-rank-2, .ou-frontend .ou-board-you > .ou-board-rank-3 { color: rgb(20, 16, 6); }
+.ou-frontend .ou-dialog-gold .ou-eyebrow2 { color: var(--ou-gold); }
+.ou-frontend .ou-dialog-silver .ou-eyebrow2 { color: var(--ou-silver-medal); }
+.ou-frontend .ou-dialog-bronze .ou-eyebrow2 { color: var(--ou-bronze); }
+
+/* ------------------------------------------------------------------ the on-screen keyboard (OpenShell.Keyboard.cs): a dialog the pad drives alone */
+
+.ou-frontend .ou-osk-root.ou-gdialog-root .ou-dialog.ou-dialog-osk { width: 1240px; max-width: 96%; padding: 84px 40px 28px 40px; background-color: rgb(14, 15, 19); }
+.ou-frontend .ou-osk-root.ou-gdialog-root .ou-dialog.ou-dialog-osk.ou-osk-digits { width: 620px; }
+
+.ou-frontend .ou-osk-display {
+    flex-direction: row;
+    align-items: center;
+    height: 88px;
+    margin-bottom: 8px;
+    padding: 0 20px;
+    border-radius: 4px;
+    border-left-width: 6px;
+    border-left-color: var(--ou-gold);
+    background-color: rgba(0, 0, 0, 0.45);
+}
+
+.ou-frontend .ou-osk-text {
+    flex-shrink: 1;
+    font-size: 56px;
+    letter-spacing: 3px;
+    color: rgb(255, 255, 255);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ou-frontend .ou-osk-text.ou-osk-selected { background-color: rgba(255, 205, 72, 0.32); }
+.ou-frontend .ou-osk-count { font-size: 22px; letter-spacing: 2px; margin-left: auto; padding-left: 16px; color: rgba(246, 246, 244, 0.6); }
+.ou-frontend .ou-osk-count.ou-osk-full { color: var(--ou-gold); }
+.ou-frontend .ou-osk-note { font-size: 20px; letter-spacing: 2px; margin: 0 0 16px 4px; color: rgba(246, 246, 244, 0.62); white-space: normal; }
+
+.ou-frontend .ou-osk-row { flex-direction: row; }
+
+.ou-frontend .ou-osk-key {
+    flex-basis: 0;
+    flex-shrink: 1;
+    height: 80px;
+    margin: 4px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    border-bottom-width: 4px;
+    border-bottom-color: rgba(255, 255, 255, 0.10);
+    background-color: rgba(255, 255, 255, 0.09);
+    transition-property: translate, background-color;
+    transition-duration: 0.1s;
+}
+
+.ou-frontend .ou-osk-key > .mxa-button-label {
+    font-size: 40px;
+    letter-spacing: 1px;
+    color: rgba(246, 246, 244, 0.9);
+    -unity-text-align: middle-center;
+}
+
+.ou-frontend .ou-osk-key.ou-osk-wide > .mxa-button-label { font-size: 28px; letter-spacing: 3px; }
+.ou-frontend .ou-osk-key:hover { background-color: rgba(255, 255, 255, 0.18); }
+.ou-frontend .ou-osk-key:focus { background-color: var(--ou-focus-fill); border-bottom-color: rgb(255, 255, 255); translate: 0 -3px; }
+.ou-frontend .ou-osk-key:focus > .mxa-button-label { color: rgb(255, 255, 255); }
+.ou-frontend .ou-osk-key.ou-osk-done { border-bottom-color: var(--ou-gold); }
+.ou-frontend .ou-osk-key.ou-osk-done > .mxa-button-label { color: var(--ou-gold); }
+.ou-frontend .ou-osk-key.ou-osk-done:focus { background-color: var(--ou-gold); border-bottom-color: rgb(255, 255, 255); }
+.ou-frontend .ou-osk-key.ou-osk-done:focus > .mxa-button-label { color: rgb(20, 16, 6); }

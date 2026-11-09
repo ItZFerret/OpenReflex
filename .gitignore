@@ -1,0 +1,73 @@
+.DS_Store
+__pycache__/
+*.pyc
+game files/
+/_re/
+tools/formats/out/
+native/build*/
+Unity/*/Library/
+Unity/*/Temp/
+Unity/*/Obj/
+Unity/*/Logs/
+Unity/*/UserSettings/
+Unity/*/Builds/
+Unity/*/.vs/
+Unity/*/*.csproj
+Unity/*/*.sln
+
+# --- added 2026-10-25 (git setup): build outputs, run evidence and large binaries stay out of version control ---
+/builds/
+/screenshots/
+/core/build/
+/core/builds/
+/HANDOFF/
+/native/staging/
+/native/tests/
+Unity/*/Assets/Plugins/macOS/*.dylib
+*.o
+*.a
+*.dylib
+*.dll
+*.exe
+*.zip
+*.bin
+*.rmap
+*.dump
+.cache/
+/1
+/--out
+/.err
+/.hash
+/.out
+*.dSYM/
+native/drafts/world_runtime/reflex_boot
+native/drafts/world_runtime/world_validate
+native/drafts/slot13_world/slot13-world-*
+/native/drafts/slot12/contracts-arm
+/native/drafts/slot12/contracts-intel
+/native/drafts/slot12/slot12-arm
+/native/drafts/slot12/slot12-intel
+/native/drafts/slot13_world/slot13-world-arm64
+/native/drafts/slot13_world/slot13-world-x86_64
+/native/drafts/world_runtime/f80/f80_test_arm64
+/native/drafts/world_runtime/f80/f80_test_x86_64
+/native/drafts/world_runtime/reflex_boot
+/native/drafts/world_runtime/reflex_client
+/native/drafts/world_runtime/world_validate
+/testdata
+
+# symlinked inputs in agent worktrees (tools/new_worktree.sh): never commit them -- a committed symlink replaces the real
+# ignored directory on checkout (it happened 2026-10-26 to _re/out and _re/.venv)
+/game files
+/testdata
+/builds
+
+# --- w-bikemods: the client's Mods folder (bike mods, engine sound packs) and game package files never enter the repository ---
+/Mods/
+Unity/*/Mods/
+*.dx9.database
+*.dx9.package
+
+# --- local service credentials never go in the repository ---
+eos_config.json
+**/eos_config.json

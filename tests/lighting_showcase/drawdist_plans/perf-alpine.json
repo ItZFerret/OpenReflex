@@ -1,0 +1,9 @@
+{
+ "event": "FreeRide/FR_Alpine", "prefix": "PF_Alpine", "settle": 8, "adapt": 3, "perf": 5,
+ "modes": ["original-dd0", "original-dd1", "original-dd2", "original-dd0", "original-dd1", "original-dd2", "original-dd0", "original-dd1", "original-dd2", "original-dd0", "original-dd1", "original-dd2",
+           "enhanced-dd0", "enhanced-dd1", "enhanced-dd2", "enhanced-dd0", "enhanced-dd1", "enhanced-dd2", "enhanced-dd0", "enhanced-dd1", "enhanced-dd2", "enhanced-dd0", "enhanced-dd1", "enhanced-dd2"],
+ "views": [
+  {"name": "open", "cam": "path", "frame": "world", "at": [1737.75, 0, -1651.96], "offset": [0, 0, 0], "yaw": 225, "pitch": -3, "fov": 70, "t": 4,
+   "frames": 1, "step": 0.0, "ground": 6}
+ ]
+}

@@ -1,0 +1,318 @@
+/* The career pages' look (OuCareerKit, OpenShell.Career, OwnCareerPageView, OwnCareerPanels), INSPIRED by the original MX vs ATV Reflex front end:
+   a warm grey vignette stage with halftone blots, tall tilted posters in a carousel (the focused one large, the others washed out), a dark glass
+   information panel under an ORANGE title bar, the page title on a dotted patch at the bottom right, a dark legend band along the bottom, gold
+   for the selection and for the navigation triangles, bronze / silver / gold trophies. Modernised: crisp condensed type, eased motion, round pad
+   caps, controller-first focus. Loaded after OuModern.uss (OuTheme.Apply); every rule starts with .oc- so nothing else is touched.
+   Reference size 1920 x 1080 (see OuModern.uss: the panel scales by height). */
+
+.ou-frontend {
+    --oc-ink: rgb(14, 15, 15);
+    --oc-orange: rgb(204, 95, 41);
+    --oc-orange-hot: rgb(240, 120, 52);
+    --oc-gold: rgb(226, 172, 64);
+    --oc-gold-lo: rgb(176, 128, 40);
+    --oc-paper: rgb(224, 224, 200);
+    --oc-dim: rgb(176, 175, 156);
+    --oc-glass: rgba(12, 22, 24, 0.70);
+    --oc-glass-hi: rgba(18, 30, 33, 0.88);
+    --oc-line: rgba(224, 224, 200, 0.14);
+}
+
+/* ------------------------------------------------------------------ stage */
+
+.oc-stage { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgb(40, 39, 37); }
+.oc-stage-glow { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: stretch-to-fill; }
+.oc-stage-dots { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: stretch-to-fill; -unity-background-image-tint-color: rgb(0, 0, 0); opacity: 0.10; }
+.oc-stage-dim { background-color: rgba(24, 23, 21, 0.86); }
+.oc-stage-dim > .oc-stage-dots { -unity-background-image-tint-color: rgb(255, 255, 240); opacity: 0.024; }
+
+/* ------------------------------------------------------------------ type */
+
+.oc-panel-title, .oc-plaque-text, .oc-btn-label, .oc-event-title, .oc-ride-name, .oc-fact-value, .oc-big {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+.oc-event-sub, .oc-note, .oc-desc, .oc-tag, .oc-fact-label, .oc-ride-cap, .oc-eyebrow, .oc-legend .mxa-hint-label, .oc-text {
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf");
+    -unity-font-style: normal;
+}
+
+/* ------------------------------------------------------------------ top row: the ride, the note */
+
+.oc-top { flex-direction: row; align-items: flex-start; height: 108px; flex-shrink: 0; }
+.oc-ride { flex-direction: row; align-items: center; height: 84px; }
+.oc-ride-art { width: 150px; height: 74px; margin-right: 18px; -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: var(--oc-paper); }
+.oc-ride-art-2 { width: 100px; margin-left: -6px; }
+.oc-ride-text { justify-content: center; }
+.oc-ride-cap { font-size: 20px; letter-spacing: 4px; color: var(--oc-dim); }
+.oc-ride-name { font-size: 40px; letter-spacing: 1px; color: var(--oc-paper); text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55); }
+.oc-note { flex-grow: 1; flex-shrink: 1; margin-left: 48px; font-size: 22px; letter-spacing: 2px; color: var(--oc-dim); -unity-text-align: upper-right; white-space: normal; }
+
+/* ------------------------------------------------------------------ carousel of posters */
+
+.oc-mid { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.oc-carousel { flex-grow: 1; flex-shrink: 1; min-width: 0; position: relative; overflow: hidden; }
+
+.oc-poster {
+    position: absolute; left: 50%; top: 50%; width: 330px; height: 660px; margin-left: -165px; margin-top: -340px;
+    transition-property: translate, scale, rotate, opacity;
+    transition-duration: 0.36s;
+    transition-timing-function: ease-out-cubic;
+}
+.oc-poster-art { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop; transition-property: -unity-background-image-tint-color; transition-duration: 0.3s; }
+.oc-poster-dim > .oc-poster-art { -unity-background-image-tint-color: rgba(255, 255, 255, 0.52); }
+.oc-poster-card { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgb(58, 56, 52); justify-content: flex-end; padding: 24px; }
+.oc-poster-card-bar { height: 10px; margin-bottom: 14px; background-color: var(--oc-orange); }
+.oc-poster-card-name { font-size: 54px; color: var(--oc-paper); white-space: normal; -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.oc-poster-badge { position: absolute; right: 10px; bottom: 10px; width: 96px; height: 96px; -unity-background-scale-mode: scale-to-fit; }
+.oc-poster-focus { position: absolute; left: 70px; right: 70px; bottom: -18px; height: 8px; background-color: var(--oc-gold); opacity: 0; transition-property: opacity; transition-duration: 0.2s; }
+.oc-poster-on > .oc-poster-focus { opacity: 1; }
+.oc-poster-count { position: absolute; left: 0; right: 0; bottom: -78px; -unity-text-align: upper-center; font-size: 30px; letter-spacing: 3px; color: var(--oc-ink); opacity: 0; transition-property: opacity; transition-duration: 0.2s; }
+.oc-poster-on > .oc-poster-count { opacity: 1; }
+.oc-arrow { position: absolute; width: 50px; height: 86px; top: 50%; margin-top: -43px; transition-property: opacity; transition-duration: 0.2s; }
+.oc-arrow-left { left: 50%; margin-left: -250px; }
+.oc-arrow-right { left: 50%; margin-left: 202px; }
+.oc-arrow-off { opacity: 0; }
+
+/* ------------------------------------------------------------------ the side: panels */
+
+.oc-side { width: 700px; flex-shrink: 0; flex-direction: column; margin-left: 24px; }
+.oc-panel { background-color: var(--oc-glass); border-width: 2px; border-color: var(--oc-line); }
+.oc-panel-bar { background-color: var(--oc-orange); height: 60px; justify-content: center; padding: 0 22px; flex-shrink: 0; }
+.oc-panel-title { color: var(--oc-ink); font-size: 44px; letter-spacing: 1px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; margin-top: -4px; }
+.oc-panel-body { padding: 18px 24px 18px 24px; }
+
+.oc-info { flex-shrink: 0; height: 372px; }
+.oc-info > .oc-panel-body { flex-grow: 1; padding: 0; }
+.oc-info-page { position: absolute; left: 0; top: 0; right: 0; bottom: 0; padding: 20px 24px; transition-property: opacity; transition-duration: 0.22s; }
+.oc-info-off { opacity: 0; }
+.oc-desc { font-size: 31px; color: var(--oc-dim); white-space: normal; letter-spacing: 0.5px; }
+.oc-brand { position: absolute; right: 22px; bottom: 16px; width: 188px; height: 94px; -unity-background-scale-mode: scale-to-fit; opacity: 0.94; }
+.oc-photo { width: 270px; height: 152px; flex-shrink: 0; background-color: rgba(0, 0, 0, 0.5); -unity-background-scale-mode: scale-and-crop; margin-right: 20px; border-width: 2px; border-color: var(--oc-line); }
+.oc-facts { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.oc-fact { margin-bottom: 6px; }
+.oc-fact-label { font-size: 19px; letter-spacing: 3px; color: var(--oc-dim); }
+.oc-fact-value { font-size: 31px; color: var(--oc-paper); letter-spacing: 0.5px; margin-top: -3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.oc-info-row { flex-direction: row; }
+.oc-info-foot { margin-top: 12px; flex-direction: row; flex-wrap: wrap; align-items: center; }
+
+.oc-events { flex-grow: 1; flex-shrink: 1; min-height: 0; margin-top: 14px; }
+.oc-events > .oc-panel-bar { height: 52px; flex-direction: row; align-items: center; justify-content: space-between; background-color: rgba(14, 22, 24, 0.9); border-bottom-width: 4px; border-bottom-color: var(--oc-orange); }
+.oc-events > .oc-panel-bar > .oc-panel-title { color: var(--oc-paper); font-size: 32px; letter-spacing: 4px; margin-top: 0; flex-shrink: 0; overflow: visible; text-overflow: clip; }
+.oc-slots { flex-direction: row; align-items: center; }
+.oc-events > .oc-panel-body { flex-grow: 1; flex-shrink: 1; min-height: 0; padding: 0; }
+.oc-list { position: absolute; left: 0; top: 0; right: 0; bottom: 0; transition-property: opacity; transition-duration: 0.24s; }
+.oc-list-off { translate: -4000px 0; }
+.oc-list > .unity-scroll-view__content-viewport { padding: 12px 0 8px 0; }
+.oc-empty { font-size: 28px; color: var(--oc-dim); padding: 22px 24px; white-space: normal; }
+
+/* slots (the progress squares) */
+.oc-slot { width: 38px; height: 38px; margin-left: 6px; background-color: rgba(0, 0, 0, 0.5); border-width: 2px; border-color: var(--oc-line); justify-content: center; align-items: center; flex-shrink: 0; }
+.oc-slot-num { font-size: 24px; color: var(--oc-paper); -unity-text-align: middle-center; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.oc-slot-lock { width: 24px; height: 24px; -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: var(--oc-dim); }
+.oc-slot-invalid { background-color: rgba(176, 175, 156, 0.10); border-color: rgba(176, 175, 156, 0.18); }
+.oc-slot-locked { background-color: rgba(176, 175, 156, 0.16); }
+.oc-slot-gold { background-color: rgb(255, 215, 0); border-color: rgb(255, 238, 140); }
+.oc-slot-silver { background-color: rgb(192, 192, 192); border-color: rgb(230, 230, 230); }
+.oc-slot-bronze { background-color: rgb(168, 92, 15); border-color: rgb(214, 140, 78); }
+.oc-slot-gold > .oc-slot-num, .oc-slot-silver > .oc-slot-num, .oc-slot-bronze > .oc-slot-num { color: var(--oc-ink); }
+.oc-slot-here { border-color: var(--oc-gold); border-width: 3px; }
+
+/* the event rows */
+.oc-event {
+    flex-direction: row; align-items: center; height: 84px; margin: 0 10px 6px 10px; padding: 0 16px 0 12px;
+    background-color: rgba(255, 255, 255, 0.045);
+    transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.oc-event:hover { background-color: rgba(255, 255, 255, 0.10); }
+.oc-event:focus { background-color: var(--oc-gold); translate: 10px 0; }
+.oc-event:disabled { opacity: 0.55; }
+.oc-event-slot { margin-left: 0; margin-right: 16px; }
+.oc-event-copy { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.oc-event-title { font-size: 36px; letter-spacing: 0.5px; color: var(--oc-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -3px; }
+.oc-event-sub { font-size: 22px; letter-spacing: 2px; color: var(--oc-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: -2px; }
+.oc-event:focus > .oc-event-copy > .oc-event-title { color: var(--oc-ink); }
+.oc-event:focus > .oc-event-copy > .oc-event-sub { color: rgba(14, 15, 15, 0.72); }
+.oc-event-tags { flex-direction: row; align-items: center; flex-shrink: 0; margin-left: 12px; }
+.oc-event-trophy { width: 52px; height: 52px; margin-left: 10px; -unity-background-scale-mode: scale-to-fit; }
+
+.oc-tag { font-size: 20px; letter-spacing: 3px; padding: 3px 12px 2px 12px; margin-left: 8px; background-color: rgba(0, 0, 0, 0.5); color: var(--oc-paper); white-space: nowrap; }
+.oc-tag-warn { background-color: var(--oc-gold); color: var(--oc-ink); }
+.oc-tag-orange { background-color: var(--oc-orange); color: var(--oc-ink); }
+.oc-tag-good { background-color: rgb(128, 212, 92); color: var(--oc-ink); }
+.oc-event:focus .oc-tag { background-color: rgba(14, 15, 15, 0.82); color: var(--oc-paper); }
+
+/* ------------------------------------------------------------------ bottom: the plaque */
+
+.oc-bottom { flex-direction: row; justify-content: flex-end; align-items: flex-end; height: 100px; flex-shrink: 0; }
+.oc-plaque-row { flex-direction: row; justify-content: flex-end; }
+.oc-plaque {
+    height: 84px; min-width: 360px; padding: 0 44px 0 52px; justify-content: center; background-color: rgb(34, 34, 32);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+    border-width: 3px; border-color: rgba(224, 224, 200, 0.18);
+}
+.oc-plaque-text { font-size: 62px; color: var(--oc-orange-hot); letter-spacing: 2px; white-space: nowrap; -unity-text-align: middle-right; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.75); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; margin-top: -6px; }
+
+/* ------------------------------------------------------------------ legend band */
+
+.oc-legend { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; flex-direction: row; align-items: center; background-color: rgba(16, 16, 15, 0.94); border-top-width: 2px; border-top-color: rgba(224, 224, 200, 0.12); }
+.oc-legend-items { flex-direction: row; align-items: center; }
+.oc-legend .mxa-hint { margin-left: 0; margin-right: 56px; flex-direction: row; align-items: center; }
+.oc-legend .mxa-hint-label { font-size: 26px; letter-spacing: 3px; color: var(--oc-paper); margin-left: 12px; text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.6); }
+
+/* ------------------------------------------------------------------ patch buttons (actions) */
+
+.oc-btn {
+    height: 76px; margin-bottom: 10px; padding: 0 30px; justify-content: center; align-items: flex-start; flex-direction: column;
+    background-color: rgba(34, 34, 32, 0.94); -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+    border-left-width: 8px; border-left-color: rgba(204, 95, 41, 0.0);
+    transition-property: background-color, translate, border-left-color; transition-duration: 0.14s; transition-timing-function: ease-out-cubic;
+}
+.oc-btn:hover { background-color: rgba(52, 51, 47, 0.96); }
+.oc-btn:focus { background-color: rgba(52, 51, 47, 0.98); border-left-color: var(--oc-gold); translate: 12px 0; }
+.oc-btn:disabled { opacity: 0.4; }
+.oc-btn-label { font-size: 46px; letter-spacing: 2px; color: var(--oc-orange); white-space: normal; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7); transition-property: color; transition-duration: 0.14s; margin-top: -4px; }
+.oc-btn:focus > .oc-btn-label { color: var(--oc-gold); }
+.oc-btn-quiet > .oc-btn-label { font-size: 36px; color: var(--oc-dim); }
+.oc-btn-quiet:focus > .oc-btn-label { color: var(--oc-gold); }
+.oc-btn-wide { min-width: 520px; }
+
+/* ------------------------------------------------------------------ the in-race / follow-up pages (OwnCareerPageView, OwnCareerPanels, the practice choice) */
+
+.oc-page { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.oc-page-side { width: 640px; flex-shrink: 0; margin-right: 40px; justify-content: flex-start; }
+.oc-page-main { flex-grow: 1; flex-shrink: 1; min-width: 0; min-height: 0; }
+.oc-page-scroll { flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.oc-header { flex-direction: row; align-items: flex-end; height: 112px; flex-shrink: 0; margin-bottom: 8px; }
+.oc-header-copy { flex-grow: 1; flex-shrink: 1; min-width: 0; }
+.oc-eyebrow { font-size: 24px; letter-spacing: 6px; color: var(--oc-orange-hot); margin-bottom: -2px; }
+.oc-big { font-size: 72px; letter-spacing: 1px; color: var(--oc-paper); white-space: nowrap; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.oc-hero-card { margin-bottom: 18px; }
+.oc-hero-name { font-size: 40px; }
+.oc-text { font-size: 31px; color: var(--oc-dim); white-space: normal; margin-bottom: 18px; }
+.oc-text-light { color: var(--oc-paper); background-color: var(--oc-glass); padding: 20px 24px; border-left-width: 6px; border-left-color: var(--oc-orange); }
+.oc-heading { font-size: 28px; letter-spacing: 5px; color: var(--oc-ink); background-color: var(--oc-orange); padding: 6px 18px 4px 18px; margin: 6px 0 14px 0; -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; white-space: normal; align-self: flex-start; }
+.oc-actions { flex-shrink: 0; margin-top: 18px; }
+.oc-stats { flex-direction: row; margin: 6px 0 14px 0; }
+.oc-stat { flex-direction: column; padding: 8px 20px 8px 18px; margin-right: 12px; background-color: var(--oc-glass); border-left-width: 6px; border-left-color: var(--oc-orange); min-width: 150px; }
+.oc-stat-label { font-size: 20px; letter-spacing: 4px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.oc-stat-value { font-size: 58px; color: var(--oc-paper); margin-top: -6px; -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.oc-stat-gold { border-left-color: rgb(255, 215, 0); }
+.oc-stat-gold > .oc-stat-value { color: rgb(255, 215, 0); }
+.oc-stat-good { border-left-color: rgb(128, 212, 92); }
+.oc-stat-good > .oc-stat-value { color: rgb(128, 212, 92); }
+.oc-place { flex-direction: row; align-items: flex-end; margin: 0 0 6px 0; height: 168px; }
+.oc-place-num { font-size: 190px; color: var(--oc-paper); margin-top: -34px; text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.oc-place-suffix { font-size: 70px; color: var(--oc-orange-hot); margin: 0 0 22px 6px; -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.oc-place-1 > .oc-place-num { color: rgb(255, 215, 0); }
+.oc-place-2 > .oc-place-num { color: rgb(214, 220, 228); }
+.oc-place-3 > .oc-place-num { color: rgb(214, 140, 78); }
+.oc-trophy { width: 120px; height: 120px; margin: 0 0 14px 22px; -unity-background-scale-mode: scale-to-fit; align-self: flex-end; }
+.oc-rewards { flex-direction: column; }
+.oc-reward { flex-direction: row; align-items: center; justify-content: space-between; height: 108px; padding: 0 28px; margin-bottom: 10px; background-color: var(--oc-glass); border-left-width: 8px; border-left-color: var(--oc-orange); }
+.oc-reward-gold { border-left-color: rgb(255, 215, 0); }
+.oc-reward-good { border-left-color: rgb(128, 212, 92); }
+.oc-reward-label { font-size: 34px; letter-spacing: 5px; color: var(--oc-dim); -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal; }
+.oc-reward-value { font-size: 80px; color: var(--oc-paper); text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.7); -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; }
+.oc-reward-gold > .oc-reward-value { color: rgb(255, 215, 0); }
+.oc-reward-good > .oc-reward-value { color: rgb(128, 212, 92); }
+
+/* the board (standings): dark glass rows, gold slab for the local rider, medal slabs for the podium */
+.oc-board-head { flex-direction: row; align-items: center; height: 46px; padding: 0 0 0 0; background-color: var(--oc-orange); margin-bottom: 6px; flex-shrink: 0; }
+.oc-board-head > Label { font-size: 22px; letter-spacing: 4px; color: var(--oc-ink); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+.oc-row { flex-direction: row; align-items: center; height: 66px; margin-bottom: 5px; background-color: var(--oc-glass); transition-property: background-color, translate; transition-duration: 0.14s; transition-timing-function: ease-out-cubic; }
+.oc-row:hover { background-color: var(--oc-glass-hi); }
+.oc-row:focus { background-color: var(--oc-gold); translate: 8px 0; }
+.oc-row-you { background-color: rgba(226, 172, 64, 0.30); border-left-width: 6px; border-left-color: var(--oc-gold); }
+.oc-row-cell { font-size: 31px; letter-spacing: 0.5px; color: var(--oc-paper); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.oc-row-rank { width: 78px; flex-shrink: 0; -unity-text-align: middle-center; font-size: 40px; -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; color: var(--oc-paper); }
+.oc-row-name { flex-grow: 1; flex-shrink: 1; min-width: 120px; padding-left: 18px; }
+.oc-row-status { width: 300px; flex-shrink: 0; font-size: 24px; letter-spacing: 3px; color: var(--oc-dim); }
+.oc-row-time { width: 168px; flex-shrink: 0; -unity-text-align: middle-right; color: rgb(128, 212, 92); }
+.oc-row-points { width: 160px; flex-shrink: 0; -unity-text-align: middle-right; padding-right: 22px; }
+.oc-row-1 > .oc-row-rank { background-color: rgb(255, 215, 0); color: var(--oc-ink); height: 100%; }
+.oc-row-2 > .oc-row-rank { background-color: rgb(192, 192, 192); color: var(--oc-ink); height: 100%; }
+.oc-row-3 > .oc-row-rank { background-color: rgb(168, 92, 15); color: var(--oc-ink); height: 100%; }
+.oc-row:focus > .oc-row-cell { color: var(--oc-ink); }
+.oc-row:focus > .oc-row-status, .oc-row:focus > .oc-row-time { color: rgba(14, 15, 15, 0.78); }
+
+/* the practice / qualifier choice: the same stage, a panel in the middle */
+.oc-choice { flex-direction: column; align-self: flex-start; width: 900px; margin-top: 30px; }
+.oc-choice > .oc-panel-body { padding: 26px 30px 22px 30px; }
+.oc-choice .oc-text { color: var(--oc-paper); font-size: 34px; margin-bottom: 26px; }
+.oc-choice .oc-btn { margin-bottom: 12px; }
+
+.oc-legend-click:hover > .mxa-hint-label { color: var(--oc-gold); }
+.oc-info-foot { position: absolute; left: 24px; bottom: 20px; }
+.oc-desc { overflow: hidden; max-height: 196px; }
+
+.ou-frontend .oc-over.mxa-dim, .ou-frontend .oc-over.mxa-dim.mxa-options-open { background-color: rgba(0, 0, 0, 0); }
+/* HIGHLIGHT REEL over a career results page: the world's replay shows alone (the veil, the title and the page go; the legend's BACK stays) */
+.oc-over.oc-reel .oc-stage, .oc-over.oc-reel .oc-header, .oc-over.oc-reel .oc-page { display: none; }
+
+/* the Event Intro page (OwnEventIntro) over the intro fly-by: the event's title on the dotted patch, its location on the orange bar under it, in the
+   lower left; the skip legend (a port addition) at the lower right */
+.oc-intro-layer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.oc-intro-card { position: absolute; left: 96px; bottom: 150px; flex-direction: column; align-items: flex-start; }
+.oc-intro-patch {
+    padding: 8px 54px 14px 34px; background-color: rgba(14, 18, 18, 0.88); border-left-width: 10px; border-left-color: var(--oc-orange);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+}
+.oc-intro-title { -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal; font-size: 98px; letter-spacing: 3px; color: var(--oc-paper); white-space: nowrap; text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6); }
+.oc-intro-bar { background-color: var(--oc-orange); padding: 2px 34px 2px 34px; margin-left: 10px; }
+.oc-intro-loc { -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; font-size: 40px; letter-spacing: 3px; color: var(--oc-ink); white-space: nowrap; }
+.oc-intro-hint { position: absolute; right: 72px; bottom: 56px; flex-direction: row; opacity: 0; }
+
+/* the Gate Selection page over the world (the 3D camera is on the focused gate: OwnGateView): the title top left, the gates in a strip above the legend */
+.oc-gate-view { background-color: rgba(0, 0, 0, 0); }
+/* the hand-off page after the gate pick (OwnCareerPageView.ShowBlank, w-uibatch): up for its owner, nothing drawn */
+.ou-frontend.mxa-root .oc-blank, .ou-frontend.mxa-root .mxa-dim.oc-blank, .ou-frontend.mxa-root .mxa-dim.oc-blank.mxa-options-open { background-color: rgba(0, 0, 0, 0); background-image: none; }
+.ou-frontend.mxa-root .mxa-dim.oc-gate-view, .ou-frontend.mxa-root .mxa-dim.oc-gate-view.mxa-options-open { background-color: rgba(0, 0, 0, 0); background-image: none; }   /* (OuRestyle's dim stage with its halftone would veil the world) */
+.oc-gate-actions { position: absolute; right: 72px; top: 46px; flex-direction: row; }
+.oc-gate-bar { position: absolute; left: 0; right: 0; bottom: 104px; padding: 18px 72px 8px 72px; flex-direction: column; background-color: rgba(8, 12, 13, 0.70); border-top-width: 2px; border-bottom-width: 2px; border-color: rgba(204, 95, 41, 0.55); }
+.oc-gate-scroll { max-height: 270px; }
+.oc-gate-view .oc-heading { margin-bottom: 8px; }
+.oc-gate-view .oc-gates { margin-bottom: 0; }
+.oc-gate-view .oc-gate { width: 150px; height: 78px; margin: 0 12px 12px 0; }
+.oc-gate-view .oc-gate > .oc-btn-label { font-size: 42px; }
+
+/* the start gates: a grid of tiles */
+.oc-gates { flex-direction: row; flex-wrap: wrap; margin-bottom: 10px; }
+.oc-gate { width: 200px; height: 88px; margin: 0 14px 14px 0; padding: 0 10px; align-items: center; border-left-width: 0; border-bottom-width: 6px; border-bottom-color: rgba(204, 95, 41, 0.0); }
+.oc-gate > .oc-btn-label { font-size: 44px; -unity-text-align: middle-center; margin-top: 0; }
+.oc-gate:focus { translate: 0 -8px; border-bottom-color: var(--oc-gold); border-left-color: rgba(0, 0, 0, 0); }
+
+.oc-photo { height: 190px; width: 292px; }
+.oc-photo-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 12px 6px 12px; font-size: 27px; letter-spacing: 1px; color: var(--oc-paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background-color: rgba(8, 12, 13, 0.66); -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; }
+
+/* ------------------------------------------------------------------ the Free Ride activation notification (OwnActivationArea) over the world:
+   the original's SinglePlayer_AAA_Activation (STR_CHALLENGE_ACTIVATION with the Start key, the vehicle class requirement) in this style:
+   an orange key block on a dotted dark patch, the requirement under an orange title bar on dark glass. */
+
+.oc-aaa-col { margin-top: 128px; align-items: flex-start; }
+.oc-aaa-note { flex-direction: row; align-items: stretch; height: 72px; border-width: 2px; border-color: var(--oc-line); }
+.oc-aaa-keyblock { background-color: var(--oc-orange); width: 112px; justify-content: center; align-items: center; flex-shrink: 0; }
+.ou-frontend .oc-aaa-key { color: var(--oc-ink); background-color: rgb(238, 234, 216); border-color: rgb(255, 252, 240); border-bottom-width: 4px; border-radius: 8px; font-size: 26px; min-width: 64px; padding: 6px 14px; }
+.ou-frontend .oc-aaa-keyblock > .mxa-key-pad { width: auto; min-width: 48px; height: 48px; border-radius: 24px; padding: 0 12px; }
+.ou-frontend .oc-aaa-keyblock > .mxa-key-menu, .ou-frontend .oc-aaa-keyblock > .mxa-key-shoulder { border-radius: 10px; }
+.oc-aaa-patch {
+    justify-content: center; padding: 0 34px 0 28px; background-color: rgba(18, 22, 22, 0.88);
+    -unity-background-image-tint-color: rgba(255, 255, 255, 0.07); background-repeat: repeat repeat; background-size: 16px 16px;
+}
+.oc-aaa-text { -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; font-size: 44px; letter-spacing: 3px; color: var(--oc-paper); white-space: nowrap; margin-top: -4px; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6); }
+.oc-aaa-help { margin-top: 12px; width: 640px; }
+.oc-aaa-help > .oc-panel-bar { height: 46px; }
+.oc-aaa-help .oc-panel-title { font-size: 28px; letter-spacing: 2px; margin-top: 0; }
+.oc-aaa-help .oc-panel-body { flex-direction: row; align-items: center; padding: 12px 22px; }
+.oc-aaa-art { flex-direction: row; align-items: center; margin-right: 16px; }
+.oc-aaa-sil { width: 118px; height: 56px; margin-right: 8px; -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: var(--oc-paper); }
+.oc-aaa-class { -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal; font-size: 42px; letter-spacing: 1px; color: var(--oc-paper); white-space: nowrap; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55); }
+
+/* the setup's RIDER tab: the hero picture gives way to a window on the 3D menu world (OpenShell.Setup.cs: the chosen vehicle and rider) */
+.ou-setup-hero.ou-setup-hero-3d { background-color: rgba(0, 0, 0, 0); border-color: rgba(204, 95, 41, 0.45); }
+.ou-setup-hero-3d > .ou-setup-hero-shade { height: 34%; }
+
+/* the dim stage of the page lets the 3D window through; the cards under it keep their own backing, as the right panel has its glass */
+.ou-frontend.mxa-root .mxa-dim.ou-setup-3d-layer { background-color: rgba(24, 23, 21, 0.30); background-image: none; }
+.ou-setup-3d .ou-setup-cards { background-color: rgba(18, 17, 16, 0.82); border-radius: 6px; margin-top: 6px; }
+.ou-setup-3d .ou-setup-panel { background-color: rgba(20, 19, 18, 0.86); }

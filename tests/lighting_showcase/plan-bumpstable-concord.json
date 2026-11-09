@@ -1,0 +1,10 @@
+{
+ "event": "National/NAT_Concord", "prefix": "S_Concord", "settle": 8, "adapt": 1.5, "perf": 0,
+ "modes": ["enhanced", "enhanced-nobumpn", "enhanced-rtfreeze", "enhanced-nonear", "enhanced-nosmooth", "enhanced-nonear-nosmooth", "original"],
+ "views": [
+  {"name": "chase", "cam": "path", "frame": "world", "at": [604.8, 116.4, -345.56], "offset": [0, 0, 0], "yaw": -31.4, "pitch": -15.7, "fov": 62, "t": 3,
+   "frames": 16, "step": 0.012, "bobPitch": 0.15, "bobHeight": 0.01, "bobPeriod": 8},
+  {"name": "fpv", "cam": "path", "frame": "world", "at": [601.41, 115.3, -340.01], "offset": [0, 0, 0], "yaw": -31.4, "pitch": -12, "fov": 114, "t": 3.5,
+   "frames": 16, "step": 0.012, "bobPitch": 0.2, "bobHeight": 0.01, "bobPeriod": 8}
+ ]
+}

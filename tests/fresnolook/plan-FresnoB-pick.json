@@ -1,0 +1,78 @@
+{
+ "event": "FreeRide/SX_FresnoB",
+ "prefix": "FresnoB",
+ "settle": 6,
+ "adapt": 2.5,
+ "perf": 0,
+ "modes": [
+  "original"
+ ],
+ "views": [
+  {
+   "name": "chase",
+   "cam": "pose",
+   "t": 4,
+   "frame": "bike",
+   "offset": [
+    0,
+    2.4,
+    -7.5
+   ],
+   "look": "anchor",
+   "lookY": 1.2,
+   "fov": 62
+  },
+  {
+   "name": "wide",
+   "cam": "pose",
+   "t": 5,
+   "frame": "bike",
+   "offset": [
+    0,
+    30,
+    -70
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 62
+  },
+  {
+   "name": "overview",
+   "cam": "pose",
+   "t": 5.5,
+   "at": [
+    0,
+    15,
+    0
+   ],
+   "frame": "world",
+   "offset": [
+    -430,
+    260,
+    -430
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 60
+  },
+  {
+   "name": "rhythm",
+   "cam": "pose",
+   "t": 6,
+   "at": [
+    300,
+    15,
+    60
+   ],
+   "frame": "world",
+   "offset": [
+    -90,
+    30,
+    -60
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 60
+  }
+ ]
+}

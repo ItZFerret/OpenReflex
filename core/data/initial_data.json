@@ -1,0 +1,1967 @@
+{
+  "bindings": [
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527552,
+      "symbol": "?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ",
+      "value": 2018040117
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527556,
+      "symbol": "?end@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE?AV?$_String_iterator@DU?$char_traits@D@std@@V?$allocator@D@2@@2@XZ",
+      "value": 2018007732
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527560,
+      "symbol": "?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE?AV?$_String_iterator@DU?$char_traits@D@std@@V?$allocator@D@2@@2@V?$_String_const_iterator@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z",
+      "value": 2018008755
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527564,
+      "symbol": "??$?8DU?$char_traits@D@std@@V?$allocator@D@1@@std@@YA_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@PBD@Z",
+      "value": 2018072823
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527568,
+      "symbol": "?npos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@2IB",
+      "value": 2017989420
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527572,
+      "symbol": "?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIDI@Z",
+      "value": 2018006069
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527576,
+      "symbol": "?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIABV12@I@Z",
+      "value": 2018008067
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527580,
+      "symbol": "?replace@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@IIABV12@@Z",
+      "value": 2018014424
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527584,
+      "symbol": "?clear@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEXXZ",
+      "value": 2018008953
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527588,
+      "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z",
+      "value": 2018010152
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527592,
+      "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z",
+      "value": 2018010031
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527596,
+      "symbol": "?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z",
+      "value": 2018009878
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527600,
+      "symbol": "?append@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z",
+      "value": 2018009753
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527604,
+      "symbol": "?uncaught_exception@std@@YA_NXZ",
+      "value": 2018201898
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527608,
+      "symbol": "?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAEHPBDH@Z",
+      "value": 2018019466
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527612,
+      "symbol": "?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEXXZ",
+      "value": 2018029556
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527616,
+      "symbol": "?_Lock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAEXXZ",
+      "value": 2018021343
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527620,
+      "symbol": "?_Unlock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAEXXZ",
+      "value": 2018021205
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527624,
+      "symbol": "?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAEHD@Z",
+      "value": 2018022090
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527628,
+      "symbol": "?str@?$basic_ostringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@@Z",
+      "value": 2018076346
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527632,
+      "symbol": "?str@?$basic_ostringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@XZ",
+      "value": 2018087251
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527636,
+      "symbol": "??0?$basic_ostringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@H@Z",
+      "value": 2018123957
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527640,
+      "symbol": "?flush@?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV12@XZ",
+      "value": 2018028547
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527644,
+      "symbol": "??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@H@Z",
+      "value": 2018163921
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527648,
+      "symbol": "?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QAEXH_N@Z",
+      "value": 2018028512
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527652,
+      "symbol": "??_D?$basic_ostringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEXXZ",
+      "value": 2018067216
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527656,
+      "symbol": "?assign@?$char_traits@D@std@@SAXAADABD@Z",
+      "value": 2018004643
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527660,
+      "symbol": "?_Copy_s@?$char_traits@D@std@@SAPADPADIPBDI@Z",
+      "value": 2018004755
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527664,
+      "symbol": "?_Xlen@_String_base@std@@SAXXZ",
+      "value": 2018199492
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527668,
+      "symbol": "?_Xran@_String_base@std@@SAXXZ",
+      "value": 2018199553
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527672,
+      "symbol": "??_D?$basic_istringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEXXZ",
+      "value": 2018067117
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527676,
+      "symbol": "?replace@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@IIPBD@Z",
+      "value": 2018012242
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527680,
+      "symbol": "?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIPBDI@Z",
+      "value": 2018006028
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527684,
+      "symbol": "??5?$basic_istream@DU?$char_traits@D@std@@@std@@QAEAAV01@AAH@Z",
+      "value": 2018172045
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527688,
+      "symbol": "??5?$basic_istream@DU?$char_traits@D@std@@@std@@QAEAAV01@AAM@Z",
+      "value": 2018173406
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527692,
+      "symbol": "??0?$basic_istringstream@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@H@Z",
+      "value": 2018123422
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527696,
+      "symbol": "??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@PBD@Z",
+      "value": 2018013858
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527700,
+      "symbol": "??Y?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@PBD@Z",
+      "value": 2018013898
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527704,
+      "symbol": "?deallocate@?$allocator@D@std@@QAEXPADI@Z",
+      "value": 2018040060
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527708,
+      "symbol": "?allocate@?$allocator@D@std@@QAEPADI@Z",
+      "value": 2018007314
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527712,
+      "symbol": "?swap@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEXAAV12@@Z",
+      "value": 2018089943
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527716,
+      "symbol": "??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ",
+      "value": 2018008682
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527720,
+      "symbol": "??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV01@ABV01@@Z",
+      "value": 2018014607
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527724,
+      "symbol": "??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@PBD@Z",
+      "value": 2018013493
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527728,
+      "symbol": "??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV01@@Z",
+      "value": 2018013810
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527732,
+      "symbol": "??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ",
+      "value": 2018008740
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527736,
+      "symbol": "?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ",
+      "value": 2018005102
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527740,
+      "symbol": "??$?MDU?$char_traits@D@std@@V?$allocator@D@1@@std@@YA_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@0@0@Z",
+      "value": 2018072953
+    },
+    {
+      "dll": "msvcp90.dll",
+      "slot": 9527744,
+      "symbol": "?resize@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEXI@Z",
+      "value": 2018014542
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527752,
+      "symbol": "__libm_sse2_acos",
+      "value": 2019148409
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527756,
+      "symbol": "_CIexp",
+      "value": 2019142700
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527760,
+      "symbol": "_CIasin",
+      "value": 2019141680
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527764,
+      "symbol": "__libm_sse2_log10",
+      "value": 2019157144
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527768,
+      "symbol": "__libm_sse2_atan2",
+      "value": 2019153194
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527772,
+      "symbol": "__libm_sse2_atan",
+      "value": 2019152659
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527776,
+      "symbol": "_CItanh",
+      "value": 2019142617
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527780,
+      "symbol": "__libm_sse2_tan",
+      "value": 2019163677
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527784,
+      "symbol": "_CIpow",
+      "value": 2019143616
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527788,
+      "symbol": "__libm_sse2_log",
+      "value": 2019156589
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527792,
+      "symbol": "_setjmp3",
+      "value": 2019107696
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527796,
+      "symbol": "__RTDynamicCast",
+      "value": 2019025040
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527800,
+      "symbol": "__libm_sse2_asin",
+      "value": 2019150595
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527804,
+      "symbol": "__libm_sse2_sin",
+      "value": 2019162892
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527808,
+      "symbol": "memmove_s",
+      "value": 2018862797
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527812,
+      "symbol": "sprintf",
+      "value": 2018847614
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527816,
+      "symbol": "?what@exception@std@@UBEPBDXZ",
+      "value": 2019015978
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527820,
+      "symbol": "??1exception@std@@UAE@XZ",
+      "value": 2019015951
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527824,
+      "symbol": "??0exception@std@@QAE@XZ",
+      "value": 2019015613
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527828,
+      "symbol": "??0exception@std@@QAE@ABQBD@Z",
+      "value": 2019015635
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527832,
+      "symbol": "??0exception@std@@QAE@ABV01@@Z",
+      "value": 2019015757
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527836,
+      "symbol": "strstr",
+      "value": 2018884432
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527840,
+      "symbol": "atoi",
+      "value": 2018795693
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527844,
+      "symbol": "_invalid_parameter_noinfo",
+      "value": 2019084617
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527848,
+      "symbol": "_purecall",
+      "value": 2019104343
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527852,
+      "symbol": "strrchr",
+      "value": 2018884176
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527856,
+      "symbol": "_copysign",
+      "value": 2019168852
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527860,
+      "symbol": "strncmp",
+      "value": 2018862985
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527864,
+      "symbol": "ceil",
+      "value": 2019175840
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527868,
+      "symbol": "printf",
+      "value": 2018844108
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527872,
+      "symbol": "_finite",
+      "value": 2019169901
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527876,
+      "symbol": "__libm_sse2_cos",
+      "value": 2019154922
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527880,
+      "symbol": "strchr",
+      "value": 2018882736
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527884,
+      "symbol": "rand",
+      "value": 2019118061
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527888,
+      "symbol": "memmove",
+      "value": 2018881456
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527892,
+      "symbol": "strncat",
+      "value": 2018883312
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527896,
+      "symbol": "qsort",
+      "value": 2019116608
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527900,
+      "symbol": "tolower",
+      "value": 2018896065
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527904,
+      "symbol": "strncpy",
+      "value": 2018883632
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527908,
+      "symbol": "toupper",
+      "value": 2018896415
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527912,
+      "symbol": "swprintf_s",
+      "value": 2018848884
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527916,
+      "symbol": "sscanf",
+      "value": 2018848219
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527920,
+      "symbol": "_atoi64",
+      "value": 2018795725
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527924,
+      "symbol": "clock",
+      "value": 2018867545
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527928,
+      "symbol": "wcscpy_s",
+      "value": 2018864847
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527932,
+      "symbol": "__iob_func",
+      "value": 2018831979
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527936,
+      "symbol": "fprintf",
+      "value": 2018836158
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527940,
+      "symbol": "strpbrk",
+      "value": 2018884096
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527944,
+      "symbol": "strtok",
+      "value": 2018864086
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527948,
+      "symbol": "_exit",
+      "value": 2018780272
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527952,
+      "symbol": "malloc",
+      "value": 2019047903
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527956,
+      "symbol": "free",
+      "value": 2019047406
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527960,
+      "symbol": "memset",
+      "value": 2018882336
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527964,
+      "symbol": "memcpy",
+      "value": 2018880192
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527968,
+      "symbol": "__CxxFrameHandler3",
+      "value": 2019022855
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527972,
+      "symbol": "_CxxThrowException",
+      "value": 2019023793
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527976,
+      "symbol": "_snprintf",
+      "value": 2018846371
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527980,
+      "symbol": "_vsnprintf",
+      "value": 2018854686
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527984,
+      "symbol": "_clearfp",
+      "value": 2019145815
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527988,
+      "symbol": "_endthreadex",
+      "value": 2018784239
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527992,
+      "symbol": "_beginthreadex",
+      "value": 2018784461
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9527996,
+      "symbol": "_stricmp",
+      "value": 2019003728
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528000,
+      "symbol": "fflush",
+      "value": 2018835624
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528004,
+      "symbol": "fclose",
+      "value": 2018834697
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528008,
+      "symbol": "fread",
+      "value": 2018837326
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528012,
+      "symbol": "feof",
+      "value": 2018828372
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528016,
+      "symbol": "strerror",
+      "value": 2019118100
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528020,
+      "symbol": "ungetc",
+      "value": 2018852287
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528024,
+      "symbol": "_errno",
+      "value": 2018805075
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528028,
+      "symbol": "fopen",
+      "value": 2018836042
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528032,
+      "symbol": "ferror",
+      "value": 2018828429
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528036,
+      "symbol": "freopen",
+      "value": 2018837582
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528040,
+      "symbol": "getc",
+      "value": 2018828486
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528044,
+      "symbol": "fputs",
+      "value": 2018830272
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528048,
+      "symbol": "fgets",
+      "value": 2018828816
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528052,
+      "symbol": "ldexp",
+      "value": 2019176857
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528056,
+      "symbol": "srand",
+      "value": 2019118038
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528060,
+      "symbol": "frexp",
+      "value": 2019176630
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528064,
+      "symbol": "isspace",
+      "value": 2018886705
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528068,
+      "symbol": "memchr",
+      "value": 2018881072
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528072,
+      "symbol": "isalnum",
+      "value": 2018886984
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528076,
+      "symbol": "ispunct",
+      "value": 2018886842
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528080,
+      "symbol": "isalpha",
+      "value": 2018886011
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528084,
+      "symbol": "isdigit",
+      "value": 2018886424
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528088,
+      "symbol": "isupper",
+      "value": 2018886150
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528092,
+      "symbol": "iscntrl",
+      "value": 2018887411
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528096,
+      "symbol": "islower",
+      "value": 2018886287
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528100,
+      "symbol": "isxdigit",
+      "value": 2018886566
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528104,
+      "symbol": "strtoul",
+      "value": 2018894849
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528108,
+      "symbol": "strtod",
+      "value": 2018894175
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528112,
+      "symbol": "strcspn",
+      "value": 2018883088
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528116,
+      "symbol": "strcoll",
+      "value": 2019003420
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528120,
+      "symbol": "longjmp",
+      "value": 2019116120
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528124,
+      "symbol": "localeconv",
+      "value": 2019100573
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528128,
+      "symbol": "wcsncpy",
+      "value": 2018865609
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528132,
+      "symbol": "_vswprintf_c_l",
+      "value": 2018856747
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528136,
+      "symbol": "wcsrchr",
+      "value": 2018866159
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528140,
+      "symbol": "wcspbrk",
+      "value": 2018866087
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528144,
+      "symbol": "_aligned_free",
+      "value": 2019048655
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528148,
+      "symbol": "wcsncmp",
+      "value": 2018865509
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528152,
+      "symbol": "_aligned_malloc",
+      "value": 2019048686
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528156,
+      "symbol": "_CIsinh",
+      "value": 2019142600
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528160,
+      "symbol": "_strlwr_s",
+      "value": 2019004515
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528164,
+      "symbol": "strcpy_s",
+      "value": 2018863538
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528168,
+      "symbol": "atol",
+      "value": 2018795636
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528172,
+      "symbol": "wcstombs_s",
+      "value": 2018900607
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528176,
+      "symbol": "fwrite",
+      "value": 2018840819
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528180,
+      "symbol": "mbstowcs_s",
+      "value": 2018892443
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528184,
+      "symbol": "ftell",
+      "value": 2018839101
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528188,
+      "symbol": "fseek",
+      "value": 2018838226
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528192,
+      "symbol": "ldiv",
+      "value": 2019116078
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528196,
+      "symbol": "strtol",
+      "value": 2018894767
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528200,
+      "symbol": "?_name_internal_method@type_info@@QBEPBDPAU__type_info_node@@@Z",
+      "value": 2019016623
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528204,
+      "symbol": "_unlock",
+      "value": 2018782742
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528208,
+      "symbol": "__dllonexit",
+      "value": 2019085111
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528212,
+      "symbol": "_encode_pointer",
+      "value": 2018784642
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528216,
+      "symbol": "_lock",
+      "value": 2018782970
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528220,
+      "symbol": "_onexit",
+      "value": 2019085018
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528224,
+      "symbol": "_decode_pointer",
+      "value": 2018784775
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528228,
+      "symbol": "_except_handler4_common",
+      "value": 2019103952
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528232,
+      "symbol": "_CRT_RTC_INITW",
+      "value": 2019100192
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528236,
+      "symbol": "_crt_debugger_hook",
+      "value": 2019103457
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528240,
+      "symbol": "?terminate@@YAXXZ",
+      "value": 2019015444
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528244,
+      "symbol": "?_type_info_dtor_internal_method@type_info@@QAEXXZ",
+      "value": 2019016648
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528248,
+      "symbol": "__libm_sse2_pow",
+      "value": 2019158487
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528252,
+      "symbol": "__libm_sse2_exp",
+      "value": 2019155702
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528256,
+      "symbol": "_CIatan2",
+      "value": 2019142250
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528260,
+      "symbol": "_CIfmod",
+      "value": 2019142794
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528264,
+      "symbol": "floor",
+      "value": 2019176336
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528268,
+      "symbol": "atof",
+      "value": 2018889751
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528272,
+      "symbol": "_controlfp_s",
+      "value": 2019141090
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528276,
+      "symbol": "_invoke_watson",
+      "value": 2019084211
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528280,
+      "symbol": "__set_app_type",
+      "value": 2018778080
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528284,
+      "symbol": "__p__fmode",
+      "value": 2018781902
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528288,
+      "symbol": "__p__commode",
+      "value": 2018781849
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528292,
+      "symbol": "_adjust_fdiv",
+      "value": 2019280408
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528296,
+      "symbol": "__setusermatherr",
+      "value": 2018778111
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528300,
+      "symbol": "_configthreadlocale",
+      "value": 2019089361
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528304,
+      "symbol": "_initterm_e",
+      "value": 2018779665
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528308,
+      "symbol": "_initterm",
+      "value": 2018779630
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528312,
+      "symbol": "_acmdln",
+      "value": 2019277356
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528316,
+      "symbol": "exit",
+      "value": 2018780245
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528320,
+      "symbol": "_ismbblead",
+      "value": 2018902400
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528324,
+      "symbol": "_XcptFilter",
+      "value": 2019085320
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528328,
+      "symbol": "_cexit",
+      "value": 2018780299
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528332,
+      "symbol": "__getmainargs",
+      "value": 2018781075
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528336,
+      "symbol": "_amsg_exit",
+      "value": 2018779479
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528340,
+      "symbol": "_strnicmp",
+      "value": 2019005255
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528344,
+      "symbol": "_CIcosh",
+      "value": 2019142610
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 9528348,
+      "symbol": "_aligned_realloc",
+      "value": 2019049231
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988704,
+      "symbol": "_Getmonths",
+      "value": 2019011153
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988708,
+      "symbol": "??0bad_cast@std@@QAE@PBD@Z",
+      "value": 2019015996
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988712,
+      "symbol": "??1bad_cast@std@@UAE@XZ",
+      "value": 2019016065
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988716,
+      "symbol": "??0bad_cast@std@@QAE@ABV01@@Z",
+      "value": 2019016031
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988720,
+      "symbol": "log",
+      "value": 2019142848
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988724,
+      "symbol": "abort",
+      "value": 2019107307
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988728,
+      "symbol": "fputc",
+      "value": 2018829999
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988732,
+      "symbol": "fputs",
+      "value": 2018830272
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988736,
+      "symbol": "__iob_func",
+      "value": 2018831979
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988740,
+      "symbol": "rand_s",
+      "value": 2019087050
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988744,
+      "symbol": "fgetc",
+      "value": 2018828486
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988748,
+      "symbol": "ungetc",
+      "value": 2018852287
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988752,
+      "symbol": "fflush",
+      "value": 2018835624
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988756,
+      "symbol": "setvbuf",
+      "value": 2018846118
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988760,
+      "symbol": "fwrite",
+      "value": 2018840819
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988764,
+      "symbol": "fgetpos",
+      "value": 2018835726
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988768,
+      "symbol": "fseek",
+      "value": 2018838226
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988772,
+      "symbol": "fsetpos",
+      "value": 2018838609
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988776,
+      "symbol": "fclose",
+      "value": 2018834697
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988780,
+      "symbol": "_wfsopen",
+      "value": 2018857979
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988784,
+      "symbol": "mbstowcs_s",
+      "value": 2018892443
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988788,
+      "symbol": "atan2",
+      "value": 2019142240
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988792,
+      "symbol": "cos",
+      "value": 2019142272
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988796,
+      "symbol": "exp",
+      "value": 2019142640
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988800,
+      "symbol": "ldexp",
+      "value": 2019176857
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988804,
+      "symbol": "pow",
+      "value": 2019143552
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988808,
+      "symbol": "sin",
+      "value": 2019144208
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988812,
+      "symbol": "sqrt",
+      "value": 2019144532
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988816,
+      "symbol": "tan",
+      "value": 2019144704
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988820,
+      "symbol": "fgetwc",
+      "value": 2018829581
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988824,
+      "symbol": "fputwc",
+      "value": 2018830991
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988828,
+      "symbol": "ungetwc",
+      "value": 2018852853
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988832,
+      "symbol": "memcpy",
+      "value": 2018880192
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988836,
+      "symbol": "_Strftime",
+      "value": 2019014835
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988840,
+      "symbol": "strcspn",
+      "value": 2018883088
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988844,
+      "symbol": "sprintf_s",
+      "value": 2018847777
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988848,
+      "symbol": "_realloc_crt",
+      "value": 2019046536
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988852,
+      "symbol": "setlocale",
+      "value": 2019092987
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988856,
+      "symbol": "_malloc_crt",
+      "value": 2019046381
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988860,
+      "symbol": "?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z",
+      "value": 2018777769
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988864,
+      "symbol": "_Getdays",
+      "value": 2019010878
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988868,
+      "symbol": "towlower",
+      "value": 2018896650
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988872,
+      "symbol": "towupper",
+      "value": 2018896860
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988876,
+      "symbol": "strcmp",
+      "value": 2018882944
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988880,
+      "symbol": "_create_locale",
+      "value": 2019092721
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988884,
+      "symbol": "_ui64toa_s",
+      "value": 2018797559
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988888,
+      "symbol": "_free_locale",
+      "value": 2019089560
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988892,
+      "symbol": "__pctype_func",
+      "value": 2019093371
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988896,
+      "symbol": "_errno",
+      "value": 2018805075
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988900,
+      "symbol": "___mb_cur_max_l_func",
+      "value": 2019097113
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988904,
+      "symbol": "___lc_codepage_func",
+      "value": 2019097146
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988908,
+      "symbol": "___lc_handle_func",
+      "value": 2019097232
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988912,
+      "symbol": "__crtCompareStringA",
+      "value": 2019099884
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988916,
+      "symbol": "___lc_collate_cp_func",
+      "value": 2019097189
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988920,
+      "symbol": "__crtLCMapStringA",
+      "value": 2019098798
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988924,
+      "symbol": "isupper",
+      "value": 2018886150
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988928,
+      "symbol": "_calloc_crt",
+      "value": 2019046455
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988932,
+      "symbol": "islower",
+      "value": 2018886287
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988936,
+      "symbol": "__crtGetStringTypeW",
+      "value": 2019097275
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988940,
+      "symbol": "__crtLCMapStringW",
+      "value": 2019098872
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988944,
+      "symbol": "__crtCompareStringW",
+      "value": 2019099992
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988948,
+      "symbol": "isspace",
+      "value": 2018886705
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988952,
+      "symbol": "tolower",
+      "value": 2018896065
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988956,
+      "symbol": "strtod",
+      "value": 2018894175
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988960,
+      "symbol": "?terminate@@YAXXZ",
+      "value": 2019015444
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988964,
+      "symbol": "_unlock",
+      "value": 2018782742
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988968,
+      "symbol": "__dllonexit",
+      "value": 2019085111
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988972,
+      "symbol": "_encode_pointer",
+      "value": 2018784642
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988976,
+      "symbol": "_lock",
+      "value": 2018782970
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988980,
+      "symbol": "_onexit",
+      "value": 2019085018
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988984,
+      "symbol": "_decode_pointer",
+      "value": 2018784775
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988988,
+      "symbol": "_encoded_null",
+      "value": 2018784761
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988992,
+      "symbol": "_initterm",
+      "value": 2018779630
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017988996,
+      "symbol": "_initterm_e",
+      "value": 2018779665
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989000,
+      "symbol": "_amsg_exit",
+      "value": 2018779479
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989004,
+      "symbol": "_adjust_fdiv",
+      "value": 2019280408
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989008,
+      "symbol": "__CppXcptFilter",
+      "value": 2019085677
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989012,
+      "symbol": "?_type_info_dtor_internal_method@type_info@@QAEXXZ",
+      "value": 2019016648
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989016,
+      "symbol": "_crt_debugger_hook",
+      "value": 2019103457
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989020,
+      "symbol": "_except_handler4_common",
+      "value": 2019103952
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989024,
+      "symbol": "__clean_type_info_names_internal",
+      "value": 2019017676
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989028,
+      "symbol": "___mb_cur_max_func",
+      "value": 2019097067
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989032,
+      "symbol": "??_V@YAXPAX@Z",
+      "value": 2019048387
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989036,
+      "symbol": "_Gettnames",
+      "value": 2019012027
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989040,
+      "symbol": "localeconv",
+      "value": 2019100573
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989044,
+      "symbol": "free",
+      "value": 2019047406
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989048,
+      "symbol": "??0exception@std@@QAE@ABQBDH@Z",
+      "value": 2019015723
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989052,
+      "symbol": "__CxxFrameHandler3",
+      "value": 2019022855
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989056,
+      "symbol": "??2@YAPAXI@Z",
+      "value": 2019048249
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989060,
+      "symbol": "_invalid_parameter_noinfo",
+      "value": 2019084617
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989064,
+      "symbol": "??0exception@std@@QAE@ABV01@@Z",
+      "value": 2019015757
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989068,
+      "symbol": "_CxxThrowException",
+      "value": 2019023793
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989072,
+      "symbol": "??0exception@std@@QAE@XZ",
+      "value": 2019015613
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989076,
+      "symbol": "memset",
+      "value": 2018882336
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989080,
+      "symbol": "memchr",
+      "value": 2018881072
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989084,
+      "symbol": "strlen",
+      "value": 2018883168
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989088,
+      "symbol": "memcmp",
+      "value": 2018789266
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989092,
+      "symbol": "wcslen",
+      "value": 2018865130
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989096,
+      "symbol": "memmove_s",
+      "value": 2018862797
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989100,
+      "symbol": "memcpy_s",
+      "value": 2018862667
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989104,
+      "symbol": "??3@YAXPAX@Z",
+      "value": 2019048355
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989108,
+      "symbol": "??1exception@std@@UAE@XZ",
+      "value": 2019015951
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989112,
+      "symbol": "?what@exception@std@@UBEPBDXZ",
+      "value": 2019015978
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989116,
+      "symbol": "__uncaught_exception",
+      "value": 2019018500
+    },
+    {
+      "dll": "msvcr90.dll",
+      "slot": 2017989120,
+      "symbol": "??0exception@std@@QAE@ABQBD@Z",
+      "value": 2019015635
+    }
+  ],
+  "exe_sections": [
+    {
+      "addr": 4198400,
+      "loaded": 0,
+      "name": ".text",
+      "raw_size": 5327872,
+      "virtual_size": 5327450
+    },
+    {
+      "addr": 9527296,
+      "loaded": 1,
+      "name": ".rdata",
+      "raw_size": 588288,
+      "virtual_size": 588027
+    },
+    {
+      "addr": 10117120,
+      "loaded": 1,
+      "name": ".data",
+      "raw_size": 235008,
+      "virtual_size": 4364140
+    },
+    {
+      "addr": 14483456,
+      "loaded": 1,
+      "name": ".tls",
+      "raw_size": 2560,
+      "virtual_size": 2065
+    },
+    {
+      "addr": 14487552,
+      "loaded": 0,
+      "name": ".rsrc",
+      "raw_size": 6144,
+      "virtual_size": 5852
+    },
+    {
+      "addr": 14495744,
+      "loaded": 0,
+      "name": ".reloc",
+      "raw_size": 423424,
+      "virtual_size": 423136
+    }
+  ],
+  "format": 1,
+  "sources": [
+    {
+      "image_base": 4194304,
+      "name": "MXReflex.exe",
+      "sha256": "917d14e7ef7ce492b665fea7d0c87c9a39b549e2a43b09883d2a786988e7c02c",
+      "size": 6584320
+    },
+    {
+      "image_base": 2018639872,
+      "name": "msvcr90.dll",
+      "sha256": "cf420aced0d810e1d75f6811dd986f2d9fded2fbb8d61fc9a7024520c475febb",
+      "size": 655872
+    },
+    {
+      "image_base": 2017984512,
+      "name": "msvcp90.dll",
+      "sha256": "91fd46d7335c9990a20f215b9f6f53bc59551420a9c99ad8110ae2f9ff7598f0",
+      "size": 572928
+    }
+  ],
+  "spans": [
+    {
+      "addr": 9527296,
+      "image": "MXReflex.exe",
+      "packed_size": 172413,
+      "reason": ".rdata initialized data; remaining virtual bytes are zero",
+      "sha256": "7df6db7d260351dcf185289bb946d46451889e07bb2e7978d6aac585e431d802",
+      "size": 588027
+    },
+    {
+      "addr": 10117120,
+      "image": "MXReflex.exe",
+      "packed_size": 36932,
+      "reason": ".data initialized data; remaining virtual bytes are zero",
+      "sha256": "b32eca6ff18d38bf0cf3ae962050c4ddd17d17e6e09965da6165f5313e9d7422",
+      "size": 235008
+    },
+    {
+      "addr": 14483456,
+      "image": "MXReflex.exe",
+      "packed_size": 23,
+      "reason": ".tls initialized data; remaining virtual bytes are zero",
+      "sha256": "48f4415d1666ed568c4251e68471cfc2ff3c54b455c5519e97de4233ba0b7b70",
+      "size": 2065
+    },
+    {
+      "addr": 2018646452,
+      "image": "msvcr90.dll",
+      "packed_size": 51,
+      "reason": "EncodePointer / KERNEL32.DLL / DecodePointer string literals (crt_thread.c)",
+      "sha256": "bdbe223c4bf01e85c1e7a49a16267ada28444a8afd04f0b97e251e0ce7abe206",
+      "size": 58
+    },
+    {
+      "addr": 2018647024,
+      "image": "msvcr90.dll",
+      "packed_size": 131,
+      "reason": "printf __lookuptable character classes and 16 x 8 state transitions (crt_printf.c)",
+      "sha256": "f954989a9d6f7f370cddf0ab754b4e79b20b79e6af1fc2be64212b195e38a60f",
+      "size": 160
+    },
+    {
+      "addr": 2018651544,
+      "image": "msvcr90.dll",
+      "packed_size": 47,
+      "reason": "ten 12-byte _XcptActTab exception action records (_tiddata +0x5c)",
+      "sha256": "85ccca35dd132c0b159dcb25fe6c5e8a41158e6bdfc8a718ca9c44f55e8344a6",
+      "size": 120
+    },
+    {
+      "addr": 2018652360,
+      "image": "msvcr90.dll",
+      "packed_size": 47,
+      "reason": "256-entry C locale uint16 ctype table (__initiallocinfo +0xc8; crt_string/printf)",
+      "sha256": "09d75887352cae7ff56c1be973d3136b1a888626a640def020350a4567bf0383",
+      "size": 512
+    },
+    {
+      "addr": 2019258368,
+      "image": "msvcr90.dll",
+      "packed_size": 4355,
+      "reason": ".data initialized data; remaining virtual bytes are zero",
+      "sha256": "65f6f6ced19958ef80db9c9ce36a2862eb0afd799f3164692b5f9d607b57b670",
+      "size": 17408
+    },
+    {
+      "addr": 2018529280,
+      "image": "msvcp90.dll",
+      "packed_size": 1122,
+      "reason": ".data initialized data; remaining virtual bytes are zero",
+      "sha256": "df932e12a787546eb41c1dce19f81f2826ce4909839a3a3bdeeb0558f5d11fc6",
+      "size": 6656
+    }
+  ]
+}

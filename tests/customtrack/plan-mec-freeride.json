@@ -1,0 +1,13 @@
+{
+ "event": "FreeRide/Beta_Sx_Track_Slot_5/@",
+ "prefix": "MEC_freeride",
+ "settle": 0,
+ "adapt": 1.5,
+ "perf": 0,
+ "modes": ["original"],
+ "_note": "w-fb-customtrack: the 2014 Monster Energy Cup's Free Ride",
+ "views": [
+  {"name": "spawn", "cam": "game", "t": 4},
+  {"name": "high", "cam": "pose", "frame": "bike", "offset": [20, 40, -60], "look": "anchor", "lookY": 0, "fov": 70, "t": 6}
+ ]
+}

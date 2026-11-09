@@ -1,0 +1,350 @@
+/* The OPEN REFLEX garage (OpenShell.Garage.cs / OpenShell.GaragePages.cs), loaded by the garage screen after OuModern.uss and OuRestyle.uss.
+   The layout (OuFrontEnd.uss: .ou-garage .ou-stage ...) in the modern layer's scale (nothing under 18 px at the 1080 reference): the
+   drill-down on the left (the VEHICLE / RIDER switch, the breadcrumb, the level's orange title bar, its entries), the stage with the orbit
+   view, the rider's name and the card of what is in view on the right. The career look (OuRestyle.uss: dark glass, orange bars, gold focus). */
+
+.ou-frontend .ou-garage-panel {
+    width: 640px;
+    padding: 0 12px 18px 16px;
+}
+
+.ou-frontend .ou-garage-panel .ou-gtabs {
+    height: 64px;
+}
+
+.ou-frontend .ou-garage-panel .ou-gtab > .mxa-button-label {
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+.ou-frontend .ou-garage-rows {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-frontend .ou-garage-status {
+    margin: 6px 0 6px 6px;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-garage-note {
+    margin: 10px 6px 0 6px;
+    font-size: 18px;
+    white-space: normal;
+}
+
+/* ---------------------------------------------------------------- list cards (vehicles, riders) */
+
+.ou-frontend .ou-gcard {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    min-height: 76px;
+    margin: 0 6px 6px 2px;
+    padding: 8px 12px 8px 18px;
+    border-radius: 4px;
+    border-left-width: 6px;
+    border-left-color: rgba(255, 255, 255, 0.14);
+    background-color: rgba(18, 20, 25, 0.84);
+    transition-property: translate, background-color, border-left-color;
+    transition-duration: 0.14s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-frontend .ou-gcard:hover { background-color: rgba(40, 43, 52, 0.92); }
+
+.ou-frontend .ou-gcard:focus {
+    background-color: var(--ou-focus-fill);
+    border-left-color: rgb(255, 255, 255);
+    translate: 8px 0;
+}
+
+.ou-frontend .ou-gcard-off > .ou-gcard-copy > .ou-gcard-title { color: rgba(246, 246, 244, 0.62); }
+
+.ou-frontend .ou-gcard-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.ou-frontend .ou-gcard-title {
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-gcard-sub {
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+    margin: 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-gcard:focus > .ou-gcard-copy > .ou-gcard-sub { color: rgba(255, 255, 255, 0.86); }
+
+.ou-frontend .ou-gcard-tags {
+    flex-direction: row;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.ou-frontend .ou-gcard:focus .ou-pill { background-color: rgba(0, 0, 0, 0.28); }
+.ou-frontend .ou-gcard:focus .ou-pill-good { color: rgb(16, 22, 14); background-color: var(--ou-green); }
+.ou-frontend .ou-gcard:focus .ou-pill-gold { color: rgb(30, 22, 4); background-color: var(--ou-gold); }
+
+.ou-frontend .ou-gstatic { height: 52px; }
+.ou-frontend .ou-gstatic-value { margin-left: auto; color: var(--ou-gold); }
+.ou-frontend .ou-gsound { flex-shrink: 0; }
+
+/* ---------------------------------------------------------------- the stage (a column: the view, then the cards) */
+
+.ou-frontend .ou-garage .ou-stage {
+    flex-direction: column;
+}
+
+.ou-frontend .ou-garage .ou-stage-view {
+    position: relative;
+    left: auto; right: auto; top: auto; bottom: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 200px;
+}
+
+.ou-frontend .ou-garage-image {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+}
+
+.ou-frontend .ou-garage .ou-stage-bottom {
+    position: relative;
+    left: auto; right: auto; bottom: auto;
+    flex-shrink: 0;
+    padding: 0 22px 16px 26px;
+}
+
+.ou-frontend .ou-garage .ou-stage-id {
+    left: 30px;
+    top: 22px;
+}
+
+.ou-frontend .ou-garage .ou-stage-name {
+    font-size: 54px;
+    letter-spacing: 1px;
+}
+
+.ou-frontend .ou-garage .ou-stage-sub {
+    font-size: 19px;
+    letter-spacing: 3px;
+    max-width: 640px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ou-frontend .ou-stage-top {
+    position: absolute;
+    right: 24px;
+    top: 22px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.ou-frontend .ou-stage-credits {
+    font-size: 21px;
+    padding: 7px 18px;
+    margin: 0;
+}
+
+.ou-frontend .ou-stage-hint2 {
+    position: absolute;
+    right: 26px;
+    top: 74px;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--ou-faint);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-garage .ou-stage-make { font-size: 20px; letter-spacing: 5px; }
+.ou-frontend .ou-garage .ou-stage-model-name { font-size: 52px; margin: -8px 0 -4px 0; }
+.ou-frontend .ou-garage .ou-stage-model { align-items: flex-end; margin-bottom: 10px; }
+.ou-frontend .ou-garage .ou-stage-badges { flex-direction: row; align-items: center; margin: 2px 0 0 0; }
+.ou-frontend .ou-stage-name-row { flex-direction: row; align-items: flex-end; }
+.ou-frontend .ou-stage-number2 {
+    font-size: 54px; color: var(--ou-red-hot); margin: 0 14px 0 0; padding: 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal;
+}
+.ou-frontend .ou-garage .ou-stage-badges > .ou-badge { font-size: 18px; padding: 4px 12px 3px 12px; margin-right: 8px; }
+.ou-frontend .ou-stage-brand { width: 120px; height: 44px; -unity-background-scale-mode: scale-to-fit; margin-left: 6px; }
+
+/* performance bars: the model's base in white, the tuning's bonus in red */
+.ou-frontend .ou-gstats { flex-direction: row; align-items: flex-end; flex-shrink: 0; }
+.ou-frontend .ou-gstat { width: 112px; margin-left: 14px; }
+.ou-frontend .ou-gstat-label {
+    font-size: 18px; letter-spacing: 2px; color: var(--ou-muted); margin: 0 0 3px 0; padding: 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend .ou-gbar { height: 8px; margin-bottom: 4px; border-radius: 4px; background-color: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.ou-frontend .ou-gbar-base { position: absolute; left: 0; top: 0; bottom: 0; background-color: rgba(246, 246, 244, 0.88); }
+.ou-frontend .ou-gbar-bonus { position: absolute; top: 0; bottom: 0; background-color: var(--ou-red-hot); }
+
+/* ---------------------------------------------------------------- the strip of what the focused row can take */
+
+.ou-frontend .ou-gstrip-box { flex-shrink: 0; }
+.ou-frontend .ou-gstrip { height: 124px; flex-shrink: 0; }
+.ou-frontend .ou-gstrip > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container { flex-direction: row; padding: 6px 0 4px 0; }
+.ou-frontend .ou-garage .ou-strip-title { font-size: 18px; letter-spacing: 3px; margin: 0 0 6px 2px; }
+
+.ou-frontend .ou-gchip {
+    width: 238px;
+    height: 108px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    padding: 8px 12px 8px 14px;
+    border-radius: 4px;
+    border-left-width: 5px;
+    border-left-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(14, 15, 19, 0.9);
+    justify-content: space-between;
+    transition-property: translate, background-color, border-left-color;
+    transition-duration: 0.12s;
+    transition-timing-function: ease-out-cubic;
+}
+
+.ou-frontend .ou-gchip:hover { background-color: rgba(40, 43, 52, 0.94); }
+.ou-frontend .ou-gchip:focus { background-color: var(--ou-focus-fill); border-left-color: rgb(255, 255, 255); translate: 0 -5px; }
+.ou-frontend .ou-gchip-on { border-left-color: var(--ou-green); }
+.ou-frontend .ou-gchip-off > .ou-gchip-title { color: rgba(246, 246, 244, 0.6); }
+
+.ou-frontend .ou-gchip-line {
+    font-size: 18px; letter-spacing: 2px; color: var(--ou-muted); margin: 0; padding: 0; height: 22px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend .ou-gchip:focus > .ou-gchip-line { color: rgba(255, 255, 255, 0.86); }
+
+.ou-frontend .ou-gchip-title {
+    font-size: 26px; color: rgb(255, 255, 255); margin: 0; padding: 0; white-space: normal; height: 62px; overflow: hidden;
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf"); -unity-font-style: normal;
+}
+
+.ou-frontend .ou-gchip-tags { position: absolute; left: 12px; bottom: 8px; flex-direction: row; }
+.ou-frontend .ou-gchip-tags > .ou-pill { margin-left: 0; margin-right: 6px; padding: 2px 10px; font-size: 18px; }
+.ou-frontend .ou-gchip:focus .ou-pill { background-color: rgba(0, 0, 0, 0.3); }
+.ou-frontend .ou-gchip:focus .ou-pill-good { color: rgb(16, 22, 14); background-color: var(--ou-green); }
+.ou-frontend .ou-gchip:focus .ou-pill-gold { color: rgb(30, 22, 4); background-color: var(--ou-gold); }
+/* a bike mod's kit / part (w-bikemods: BikeMods, the MODEL chosen in VEHICLE) */
+.ou-frontend .ou-pill-mod { color: rgb(4, 20, 26); background-color: rgb(72, 200, 232); }
+.ou-frontend .ou-gchip:focus .ou-pill-mod { color: rgb(4, 20, 26); background-color: rgb(120, 222, 245); }
+
+/* a spinner row with nothing to choose (the MODEL row of a bike no installed mod covers) */
+.ou-frontend .ou-row-off .mxa-arrow { display: none; }
+.ou-frontend .ou-row-off .mxa-row-label, .ou-frontend .ou-row-off .mxa-value { opacity: 0.5; }
+
+/* ---------------------------------------------------------------- tuning rows */
+
+.ou-frontend .ou-tune-row { height: 78px; }
+.ou-frontend .ou-tune-value { align-items: center; }
+.ou-frontend .ou-tune-value > .mxa-arrow { margin-top: -10px; }
+.ou-frontend .ou-tune-bars { width: 190px; margin: 0 14px; }
+.ou-frontend .ou-tune-bars .ou-gbar { height: 12px; margin-bottom: 5px; border-radius: 6px; }
+.ou-frontend .ou-tune-text { min-width: 92px; font-size: 24px; -unity-text-align: middle-right; }
+
+/* ---------------------------------------------------------------- the purchase dialog */
+
+.ou-frontend .ou-gdialog-root {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.ou-frontend .ou-gdialog-root .ou-dialog { width: 760px; background-color: rgb(14, 15, 19); }
+.ou-frontend .ou-gdialog-root .ou-scrim { background-color: rgba(4, 5, 7, 0.78); }
+
+/* ---------------------------------------------------------------- TEST RIDE (w-testride): beside DONE, the plate look, gold with the focus */
+
+.ou-frontend.mxa-root .ou-garage-actions { flex-direction: row; }
+.ou-frontend.mxa-root .ou-garage-actions > .ou-cta { flex-grow: 1; }
+.ou-frontend.mxa-root .ou-cta.ou-garage-ride { flex-grow: 0; margin-right: 10px; background-color: rgba(255, 255, 255, 0.10); border-left-width: 4px; border-left-color: rgb(226, 172, 64); }
+.ou-frontend.mxa-root .ou-cta.ou-garage-ride > .mxa-button-label { color: rgb(240, 236, 226); }
+.ou-frontend.mxa-root .ou-cta.ou-garage-ride:hover { background-color: rgba(255, 255, 255, 0.18); }
+.ou-frontend.mxa-root .ou-cta.ou-garage-ride:focus { background-color: rgb(226, 172, 64); }
+.ou-frontend.mxa-root .ou-cta.ou-garage-ride:focus > .mxa-button-label { color: rgb(14, 15, 15); }
+
+
+/* the NUMBER row: a narrow box between the two arrows (1..999) */
+.ou-frontend .mxa-row .ou-gnumber.mxa-rider-name { width: 112px; margin: 0 6px; }
+.ou-frontend .ou-gnumber > #unity-text-input { -unity-text-align: middle-center; }
+.ou-frontend .ou-gnumber > #unity-text-input:focus { border-color: var(--ou-gold); }
+
+/* ---------------------------------------------------------------- the drill-down's head (w-garageflow) */
+
+.ou-frontend .ou-ghead { flex-shrink: 0; margin: 0 0 10px 0; }
+.ou-frontend.mxa-root .mxa-layer .ou-gbranch { height: 52px; margin: 0 0 12px 0; border-bottom-width: 0; }
+.ou-frontend.mxa-root .mxa-layer .ou-gbranch .ou-gtab { height: 52px; }
+.ou-frontend.mxa-root .mxa-layer .ou-gbranch .ou-gtab > .mxa-button-label { font-size: 27px; letter-spacing: 3px; white-space: nowrap; }
+.ou-frontend.mxa-root .mxa-layer .ou-gbranch-key { flex-shrink: 0; flex-direction: row; align-items: center; margin: 0 6px 0 2px; }
+.ou-frontend.mxa-root .mxa-layer .ou-gbranch-key .mxa-hint { margin: 0; }
+.ou-frontend.mxa-root .mxa-layer .ou-gbranch-key .mxa-hint-label { display: none; }
+
+.ou-frontend .ou-gcrumb-row { flex-direction: row; align-items: center; height: 36px; flex-shrink: 0; }
+.ou-frontend .ou-gup {
+    flex-direction: row; align-items: center; flex-shrink: 0; height: 32px; padding: 0 14px 0 8px; margin: 0 14px 0 0;
+    background-color: rgba(255, 255, 255, 0.08);
+    transition-property: background-color; transition-duration: 0.12s;
+}
+.ou-frontend .ou-gup:hover { background-color: rgb(226, 172, 64); }
+.ou-frontend .ou-gup-arrow {
+    font-size: 30px; margin: -5px 6px 0 0; padding: 0; color: rgb(226, 172, 64);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend .ou-gup-label {
+    font-size: 18px; letter-spacing: 3px; margin: 0; padding: 0; color: rgb(224, 224, 200);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend .ou-gup:hover > .ou-gup-arrow, .ou-frontend .ou-gup:hover > .ou-gup-label { color: rgb(14, 15, 15); }
+.ou-frontend .ou-gcrumb {
+    flex-grow: 1; flex-shrink: 1; min-width: 0; margin: 0; padding: 0; font-size: 21px; letter-spacing: 3px; color: rgb(176, 175, 156);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+/* the level's name on the original's orange title bar */
+.ou-frontend .ou-glevel-bar { flex-shrink: 0; height: 62px; margin: 8px 0 0 0; padding: 0 20px; justify-content: center; background-color: rgb(204, 95, 41); }
+.ou-frontend .ou-glevel-title {
+    margin: -4px 0 0 0; padding: 0; font-size: 46px; letter-spacing: 1px; color: rgb(14, 15, 15);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend .ou-glevel-sub {
+    margin: 8px 0 0 2px; padding: 0; font-size: 19px; letter-spacing: 3px; color: rgb(176, 175, 156); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+
+/* ---------------------------------------------------------------- the entries: a brand logo on the left, a chevron on the ones that lead down */
+
+.ou-frontend .ou-gcard-logo { width: 96px; height: 48px; flex-shrink: 0; margin: 0 16px 0 0; -unity-background-scale-mode: scale-to-fit; }
+.ou-frontend .ou-gcard-chevron {
+    flex-shrink: 0; margin: -6px 0 0 12px; padding: 0; font-size: 46px; color: rgba(224, 224, 200, 0.55);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-frontend.mxa-root .mxa-layer .ou-gcard:focus > .ou-gcard-chevron { color: rgb(14, 15, 15); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard-mod { border-left-color: rgb(72, 200, 232); }
+.ou-frontend .ou-gcard-tags > .ou-pill { margin-left: 6px; }
+
+/* the stage's PREVIEW tag: what is on show is not equipped yet */
+.ou-frontend.mxa-root .mxa-layer .ou-badge-preview { background-color: rgb(245, 199, 48); color: rgb(30, 22, 4); }
+
+/* dark glass over the 3D compound: the rider and the bike stay visible beside it */
+.ou-frontend.mxa-root .mxa-layer .ou-garage-panel { background-color: rgba(10, 18, 20, 0.86); }

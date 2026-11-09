@@ -1,0 +1,8 @@
+{ "event": "National/NAT_Stillwater", "ai": 0, "ride": 8, "prefix": "sun", "settle": 2, "fps": 60, "shots": [
+  { "name": "edge_off",   "face": "replay", "cam": "Free", "back": 3.2, "fx": "off", "sun": true, "sunLow": -18, "sunYaw": 24 },
+  { "name": "edge_flare", "face": "replay", "cam": "Free", "back": 3.2, "fx": "flare", "sun": true, "sunLow": -18, "sunYaw": 24 },
+  { "name": "edge_auto",  "face": "replay", "cam": "Free", "back": 3.2, "fx": "auto", "sun": true, "sunLow": -18, "sunYaw": 24 },
+  { "name": "mid_flare",  "face": "replay", "cam": "Free", "back": 3.2, "fx": "flare", "sun": true, "sunLow": -8, "sunYaw": 10 },
+  { "name": "corner_flare", "face": "replay", "cam": "Free", "back": 3.2, "fx": "flare", "sun": true, "sunLow": -26, "sunYaw": 38 },
+  { "name": "none_flare", "face": "replay", "cam": "Chase", "back": 3.2, "fx": "flare" }
+] }

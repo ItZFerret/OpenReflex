@@ -1,0 +1,47 @@
+# vtreach_allow.tsv -- unregistered vtable targets the product's slot calls cannot reach (sigcheck_vt.reach_pass, w-vtunported), TAB one-line reason.
+# Keys: <target hex> | class:<regex> (every target of the matching classes) | site:<file>:<function>:<slot> (one call site's whole reach).
+# Every entry must keep matching (stale ones are reported). Add one only with a reason that holds for the shipped data and the product's code.
+class:^KeyMapCommand$	KeyMapCommands live only in the key registry's command vector (+0x18, build_globals_input.c command_get); the product never polls or queries it (rx_keymaps_update walks the KeyMap vector +0xc, the controller blocks hold KeyMap / AnalogKeyMap / CompoundKeyMap)
+class:^(PathfinderDriver|BehaviorPathfinderRoamToWaypointGate|MXActivityPathfinderChallenge|MXActivityStepUpChallenge|MXStepUpBarEntity)$	the Pathfinder / StepUp challenges: no shipped Free Ride level has their "<level>ChallengePathfinder / StepUp" subscene (race_challenge_pathfinder.c header), so the game never builds them with its own data
+006d1c80	LandAnimalProximity::vf30: reached only through the threaded-animal ticker (rx_character_ticker_run), whose switch [0xa94324] has no writer in the product (loop_entity.c); vf30 itself returns at once while the switch is 0
+site:anim_scenario_rider.c:rx_rider_parts_set_float:0x1c	00616f30 has no caller in the product and is not a vtable target (registered for the oracle only)
+site:race_activity_misc.c:ui_lang_search:0x8	the UI language registry 0xaf6888 is filled only by the UI system, which the product does not run (race_activity.c, race_activity_freestyle.c): the loop body never runs
+site:world_node_audio.c:rx_world_clock_now:0x4	the clock source [0x009dfa80] has no writer in the product (only this read)
+site:fx_world.c:rx_fx_session_tick:0x8	the offline session's network / lobby slots (+0xc / +0x10) are null (the PRODUCT BOUNDARY note at the call: Quazal's 006de1f0 is not core); null slots are skipped
+site:build_xml_stream.c:rx_compressed_stream_init:0xc	the guest-stream XML loader (008252c0) runs only on the pending tuning stream [0x009e3100]; nothing in the product sets it (rx_pending_tuning_receive has no caller)
+site:build_xml_stream.c:rx_compressed_stream_init:0x24	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_read:0xc	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_read:0x1c	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_read:0x20	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_read:0x24	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_read:0x28	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_read:0x2c	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:rx_compressed_stream_close:0x10	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:stream_read:0x8	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:build_xml_stream.c:source_read:0x8	as above: the pending tuning stream [0x009e3100] is never set in the product
+site:fourwheel_pending.c:pending:0x0	the stream deleted is the pending tuning stream [0x009e3100]: never set in the product (rx_pending_tuning_receive has no caller)
+site:vehicle_atv_leaves.c:rx_atv_apply_pending_tuning:0x0	the pending tuning stream [0x009e3100]: never set in the product
+site:loop_cam_player.c:rx_cam_reload_tuning:0x0	the pending tuning stream [0x009e3100]: never set in the product
+class:^(XenonForestAsset|XenonTreeAsset|XenonTerrainAsset|TerrainCollisionAsset|XenonWaterAsset|HFTerrainSurface|PlatformWaterSurface)$	the level package's assets: the product runs one event per session (stop_audit_twice.c: a new session after rx_session_destroy, which resets the image), so the level package is never unloaded and these are never released
+00827f80	BXMLAsset's primary vtable is its XMLReader's (slot 2 = this getter); a handle's asset pointer is the IAsset sub-object at +0x460 (BXMLAssetIO::vf4 subtracts 0x460), whose slot 2 is 008221c0 (ported)
+site:race_activity_misc.c:rx_activity_on_player_left:0x24	the player's scene entity (+0x9a4) has no non-zero writer in the product (build_activity_player.c / loop_player_destroy.c only clear it)
+site:anim_scene.c:rx_lights_add:0x4	e is a LightEntity of the scene's light list; anim_vcall0(e, 0x64) is its light sub-object at +0xa0 (AmbientLight / DirectionalLight): none of the flagged classes (matrices, transition effects, MXGame) derives from a light
+site:anim_scene.c:rx_lights_add:0x18	as above: the light sub-object of a LightEntity
+site:anim_scene.c:rx_lights_add:0x1c	as above: the light sub-object of a LightEntity
+site:build_vehicle_sim.c:rx_veh_sliding_rotor_node_construct:0x4	n + 0xd0 is a matrix block of the sliding-rotor node (build_vehicle_sim.c); the member map's GenericParticleController at +0xd0 belongs to another owner
+site:phys_mech_matrix.c:phys_matrix5x6_clear:0x4	self + 0xd0 is a block of the 5x6 mechanism matrix (phys_mech_matrix.c layout), not the GenericParticleController some other owner keeps at +0xd0
+site:phys_mech_matrix.c:phys_matrix5x6_transpose:0x8	self + 0x10 / 0x50 / 0x90 / 0xd0 are the 5x6 matrix's blocks (phys_mech_matrix.c layout): the runs reach them every vehicle frame through the registered block ports only
+site:phys_mech_matrix.c:phys_matrix4x6_transpose:0x8	self + 0x10 / 0x60 are the 4x6 matrix's blocks (fixed layout): the runs reach them every vehicle frame through the registered block ports only
+site:phys_mech_matrix.c:phys_matrix6x4_transpose:0x8	self + 0x10 is the 6x4 matrix's block (fixed layout): reached every vehicle frame through the registered block port only
+site:phys_mech_matrix.c:phys_matrix5x6_sub:0x10	self + block[i]: the 5x6 matrix's fixed blocks; reached every vehicle frame through the registered block ports only
+class:^BehaviorLeaveActivity$	added only on a level whose world name (+0x20030) contains "WORLD" (rx_race_stub_vf47 / rx_freestyle_stub_vf47, 0078fcf0); no shipped or Alive level name does (FR_ / NAT_ / SX_ / PX_ / TRX_ / FMX_ ...)
+site:race_beh2_extern.h:beh2_shape_bounds:0x18	shape = vehicle + 0x94 (race_beh2_seperate.c): the RavenVehicle classes' +0x94 sub-object, whose slot 6 is 004302f0 rx_vehicle_root_bounds for all six
+site:race_activity_misc.c:rx_activity_on_player_left:0x0	U32(player, 0x9a4) is never non-zero in the product (only cleared); the driver deleted here is one of the driver classes (NetworkDriver is only their base)
+006ba220	AnimEntitySingleAnimLoop::vf20 (CrewChief's too): reached only from the post-update list (+0x2c54), which holds entities with +0x28 set; only the land animals' constructor sets it (build_scene_anim_roaming.c), the scene loader clears it (build_scene.c)
+006bb3c0	AnimEntitySplineAnimLoop::vf20: as 006ba220, the post-update list holds only entities with +0x28 set (the land animals)
+class:^EventHandlerProxy_.*(NetVehicle|NetPlayer|Quazal|NetObjectType|NetTimerEventType|NetLoginStatus|NetworkSession)	network-object events (NetVehicle / NetPlayer updates, Quazal DuplicatedObject / VDOHandle, net timers / login): only the online session layer posts them (net_boundary.h: fatal in the product by design), so these proxies are never invoked offline
+0052d0a0	BehaviorRoamTrack::vf4: only Freestyle drivers get the behaviour (rx_freestyle_stub_vf47), and a Freestyle driver's behaviours run only in the AI riding 0050d240, which needs the AI debug override 0xae1b90 (MXRegistry TuneAI, F in the shipped MXRegistry.xml) and is itself a DEBUG BOUNDARY (race_freestyle_driver.c act_unreached); the 12-rider Freestyle traces reach the behaviour's vf3 / vf6, never vf4
+005acb80	MXSeriesEventFreestyle::vf13: no Series row of the shipped career data has the Freestyle format (Freestyle events are SingleEvent rows: MXSeriesEventSingle; career_series_test list), and the product does not compose that format either (career_composition.c composed_event -> 0, rx_career_composition_format_supported refuses it), so no AdvancePostEvent reaches a Freestyle series event (50 KB of the original behind it: a feature, not a stub)
+0070cec0	LuaAssetIO::vf4: no LuaAsset can exist: the product builds assets only through the g_types loaders (build_asset.c / build_load.c) and "script" has none (the Lua VM is not ported, build_mxgame_startup.c), so the asset stays 0
+site:build_asset_release.c:rx_bxml_asset_io_destroy:0x0	asset - 0x460 is the BXMLAsset object itself (its IAsset sub-object sits at +0x460): the call reads the primary vtable, whose slot 0 is 00822170 (ported), not the +0x460 thunk 0082af30
+class:^EventHandlerProxy_P8MXActivity(Infection|Snake)_AEXM_ZP81_AEXM_Z_Rainbow$	"NetworkSnakeBoundaryChanged" (void(float)): raised only by the network snake object's update (Quazal NetSnake, online); the offline session posts none, so the party modes' listener proxies are never invoked offline (race_infection.c, race_snake.c: ONLINE)

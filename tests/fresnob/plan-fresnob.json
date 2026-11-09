@@ -1,0 +1,9 @@
+{"event": "FreeRide/SX_FresnoB", "prefix": "FresnoB", "settle": 8, "adapt": 3, "perf": 0, "modes": ["original", "enhanced"], "views": [
+ {"name": "chase", "cam": "pose", "t": 4, "frame": "bike", "offset": [0, 2.4, -7.5], "look": "anchor", "lookY": 1.2, "fov": 62},
+ {"name": "gate", "cam": "pose", "t": 4.5, "frame": "bike", "offset": [14, 6, 18], "look": "anchor", "lookY": 1.0, "fov": 60},
+ {"name": "wide", "cam": "pose", "t": 5, "frame": "bike", "offset": [0, 30, -70], "look": "anchor", "lookY": 0, "fov": 62},
+ {"name": "overview", "cam": "pose", "t": 5.5, "at": [0, 15, 0], "frame": "world", "offset": [-430, 260, -430], "look": "anchor", "lookY": 0, "fov": 60},
+ {"name": "top", "cam": "pose", "t": 6, "at": [0, 15, 0], "frame": "world", "offset": [0, 620, 1], "look": "anchor", "lookY": 0, "fov": 70},
+ {"name": "rhythm", "cam": "pose", "t": 6.5, "at": [300, 15, 60], "frame": "world", "offset": [-90, 30, -60], "look": "anchor", "lookY": 0, "fov": 60},
+ {"name": "turn", "cam": "pose", "t": 7, "at": [-300, 18, 0], "frame": "world", "offset": [120, 40, -80], "look": "anchor", "lookY": 0, "fov": 60}
+]}

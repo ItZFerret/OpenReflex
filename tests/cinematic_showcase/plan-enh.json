@@ -1,0 +1,9 @@
+{ "event": "National/NAT_Stillwater", "ai": 0, "ride": 8, "prefix": "enh", "settle": 2, "fps": 60, "enhanced": true, "shots": [
+  { "name": "chase_off",  "face": "replay", "cam": "Chase", "back": 4.5, "fx": "off" },
+  { "name": "chase_auto", "face": "replay", "cam": "Chase", "back": 4.5, "fx": "auto", "play": 0.5 },
+  { "name": "heli_auto",  "face": "replay", "cam": "Helicopter", "back": 4.5, "fx": "auto", "play": 0.5 },
+  { "name": "sun_auto",   "face": "replay", "cam": "Free", "back": 3.2, "fx": "auto", "sun": true, "sunLow": 6 },
+  { "name": "photo_all",  "face": "photo", "cam": "Orbit", "back": 4.5, "fx": "auto", "focusMode": 1, "aperture": 3, "mb": 0.3, "lens": 1 },
+  { "name": "ui_replay",  "face": "replay", "cam": "Chase", "back": 4.5, "fx": "auto", "ui": true },
+  { "name": "ui_photo",   "face": "photo", "cam": "Orbit", "back": 4.5, "fx": "auto", "ui": true, "focusMode": 1, "aperture": 3, "mb": 0.3, "lens": 1 }
+] }

@@ -1,0 +1,114 @@
+{
+ "event": "National/NAT_Farm",
+ "prefix": "Farm110",
+ "settle": 0,
+ "adapt": 1.5,
+ "perf": 0,
+ "ai": 11,
+ "modes": [
+  "original"
+ ],
+ "_note": "w-alivegates: the Alive start gate at its default MAP SCALE (110 %), world -250.24 937.78 -34.01 (the scene's x 1.1); front = in front of the bar looking back at the riders, side = along the bar",
+ "views": [
+  {
+   "name": "up_front",
+   "cam": "pose",
+   "frame": "world",
+   "at": [
+    -252.44,
+    938.78,
+    -34.01
+   ],
+   "offset": [
+    16,
+    4,
+    -6
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 55,
+   "state": 1,
+   "after": 2.0
+  },
+  {
+   "name": "up_side",
+   "cam": "pose",
+   "frame": "world",
+   "at": [
+    -252.44,
+    938.78,
+    -34.01
+   ],
+   "offset": [
+    -1,
+    2,
+    -45
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 40,
+   "state": 1,
+   "after": 2.5
+  },
+  {
+   "name": "drop_side",
+   "cam": "pose",
+   "frame": "world",
+   "at": [
+    -252.44,
+    938.78,
+    -34.01
+   ],
+   "offset": [
+    -1,
+    2,
+    -45
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 40,
+   "state": 2,
+   "after": 0.1
+  },
+  {
+   "name": "down_side",
+   "cam": "pose",
+   "frame": "world",
+   "at": [
+    -252.44,
+    938.78,
+    -34.01
+   ],
+   "offset": [
+    -1,
+    2,
+    -45
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 40,
+   "state": 2,
+   "after": 0.45
+  },
+  {
+   "name": "down_front",
+   "cam": "pose",
+   "frame": "world",
+   "at": [
+    -252.44,
+    938.78,
+    -34.01
+   ],
+   "offset": [
+    16,
+    4,
+    -6
+   ],
+   "look": "anchor",
+   "lookY": 0,
+   "fov": 55,
+   "state": 2,
+   "after": 0.6
+  }
+ ]
+}

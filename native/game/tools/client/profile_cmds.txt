@@ -1,0 +1,51 @@
+# the profile session as the Unity client drives it (front end, career pages, garage, remap, options)
+profile_open
+profile json
+profile lua_ui ReflexChunk ReflexAnswer = ""; local ok, err = pcall( function( ) if( App.GetMXProfile( 0 ):ValidateDLC( ) == TRUE ) then ReflexAnswer = "1" else ReflexAnswer = "0" end end ); if not ok then ReflexAnswer = "ERR " .. tostring( err ) end; ReflexAnswer = tostring( ReflexAnswer ); App.SetUIVariableString( "ReflexChunk", tostring( string.len( ReflexAnswer ) ) )
+profile lua_ui ReflexChunk App.SetUIVariableString( "ReflexChunk", string.sub( ReflexAnswer, 1, 30 ) )
+profile lua_ui ReflexChunk ReflexAnswer = ""; local ok, err = pcall( function( ) if( App.DoesSystemHaveSaveGameSpace( 0 ) == TRUE ) then ReflexAnswer = "1" else ReflexAnswer = "0" end end ); if not ok then ReflexAnswer = "ERR " .. tostring( err ) end; ReflexAnswer = tostring( ReflexAnswer ); App.SetUIVariableString( "ReflexChunk", tostring( string.len( ReflexAnswer ) ) )
+profile lua_ui ReflexChunk App.SetUIVariableString( "ReflexChunk", string.sub( ReflexAnswer, 1, 30 ) )
+profile achievements
+profile json
+profile remap
+profile validate_jersey_name SMITH
+profile profile_name_valid Payton
+profile ui_setting CareerDifficulty 95
+profile event_status CareerWelcome 1
+profile save_ui_settings
+profile save
+profile json
+profile set_int PlayerRider 0 PercentComplete 37
+profile event_status CareerCompleted 1
+profile store_not_new 2904
+profile json
+profile ui_setting Gamma 5
+profile rider_string Name SMITH
+profile set_int PlayerRider 0 NameStatus 0
+profile save_ui_settings
+profile save
+profile json
+profile rider_string Number 998
+profile json
+profile save_ui_settings
+profile save
+profile json
+profile favorite_vehicle 0
+profile save
+profile json
+profile lua local d = 0; local t = App.LookupPlayerTable( "PlayerVehicleTuning", d ); local id = App.LookupPlayerTable( "PlayerRider", d ):cell_int( 0, "LastEquippedVehicle" ); local r = t:searchUnique_int( "PlayerVehicleId", id ); r:setCell_int( "Engine1", 10 ); r:setCell_int( "Engine2", 5 ); r:setCell_int( "Suspension1", 0 ); r:setCell_int( "Suspension2", 0 ); r:setCell_int( "Tire1", 5 ); r:setCell_int( "Tire2", 0 ); r:setCell_int( "Braking", 50 ); r:setCell_int( "Steering", 100 ); App.ApplyVehicleTuning( d )
+profile save
+profile json
+profile set_int PlayerRider 0 AccountBalance 18500
+profile purchase_asset 1234
+profile json
+profile lua App.SetRemapTableByIndex( 0, 3, 30 )
+profile remap
+profile lua App.InitializeRemapTables( true )
+profile remap
+profile save
+profile json
+profile set_int PlayerRider 0 TutorialsEntered 1
+profile save
+profile json
+profile memhash

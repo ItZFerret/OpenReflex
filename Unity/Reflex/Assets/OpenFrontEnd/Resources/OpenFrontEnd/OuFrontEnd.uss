@@ -1,0 +1,2867 @@
+/* The Open Unleashed front end (MxaMainMenu, MxaFrontEnd.cs), on top of MxaMenu.uss. Everything is scoped to
+   .ou-frontend (the main menu document's root) so the in-race menus keep MxaMenu.uss as it is.
+   Reference size 1920 x 1080, scaled by height (16:10 is 1728 wide): the layouts are flex rows / columns, the fixed
+   widths are the side columns only, the middle grows.
+   Colours follow the logo: a hot red, white and silver on near-black glass. Type: Barlow Condensed ExtraBold Italic for
+   titles and big buttons, Barlow Condensed Bold for labels, Barlow for text (Assets/MXA/Resources/Fonts, SIL OFL).
+   The slanted shapes are MxaShape elements coloured with --shape-fill / --shape-stroke / --shape-skew. */
+
+:root, .ou-frontend {
+    --ou-red: rgb(232, 28, 36);
+    --ou-red-hot: rgb(255, 72, 64);
+    --ou-red-deep: rgb(140, 8, 14);
+    --ou-red-wash: rgba(232, 28, 36, 0.16);
+    --ou-glass: rgba(11, 12, 15, 0.82);
+    --ou-glass-hi: rgba(24, 26, 31, 0.92);
+    --ou-line: rgba(255, 255, 255, 0.09);
+    --ou-text: rgb(246, 246, 244);
+    --ou-muted: rgba(246, 246, 244, 0.6);
+    --ou-faint: rgba(246, 246, 244, 0.36);
+    --ou-silver: rgb(208, 212, 218);
+}
+
+.ou-frontend {
+    -unity-font-definition: url("Fonts/Barlow-SemiBold.ttf");
+    color: var(--ou-text);
+}
+
+/* the type families */
+.ou-frontend .ou-header-title, .ou-frontend .ou-hub-button > .mxa-button-label, .ou-frontend .ou-continue-title,
+.ou-frontend .ou-number, .ou-frontend .ou-number-hash, .ou-frontend .ou-loading-title, .ou-frontend .ou-detail-title,
+.ou-frontend .mxa-screen-title, .ou-frontend .ou-empty-title, .ou-frontend .ou-stage-name, .ou-frontend .ou-cta > .mxa-button-label,
+.ou-frontend .ou-garage-card-name, .ou-frontend .mxa-title, .ou-frontend .mxa-place-num, .ou-frontend .ou-stage-model-name,
+.ou-frontend .ou-gtab > .mxa-button-label, .ou-frontend .ou-gshowroom > .mxa-button-label, .ou-frontend .ou-sr-group-title,
+.ou-frontend .ou-setup-title, .ou-frontend .ou-setup-ride-name, .ou-frontend .ou-lbm-title, .ou-frontend .ou-lbm-track-time,
+.ou-frontend .ou-server-name {
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .mxa-button-label, .ou-frontend .mxa-row-label, .ou-frontend .mxa-value, .ou-frontend .mxa-panel-title,
+.ou-frontend .mxa-track-title, .ou-frontend .mxa-track-sub, .ou-frontend .mxa-track-name, .ou-frontend .mxa-key,
+.ou-frontend .mxa-hint-label, .ou-frontend .ou-eyebrow, .ou-frontend .ou-header-crumb, .ou-frontend .ou-badge,
+.ou-frontend .ou-filter-group, .ou-frontend .ou-count, .ou-frontend .ou-card-name, .ou-frontend .ou-card-sub,
+.ou-frontend .ou-section-title, .ou-frontend .ou-hub-caption, .ou-frontend .ou-status-text, .ou-frontend .ou-strip-label,
+.ou-frontend .ou-strip-title, .ou-frontend .ou-stage-sub, .ou-frontend .ou-stage-hint, .ou-frontend .ou-continue-sub,
+.ou-frontend .ou-garage-card-sub, .ou-frontend .ou-loading-sub, .ou-frontend .mxa-library-platform, .ou-frontend .mxa-library-state,
+.ou-frontend .mxa-dir-header, .ou-frontend .mxa-stat-label, .ou-frontend .mxa-controls-head > Label, .ou-frontend .mxa-c-action,
+.ou-frontend .ou-stage-make, .ou-frontend .ou-sr-make, .ou-frontend .ou-sr-card-make, .ou-frontend .ou-gshowroom-sub,
+.ou-frontend .ou-sr-group-count, .ou-frontend .ou-sr-equipped, .ou-frontend .ou-gshowroom-arrow,
+.ou-frontend .ou-schip-label, .ou-frontend .ou-schip-value, .ou-frontend .ou-setup-sub,
+.ou-frontend .ou-lbm-track-name, .ou-frontend .ou-lbm-track-sub, .ou-frontend .ou-lbm-track-me, .ou-frontend .ou-lbm-sub, .ou-frontend .ou-lbm-gap,
+.ou-frontend .ou-server-sub {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .mxa-note, .ou-frontend .mxa-install-text, .ou-frontend .mxa-library-description, .ou-frontend .ou-empty-text,
+.ou-frontend .mxa-install-status, .ou-frontend .mxa-error, .ou-frontend .mxa-dir, .ou-frontend .ou-server-note {
+    -unity-font-definition: url("Fonts/Barlow-Medium.ttf");
+    -unity-font-style: normal;
+}
+
+/* ------------------------------------------------------------------ frame: layer, scrims, bottom bar */
+
+.ou-frontend .mxa-layer {
+    padding: 40px 72px 92px 72px;
+}
+
+.ou-frontend .mxa-dim, .ou-frontend .mxa-dim.mxa-options-open {
+    background-color: rgba(6, 7, 9, 0.7);
+}
+
+/* the game folder, library, import, server and plugin screens: the same dimmed photo as the others */
+.ou-frontend .mxa-screen-import, .ou-frontend .mxa-screen-install, .ou-frontend .mxa-screen-servers, .ou-frontend .mxa-screen-plugins {
+    background-color: rgba(6, 7, 9, 0.62);
+}
+
+.ou-frontend .mxa-scrim {
+    width: 78%;
+}
+
+.ou-bottom-fade {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 240px;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.ou-statusbar {
+    position: absolute;
+    left: 72px;
+    bottom: 30px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.ou-status-logo {
+    -unity-background-scale-mode: scale-to-fit;
+    margin-right: 18px;
+}
+
+.ou-statusbar-hub > .ou-status-logo {
+    display: none;
+}
+
+.ou-status-text {
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--ou-faint);
+}
+
+.ou-frontend .mxa-hints {
+    right: 72px;
+    bottom: 34px;
+}
+
+.ou-frontend .mxa-key {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.16);
+    border-radius: 4px;
+    padding: 2px 9px;
+    font-size: 15px;
+    color: var(--ou-text);
+}
+
+.ou-frontend .mxa-hint-label {
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+.ou-spacer {
+    flex-grow: 1;
+}
+
+.ou-faint {
+    color: var(--ou-faint);
+}
+
+/* the slanted shapes: the backdrop fills its parent; parents colour it per state */
+.ou-shape {
+    --shape-skew: 16;
+}
+
+.ou-backdrop {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.ou-header {
+    flex-direction: row;
+    align-items: center;
+    height: 78px;
+    flex-shrink: 0;
+    margin-bottom: 22px;
+}
+
+.ou-header-mark {
+    width: 16px;
+    height: 58px;
+    margin-right: 22px;
+    --shape-fill: rgb(232, 28, 36);
+    --shape-skew: 8;
+}
+
+.ou-header-titles {
+    justify-content: center;
+}
+
+.ou-header-title {
+    font-size: 54px;
+    letter-spacing: 1px;
+    color: var(--ou-text);
+    margin: -6px 0 -4px 0;
+    padding: 0;
+}
+
+.ou-header-crumb {
+    font-size: 15px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    padding: 0;
+    margin: 0;
+}
+
+.ou-header-right {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* ------------------------------------------------------------------ chips, segmented switch, search */
+
+.ou-chip {
+    height: 40px;
+    padding: 0 16px;
+    margin-left: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    justify-content: center;
+    transition-property: background-color, border-color;
+    transition-duration: 0.1s;
+}
+
+.ou-chip > .mxa-button-label {
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+}
+
+.ou-chip:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.ou-chip:focus {
+    background-color: var(--ou-red);
+    border-color: var(--ou-red);
+}
+
+.ou-chip:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-chip:disabled {
+    opacity: 0.35;
+}
+
+.ou-chip-accent {
+    border-color: rgba(232, 28, 36, 0.6);
+}
+
+.ou-chip-accent > .mxa-button-label {
+    color: var(--ou-red-hot);
+}
+
+.ou-seg {
+    flex-direction: row;
+    height: 46px;
+    padding: 4px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    margin-right: 18px;
+}
+
+.ou-seg-item {
+    padding: 0 20px;
+    border-radius: 4px;
+    justify-content: center;
+}
+
+.ou-seg-item > .mxa-button-label {
+    font-size: 17px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+}
+
+.ou-seg-on {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.ou-seg-on > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-seg-item:focus {
+    background-color: var(--ou-red);
+}
+
+.ou-seg-item:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-search {
+    flex-direction: row;
+    align-items: center;
+    width: 400px;
+    height: 46px;
+    padding: 0 10px 0 14px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-width: 1px;
+    border-color: var(--ou-line);
+}
+
+.ou-search:focus {
+    border-color: var(--ou-red);
+}
+
+.ou-search-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.ou-search-lens {
+    position: absolute;
+    left: 0; top: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    border-width: 2px;
+    border-color: var(--ou-muted);
+}
+
+.ou-search-handle {
+    position: absolute;
+    left: 12px; top: 13px;
+    width: 8px;
+    height: 2px;
+    background-color: var(--ou-muted);
+    rotate: 45deg;
+}
+
+.ou-frontend .ou-search-field {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0;
+}
+
+.ou-frontend .ou-search-field > #unity-text-input {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    font-size: 18px;
+    padding: 4px 4px;
+    color: var(--ou-text);
+    -unity-font-definition: url("Fonts/Barlow-SemiBold.ttf");
+}
+
+.ou-search-key {
+    margin: 0 0 0 8px;
+    font-size: 13px;
+}
+
+/* ------------------------------------------------------------------ badges */
+
+.ou-badge {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+    background-color: var(--ou-red);
+    padding: 3px 10px 2px 10px;
+    border-radius: 3px;
+    margin: 0 6px 0 0;
+    -unity-text-align: middle-center;
+}
+
+.ou-badge-dark {
+    background-color: rgba(10, 11, 14, 0.82);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--ou-text);
+}
+
+.ou-badge-outline {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.ou-eyebrow {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--ou-red-hot);
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------------------------------------------ call to action (START EVENT, RIDE NOW, DONE) */
+
+.ou-frontend .ou-cta {
+    height: 64px;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ou-cta > .ou-backdrop {
+    --shape-fill: rgba(232, 28, 36, 0.32);
+    --shape-stroke: rgba(255, 72, 64, 0.85);
+    --shape-stroke-width: 2;
+    --shape-skew: 18;
+}
+
+.ou-cta:hover > .ou-backdrop {
+    --shape-fill: rgba(232, 28, 36, 0.55);
+}
+
+.ou-cta:focus > .ou-backdrop {
+    --shape-fill: rgb(232, 28, 36);
+    --shape-stroke: rgb(255, 255, 255);
+}
+
+.ou-frontend .ou-cta > .mxa-button-label {
+    font-size: 30px;
+    letter-spacing: 3px;
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .ou-cta:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .ou-cta:disabled {
+    opacity: 0.4;
+}
+
+/* ------------------------------------------------------------------ hub */
+
+.ou-hub {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.ou-hub-left {
+    width: 720px;
+    flex-shrink: 0;
+    justify-content: center;
+}
+
+.ou-hub-logo {
+    -unity-background-scale-mode: scale-to-fit;
+    margin: 0 0 30px -14px;
+    flex-shrink: 0;
+}
+
+.ou-hub-menu {
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-hub-button {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 600px;
+    height: 74px;   /* 8 entries since B.R.A.A.P. (2026-10-17): no taller than the 7 at 84 + 4 */
+    padding-left: 34px;
+    margin-bottom: 2px;
+}
+
+.ou-hub-button > .ou-backdrop {
+    --shape-fill: rgba(0, 0, 0, 0);
+    --shape-skew: 26;
+}
+
+.ou-hub-button:hover > .ou-backdrop {
+    --shape-fill: rgba(255, 255, 255, 0.06);
+}
+
+.ou-hub-button:focus > .ou-backdrop {
+    --shape-fill: rgb(232, 28, 36);
+}
+
+.ou-frontend .ou-hub-button > .mxa-button-label {
+    font-size: 54px;
+    letter-spacing: 2px;
+    color: rgba(246, 246, 244, 0.72);
+    margin: -8px 0 -6px 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-hub-button:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-hub-caption {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--ou-faint);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-hub-button:focus > .ou-hub-caption {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.ou-hub-small {
+    flex-direction: row;
+    margin: 26px 0 0 26px;
+}
+
+.ou-hub-small > .ou-chip {
+    margin: 0 10px 0 0;
+}
+
+.ou-hub-right {
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.ou-hub-cards {
+    width: 560px;
+}
+
+.ou-card-panel {
+    background-color: var(--ou-glass);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.ou-continue {
+    padding-bottom: 20px;
+}
+
+.ou-continue-shot {
+    height: 250px;
+    background-size: 100% 133.4%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgb(16, 17, 20);
+    justify-content: flex-end;
+}
+
+.ou-continue-photo {
+    background-size: cover;
+}
+
+.ou-continue-copy {
+    padding: 0 24px 16px 24px;
+    background-color: rgba(8, 9, 11, 0.55);
+    padding-top: 12px;
+}
+
+.ou-continue-title {
+    font-size: 42px;
+    color: rgb(255, 255, 255);
+    margin: -2px 0 -4px 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-continue-sub {
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-continue > .ou-cta {
+    margin: 18px 24px 0 24px;
+}
+
+.ou-garage-card {
+    flex-direction: row;
+    align-items: center;
+    padding: 18px 24px;
+    transition-property: border-color, background-color;
+    transition-duration: 0.12s;
+}
+
+.ou-garage-card:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.ou-garage-card:focus {
+    border-color: var(--ou-red);
+    background-color: var(--ou-glass-hi);
+}
+
+.ou-garage-card-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-garage-card-name {
+    font-size: 34px;
+    color: rgb(255, 255, 255);
+    margin: -2px 0 0 0;
+    padding: 0;
+}
+
+.ou-garage-card-sub {
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-garage-card-number {
+    flex-direction: row;
+    align-items: flex-start;
+    flex-shrink: 0;
+    margin-left: 16px;
+}
+
+.ou-number {
+    font-size: 88px;
+    color: rgb(255, 255, 255);
+    margin: -14px 0 -14px 0;
+    padding: 0;
+}
+
+.ou-number-hash {
+    font-size: 34px;
+    color: var(--ou-red);
+    margin: 4px 2px 0 0;
+    padding: 0;
+}
+
+/* ------------------------------------------------------------------ panels (shared) */
+
+.ou-panel, .ou-frontend .mxa-panel {
+    background-color: var(--ou-glass);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-top-color: rgba(232, 28, 36, 0.7);
+    border-top-width: 2px;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.ou-panel-title, .ou-frontend .mxa-panel-title {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    margin: 0 0 10px 6px;
+    padding: 0;
+}
+
+/* ------------------------------------------------------------------ track browser */
+
+.ou-browser {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-sidebar {
+    width: 290px;
+    flex-shrink: 0;
+    padding: 18px 12px 18px 14px;
+}
+
+.ou-filter-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-filter-group {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--ou-faint);
+    margin: 18px 0 6px 10px;
+    padding: 0;
+}
+
+.ou-frontend .ou-filter {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 42px;
+    padding: 0 10px 0 12px;
+    margin: 0 6px 2px 0;
+    border-radius: 4px;
+    border-left-width: 3px;
+    border-left-color: rgba(0, 0, 0, 0);
+}
+
+.ou-filter > .mxa-button-label {
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--ou-muted);
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ou-filter-count {
+    font-size: 14px;
+    color: var(--ou-faint);
+    min-width: 30px;
+    -unity-text-align: middle-right;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+}
+
+.ou-filter-count-add {
+    color: var(--ou-red-hot);
+    letter-spacing: 1px;
+}
+
+.ou-filter:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.ou-filter-on {
+    background-color: var(--ou-red-wash);
+    border-left-color: var(--ou-red);
+}
+
+.ou-filter-on > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-filter:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ou-filter:focus > .mxa-button-label, .ou-filter:focus > .ou-filter-count {
+    color: rgb(255, 255, 255);
+}
+
+.ou-results {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 22px;
+    min-width: 0;
+}
+
+.ou-toolbar {
+    flex-direction: row;
+    align-items: center;
+    height: 44px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.ou-count {
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    padding: 0;
+    margin: 0 0 0 2px;
+}
+
+.ou-tools {
+    flex-direction: row;
+    align-items: center;
+}
+
+.ou-grid-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding-right: 10px;
+    padding-top: 6px;
+}
+
+.ou-frontend .ou-card {
+    flex-direction: column-reverse;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    background-color: var(--ou-glass);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    transition-property: border-color, translate, background-color;
+    transition-duration: 0.1s;
+}
+
+.ou-card-thumb {
+    height: 140px;
+    background-color: rgb(18, 19, 23);
+    background-size: 100% 133.4%;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 8px;
+    flex-direction: row;
+    align-items: flex-start;
+    flex-shrink: 0;
+}
+
+.ou-card-thumb-map {
+    background-size: contain;
+    background-color: rgb(24, 26, 31);
+}
+
+.ou-card-thumb-empty {
+    background-color: rgb(26, 20, 22);
+}
+
+.ou-card-badge {
+    font-size: 12px;
+}
+
+.ou-card-star {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    --shape-fill: rgb(255, 196, 40);
+}
+
+.ou-card-caption {
+    padding: 9px 12px 10px 12px;
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-card-name {
+    font-size: 21px;
+    letter-spacing: 1px;
+    color: var(--ou-text);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ou-card-sub {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--ou-faint);
+    margin: 1px 0 0 0;
+    padding: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ou-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.ou-card-on {
+    border-color: rgba(232, 28, 36, 0.75);
+}
+
+.ou-frontend .ou-card:focus {
+    border-color: var(--ou-red-hot);
+    background-color: var(--ou-glass-hi);
+    translate: 0 -3px;
+}
+
+.ou-frontend .ou-card:focus .ou-card-name {
+    color: rgb(255, 255, 255);
+}
+
+.ou-card-on .ou-card-sub, .ou-card:focus .ou-card-sub {
+    color: var(--ou-red-hot);
+}
+
+/* LIST: a row per track, the picture on the left */
+.ou-view-list {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+}
+
+.ou-frontend .ou-view-list > .ou-card {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    height: 74px;
+    margin-bottom: 6px;
+}
+
+.ou-view-list .ou-card-thumb {
+    width: 112px;
+    height: 70px;
+    padding: 4px;
+}
+
+.ou-view-list .ou-card-caption {
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 16px;
+}
+
+.ou-view-list .ou-card-star {
+    width: 18px;
+    height: 18px;
+    right: 4px;
+    top: 4px;
+}
+
+.ou-view-list .ou-card-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+}
+
+.ou-frontend .ou-view-list > .ou-card:focus {
+    translate: 6px 0;
+}
+
+/* nothing to show: centred in the results column */
+.ou-empty {
+    position: absolute;
+    left: 0; right: 0; top: 56px; bottom: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px;
+    display: none;
+}
+
+.ou-empty-mark {
+    width: 120px;
+    height: 10px;
+    margin-bottom: 18px;
+}
+
+.ou-empty-mark > .ou-backdrop {
+    --shape-fill: rgb(232, 28, 36);
+    --shape-skew: 6;
+}
+
+.ou-empty-title {
+    font-size: 48px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.ou-empty-text {
+    font-size: 19px;
+    color: var(--ou-muted);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    max-width: 620px;
+    margin-top: 8px;
+}
+
+.ou-frontend .ou-empty-action {
+    width: 340px;
+    margin-top: 26px;
+}
+
+/* the selected event */
+.ou-detail {
+    width: 500px;
+    flex-shrink: 0;
+    padding: 0 0 18px 0;
+    overflow: hidden;
+}
+
+.ou-frontend .ou-detail-shot {
+    height: 262px;
+    width: auto;
+    border-radius: 0;
+    background-color: rgb(16, 17, 20);
+    background-size: 100% 133.4%;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-detail-map {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 116px;
+    height: 116px;
+    border-radius: 6px;
+    background-color: rgba(8, 9, 11, 0.74);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.ou-detail-caption {
+    padding: 14px 20px 6px 20px;
+    flex-shrink: 0;
+}
+
+.ou-detail-badges {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.ou-frontend .ou-fav-toggle {
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+    margin: 0;
+}
+
+.ou-fav-toggle > .mxa-button-label {
+    font-size: 13px;
+}
+
+.ou-fav-star {
+    width: 15px;
+    height: 15px;
+    margin-right: 6px;
+    --shape-fill: rgba(246, 246, 244, 0.5);
+}
+
+.ou-fav-on > .ou-fav-star {
+    --shape-fill: rgb(255, 196, 40);
+}
+
+.ou-fav-on > .mxa-button-label {
+    color: rgb(255, 214, 102);
+}
+
+.ou-frontend .ou-detail-title {
+    font-size: 40px;
+    color: rgb(255, 255, 255);
+    margin: 2px 0 -2px 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-frontend .ou-detail-sub {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-detail-options {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 6px 8px 0 12px;
+}
+
+/* the browser's preview: what the event is set to, its lap records */
+.ou-detail-body {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 8px 10px 0 18px;
+}
+
+.ou-detail-actions {
+    padding: 8px 20px 0 20px;
+    flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------ value rows (setup options, garage, options pages) */
+
+.ou-frontend .mxa-row {
+    height: 52px;
+    border-radius: 4px;
+    border-left-width: 3px;
+}
+
+.ou-frontend .mxa-row:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-left-color: var(--ou-red);
+}
+
+.ou-frontend .mxa-row-label {
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+}
+
+.ou-frontend .mxa-row:focus > .mxa-row-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .mxa-value {
+    font-size: 20px;
+}
+
+.ou-frontend .mxa-row:focus .mxa-arrow {
+    color: var(--ou-red-hot);
+}
+
+.ou-frontend .mxa-row:focus .mxa-slider-fill {
+    background-color: var(--ou-red);
+}
+
+.ou-frontend .mxa-note {
+    font-size: 15px;
+    color: var(--ou-faint);
+}
+
+.ou-frontend .mxa-note-fun {
+    color: var(--ou-red-hot);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    font-size: 18px;
+}
+
+/* ------------------------------------------------------------------ garage */
+
+.ou-garage {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-garage-panel {
+    width: 540px;
+    flex-shrink: 0;
+    padding: 0 12px 18px 16px;
+}
+
+/* the tabs: RIDER, GEAR, VEHICLE between the tab keys; the one on underlined in red */
+.ou-gtabs {
+    flex-direction: row;
+    align-items: center;
+    height: 66px;
+    margin: 0 0 10px -4px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--ou-line);
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-gtabs-key {
+    font-size: 13px;
+    padding: 1px 7px;
+    margin: 0 6px;
+    color: var(--ou-muted);
+}
+
+.ou-frontend .ou-gtab {
+    flex-grow: 1;
+    flex-basis: 0;
+    height: 66px;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    border-radius: 0;
+}
+
+.ou-frontend .ou-gtab > .mxa-button-label {
+    font-size: 30px;
+    letter-spacing: 2px;
+    color: var(--ou-faint);
+    margin: 0;
+    padding: 0;
+    transition-property: color;
+    transition-duration: 0.12s;
+}
+
+.ou-gtab-bar {
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: -1px;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 2px;
+    transition-property: background-color, left, right;
+    transition-duration: 0.15s;
+}
+
+.ou-frontend .ou-gtab:hover > .mxa-button-label {
+    color: var(--ou-muted);
+}
+
+.ou-frontend .ou-gtab-on > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-gtab-on > .ou-gtab-bar {
+    background-color: var(--ou-red);
+    left: 8%;
+    right: 8%;
+}
+
+.ou-frontend .ou-gtab:focus {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.ou-frontend .ou-gtab:focus > .mxa-button-label {
+    color: var(--ou-red-hot);
+}
+
+.ou-gpage {
+    flex-shrink: 0;
+}
+
+/* RIDER's WEARING / RIDING: the value names it, the arrow says it opens its tab */
+.ou-frontend .ou-gsummary .mxa-value {
+    font-size: 18px;
+    color: var(--ou-text);
+}
+
+.ou-frontend .ou-gsummary:focus .mxa-value {
+    color: var(--ou-red-hot);
+}
+
+/* VEHICLE's SHOWROOM: a big slanted button over the rows */
+.ou-frontend .ou-gshowroom {
+    flex-direction: column;
+    height: 96px;
+    margin: 4px 6px 6px 2px;
+    padding: 0 60px 0 26px;
+    justify-content: center;
+    align-items: flex-start;
+    border-radius: 6px;
+    background-color: rgba(232, 28, 36, 0.12);
+    border-width: 1px;
+    border-color: rgba(232, 28, 36, 0.55);
+    overflow: hidden;
+    transition-property: translate, background-color, border-color;
+    transition-duration: 0.12s;
+}
+
+.ou-gshowroom > .ou-backdrop {
+    --shape-fill: rgba(0, 0, 0, 0);
+    --shape-skew: 22;
+}
+
+.ou-frontend .ou-gshowroom:hover {
+    border-color: var(--ou-red-hot);
+}
+
+.ou-frontend .ou-gshowroom:focus {
+    background-color: var(--ou-red);
+    border-color: var(--ou-red-hot);
+    translate: 6px 0;
+}
+
+.ou-frontend .ou-gshowroom > .mxa-button-label {
+    font-size: 44px;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+    margin: -6px 0 -6px 0;
+    padding: 0;
+}
+
+.ou-gshowroom-sub {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-gshowroom:focus > .ou-gshowroom-sub {
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.ou-gshowroom-arrow {
+    position: absolute;
+    right: 22px;
+    top: 14px;
+    font-size: 60px;
+    color: var(--ou-red-hot);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-gshowroom:focus > .ou-gshowroom-arrow {
+    color: rgb(255, 255, 255);
+}
+
+.ou-garage-rows {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-section {
+    flex-direction: row;
+    align-items: center;
+    height: 34px;
+    margin: 14px 0 4px 6px;
+}
+
+.ou-section-first {
+    margin-top: 0;
+}
+
+.ou-section-mark {
+    width: 26px;
+    height: 8px;
+    margin-right: 10px;
+}
+
+.ou-section-mark > .ou-backdrop {
+    --shape-fill: rgb(232, 28, 36);
+    --shape-skew: 4;
+}
+
+.ou-section-title {
+    font-size: 15px;
+    letter-spacing: 4px;
+    color: var(--ou-text);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-frontend .mxa-rider-name {
+    width: 290px;
+}
+
+.ou-frontend .mxa-rider-name > #unity-text-input {
+    background-color: rgba(0, 0, 0, 0.35);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-radius: 4px;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+    font-size: 21px;
+    letter-spacing: 1px;
+}
+
+.ou-frontend .mxa-row:focus .mxa-rider-name > #unity-text-input {
+    border-color: var(--ou-red);
+}
+
+.ou-garage-note {
+    margin-top: 12px;
+}
+
+.ou-garage-actions {
+    padding: 10px 6px 0 2px;
+    flex-shrink: 0;
+}
+
+.ou-stage {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: 26px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: rgba(8, 9, 11, 0.45);
+    border-width: 1px;
+    border-color: var(--ou-line);
+}
+
+.ou-stage-glow {
+    position: absolute;
+    left: 6%; right: 6%; top: 4%; bottom: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgba(232, 28, 36, 0.22);
+}
+
+.ou-stage-floor {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 42%;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgba(0, 0, 0, 0.9);
+}
+
+/* the 3D view above the stage's cards (the vehicle's card, the livery strip) */
+.ou-stage-view {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 236px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.ou-stage-id {
+    position: absolute;
+    left: 30px;
+    top: 22px;
+}
+
+.ou-stage-number-row {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.ou-frontend .ou-stage-number {
+    font-size: 108px;
+    margin: -18px 0 -16px 0;
+}
+
+.ou-frontend .ou-stage-number-row > .ou-number-hash {
+    font-size: 46px;
+    margin-top: 8px;
+}
+
+.ou-stage-name {
+    font-size: 42px;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-stage-sub {
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-stage-hint {
+    position: absolute;
+    right: 24px;
+    top: 22px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--ou-faint);
+}
+
+.ou-frontend .ou-stage-plate {
+    right: 24px;
+    top: 58px;
+    bottom: auto;
+    width: 64px;
+    height: 128px;
+    border-radius: 5px;
+    background-color: rgba(120, 124, 130, 0.55);
+}
+
+/* the gear brand's logo, under the rider's name */
+.ou-frontend .ou-stage-logo {
+    width: 150px;
+    height: 64px;
+    margin-top: 10px;
+    -unity-background-scale-mode: scale-to-fit;
+    background-position-x: left;
+}
+
+/* the vehicle's card over the livery strip: the make, the model, its badges beside it */
+.ou-stage-model {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.ou-stage-model-copy {
+    flex-shrink: 1;
+}
+
+.ou-stage-make {
+    font-size: 17px;
+    letter-spacing: 5px;
+    color: var(--ou-red-hot);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-stage-model-name {
+    font-size: 50px;
+    color: rgb(255, 255, 255);
+    margin: -10px 0 -6px 0;
+    padding: 0;
+}
+
+.ou-stage-bottom {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 0 22px 18px 22px;
+}
+
+.ou-stage-badges {
+    flex-direction: row;
+    margin: 0 0 8px 20px;
+}
+
+.ou-stage-badges > .ou-badge {
+    font-size: 15px;
+    padding: 4px 12px 3px 12px;
+}
+
+.ou-strip-title {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    margin: 0 0 8px 2px;
+    padding: 0;
+}
+
+.ou-strip {
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.ou-strip > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    flex-direction: row;
+}
+
+.ou-strip-chip {
+    height: 44px;
+    padding: 0 16px;
+    margin-right: 8px;
+    justify-content: center;
+    border-radius: 4px;
+    background-color: rgba(10, 11, 14, 0.85);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    flex-shrink: 0;
+}
+
+.ou-strip-label {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--ou-muted);
+    white-space: nowrap;
+}
+
+.ou-strip-chip:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.ou-strip-on {
+    background-color: var(--ou-red);
+    border-color: var(--ou-red-hot);
+}
+
+.ou-strip-on > .ou-strip-label {
+    color: rgb(255, 255, 255);
+}
+
+/* the liveries with their pictures (MxaBikeThumbs) */
+.ou-strip-pics {
+    height: 128px;
+}
+
+.ou-strip-card {
+    width: 176px;
+    height: 122px;
+    padding: 0;
+    justify-content: flex-start;
+    overflow: hidden;
+    background-color: rgba(14, 15, 19, 0.88);
+    transition-property: border-color, translate;
+    transition-duration: 0.1s;
+}
+
+.ou-strip-pic {
+    height: 96px;
+    flex-shrink: 0;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.ou-strip-card > .ou-strip-label {
+    font-size: 13px;
+    height: 24px;
+    padding: 0 8px;
+    -unity-text-align: middle-center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ou-strip-card:hover {
+    translate: 0 -2px;
+}
+
+.ou-strip-card.ou-strip-on {
+    background-color: rgba(14, 15, 19, 0.88);
+    border-width: 2px;
+    border-color: var(--ou-red-hot);
+}
+
+.ou-strip-card.ou-strip-on > .ou-strip-label {
+    background-color: var(--ou-red);
+}
+
+/* ------------------------------------------------------------------ showroom (MxaMainMenu.Showroom.cs) */
+
+.ou-sr-detail {
+    width: 540px;
+}
+
+.ou-sr-shot {
+    height: 330px;
+    flex-shrink: 0;
+    background-color: rgb(13, 14, 17);
+    overflow: hidden;
+}
+
+.ou-sr-glow {
+    position: absolute;
+    left: 4%; right: 4%; top: 0; bottom: 0;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgba(232, 28, 36, 0.26);
+}
+
+.ou-sr-floor {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 45%;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgba(0, 0, 0, 0.9);
+}
+
+.ou-sr-view {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.ou-sr-badges {
+    flex-direction: row;
+    align-items: center;
+}
+
+.ou-sr-make {
+    font-size: 16px;
+    letter-spacing: 5px;
+    color: var(--ou-red-hot);
+    margin: 6px 0 0 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-sr-note {
+    margin: 10px 10px 0 8px;
+    white-space: normal;
+}
+
+.ou-sr-active {
+    flex-direction: row;
+    align-items: center;
+    margin-left: 12px;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+.ou-frontend .ou-sr-active-chip {
+    height: 32px;
+    padding: 0 10px;
+    margin-left: 6px;
+    background-color: var(--ou-red-wash);
+    border-color: rgba(232, 28, 36, 0.6);
+}
+
+.ou-frontend .ou-sr-active-chip > .mxa-button-label {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+
+.ou-filter-zero > .mxa-button-label, .ou-filter-zero > .ou-filter-count {
+    color: rgba(246, 246, 244, 0.2);
+}
+
+/* a group's title across the grid: HONDA  12  ---- */
+.ou-sr-group {
+    flex-direction: row;
+    align-items: center;
+    height: 44px;
+    margin: 4px 0 8px 0;
+}
+
+.ou-sr-group-title {
+    font-size: 30px;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-sr-group-count {
+    font-size: 15px;
+    color: var(--ou-red-hot);
+    margin: 4px 0 0 10px;
+    padding: 0;
+}
+
+.ou-sr-group-line {
+    flex-grow: 1;
+    height: 1px;
+    margin: 4px 0 0 16px;
+    background-color: var(--ou-line);
+}
+
+.ou-frontend .ou-sr-thumb {
+    background-size: contain;
+    background-color: rgb(17, 18, 22);
+    -unity-background-scale-mode: scale-to-fit;
+    padding: 8px;
+}
+
+.ou-sr-thumb-wait {
+    background-color: rgb(22, 23, 28);
+}
+
+.ou-sr-card-make {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--ou-red-hot);
+    margin: 0 0 -2px 0;
+    padding: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ou-frontend .ou-sr-card .ou-card-name {
+    font-size: 24px;
+}
+
+.ou-sr-game {
+    background-color: rgba(10, 11, 14, 0.82);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.18);
+    color: var(--ou-muted);
+}
+
+.ou-sr-equipped {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+    background-color: var(--ou-red);
+    padding: 2px 8px 1px 8px;
+    border-radius: 3px;
+}
+
+.ou-sr-card-equipped {
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ------------------------------------------------------------------ loading */
+
+.ou-frontend .mxa-layer.mxa-screen-loading {
+    padding: 0;
+}
+
+.ou-loading {
+    flex-grow: 1;
+}
+
+.ou-loading-shot {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background-color: rgb(10, 11, 13);
+    background-size: 100% 133.4%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.ou-loading-shade {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 70%;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.ou-loading-logo {
+    position: absolute;
+    left: 72px;
+    top: 52px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.ou-loading-copy {
+    position: absolute;
+    left: 72px;
+    right: 72px;
+    bottom: 72px;
+}
+
+.ou-loading-copy > .ou-eyebrow {
+    font-size: 22px;
+    letter-spacing: 4px;
+}
+
+.ou-loading-title {
+    font-size: 110px;
+    color: rgb(255, 255, 255);
+    margin: -10px 0 -8px 0;
+    padding: 0;
+}
+
+.ou-loading-bar {
+    width: 420px;
+    height: 10px;
+    margin: 12px 0 14px 4px;
+}
+
+.ou-loading-bar-fill {
+    --shape-fill: rgb(232, 28, 36);
+    --shape-skew: 6;
+}
+
+.ou-loading-sub {
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+/* the event load in the test-ride arena (OpenShell.LoadArena.cs): PRESS START under the bar, the hint bar's caps at the card's size */
+.ou-frontend.mxa-root .ou-loadarena-prompt {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin-top: 20px;
+    align-self: flex-start;
+    flex-direction: row;
+}
+
+.ou-frontend.mxa-root .mxa-hints.ou-loadarena-prompt .mxa-hint {
+    margin-left: 0;
+}
+
+.ou-frontend.mxa-root .ou-loadarena-prompt .mxa-hint-label {
+    font-size: 30px;
+    letter-spacing: 6px;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+.ou-frontend.mxa-root .ou-loadarena-prompt .mxa-key {
+    font-size: 26px;
+    padding: 4px 14px;
+    margin-right: 14px;
+}
+
+/* ------------------------------------------------------------------ the other screens, restyled (options, library, imports, servers, plugins) */
+
+.ou-frontend .mxa-head {
+    height: 78px;
+    align-items: center;
+    border-left-width: 6px;
+    border-left-color: var(--ou-red);
+    padding-left: 22px;
+}
+
+.ou-frontend .mxa-screen-title {
+    font-size: 52px;
+    letter-spacing: 1px;
+}
+
+.ou-frontend .mxa-title {
+    font-size: 56px;
+}
+
+.ou-frontend .mxa-tabs {
+    margin-left: 34px;
+    padding: 4px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    flex-shrink: 1;
+    flex-wrap: wrap;
+}
+
+.ou-frontend .mxa-tab {
+    padding: 8px 14px;
+    border-bottom-width: 0;
+    border-radius: 4px;
+}
+
+.ou-frontend .mxa-tab > .mxa-button-label {
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+.ou-frontend .mxa-tab-on {
+    background-color: var(--ou-red);
+}
+
+.ou-frontend .mxa-tab-on > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .mxa-options-page {
+    margin-top: 22px;
+}
+
+.ou-frontend .mxa-start, .ou-frontend .mxa-secondary {
+    border-radius: 4px;
+    height: 58px;
+}
+
+.ou-frontend .mxa-start {
+    background-color: rgba(232, 28, 36, 0.3);
+    border-width: 1px;
+    border-color: rgba(255, 72, 64, 0.7);
+}
+
+.ou-frontend .mxa-secondary {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ou-frontend .mxa-start:focus, .ou-frontend .mxa-secondary:focus {
+    background-color: var(--ou-red);
+    border-color: rgb(255, 255, 255);
+}
+
+.ou-frontend .mxa-start:focus > .mxa-button-label, .ou-frontend .mxa-secondary:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-frontend .mxa-start > .mxa-button-label, .ou-frontend .mxa-secondary > .mxa-button-label {
+    font-size: 21px;
+    letter-spacing: 2px;
+}
+
+/* ou-cta wins over mxa-start: transparent box, the slanted shape draws the button */
+.ou-frontend .mxa-start.ou-cta, .ou-frontend .mxa-start.ou-cta:focus {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 0;
+    height: 64px;
+}
+
+.ou-frontend .mxa-start.ou-cta > .mxa-button-label {
+    font-size: 30px;
+    letter-spacing: 3px;
+}
+
+.ou-frontend .mxa-library-card {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-radius: 6px;
+}
+
+.ou-frontend .mxa-library-platform {
+    color: var(--ou-red-hot);
+    letter-spacing: 2px;
+}
+
+.ou-frontend .mxa-library-secret {
+    border-color: rgba(232, 28, 36, 0.45);
+}
+
+.ou-frontend .mxa-install-status.mxa-ok, .ou-frontend .mxa-dir.mxa-ok {
+    color: rgb(120, 220, 140);
+}
+
+.ou-frontend .mxa-dir:focus {
+    background-color: var(--ou-red-wash);
+}
+
+.ou-frontend .mxa-dir.mxa-dir-current {
+    background-color: rgba(232, 28, 36, 0.12);
+}
+
+.ou-frontend .mxa-link:focus {
+    background-color: var(--ou-red);
+}
+
+.ou-frontend .mxa-controls-row:focus {
+    background-color: rgba(232, 28, 36, 0.14);
+}
+
+.ou-frontend .mxa-root .unity-scroller--vertical .unity-base-slider__dragger,
+.ou-frontend .unity-scroller--vertical .unity-base-slider__dragger {
+    background-color: rgba(255, 255, 255, 0.24);
+}
+
+/* ------------------------------------------------------------------ ONLINE / HOST A SESSION (MxaMainMenu.Network.cs, .Host.cs) */
+
+/* the sign-in state in the header: a dot that is green online, amber on LAN only */
+.ou-frontend .ou-online-signin {
+    font-size: 15px;
+    letter-spacing: 2px;
+    height: 34px;
+    padding: 0 14px;
+    margin-right: 14px;
+    color: var(--ou-muted);
+}
+
+.ou-frontend .ou-online-on {
+    color: rgb(120, 230, 140);
+    border-color: rgba(120, 230, 140, 0.45);
+}
+
+.ou-frontend .ou-online-off {
+    color: rgb(255, 196, 90);
+    border-color: rgba(255, 196, 90, 0.45);
+}
+
+/* the sidebar: YOU, the filters, JOIN WITH CODE, and HOST A SESSION pinned at the bottom */
+.ou-online .ou-sidebar {
+    padding: 14px 10px 14px 12px;
+}
+
+.ou-frontend .ou-online-row {
+    height: 46px;
+    padding: 0 6px 0 8px;
+    margin-right: 6px;
+}
+
+.ou-frontend .ou-online-row > .mxa-row-label {
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.ou-online-row .mxa-value {
+    min-width: 96px;
+    font-size: 17px;
+}
+
+.ou-frontend .ou-online .ou-online-row .mxa-rider-name {
+    width: 150px;
+}
+
+.ou-frontend .ou-online .ou-online-row .mxa-rider-name > #unity-text-input {
+    font-size: 18px;
+}
+
+.ou-frontend .ou-online .ou-online-code {
+    justify-content: flex-start;
+}
+
+.ou-frontend .ou-online .ou-online-code .mxa-rider-name {
+    width: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-frontend .ou-online-code-go {
+    margin: 6px 6px 0 0;
+}
+
+.ou-frontend .ou-online-hint {
+    font-size: 13px;
+    margin: 6px 8px 0 8px;
+    white-space: normal;
+}
+
+.ou-online-host {
+    padding-top: 12px;
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-online-host-cta {
+    height: 58px;
+}
+
+.ou-frontend .ou-online-host-cta > .mxa-button-label {
+    font-size: 26px;
+}
+
+/* the session cards: the event badges on the picture's top, where it is and the riders on its bottom */
+.ou-frontend .ou-online-thumb {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.ou-online-top, .ou-online-foot {
+    flex-direction: row;
+    align-items: center;
+}
+
+.ou-frontend .ou-online-riders {
+    font-size: 15px;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.ou-frontend .ou-online-why {
+    background-color: rgb(196, 120, 20);
+}
+
+.ou-frontend .ou-online-blocked {
+    opacity: 0.6;
+}
+
+.ou-frontend .ou-online-blocked:focus {
+    opacity: 0.85;
+}
+
+/* the selected session: read-only facts, notes, the status above JOIN, the small actions under it */
+.ou-frontend .ou-online-info {
+    height: 40px;
+    border-left-width: 0;
+}
+
+.ou-frontend .ou-online-info > .mxa-row-label {
+    font-size: 15px;
+}
+
+.ou-frontend .ou-online-value {
+    font-size: 17px;
+    min-width: 0;
+    -unity-text-align: middle-right;
+    color: var(--ou-text);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+    letter-spacing: 1px;
+}
+
+.ou-frontend .ou-online-note, .ou-frontend .ou-online-warn {
+    white-space: normal;
+    margin: 8px 10px 4px 12px;
+    font-size: 14px;
+}
+
+.ou-frontend .ou-online-warn {
+    color: rgb(255, 196, 90);
+}
+
+.ou-frontend .ou-online-status {
+    white-space: normal;
+    font-size: 15px;
+    color: var(--ou-muted);
+    margin: 0 0 8px 2px;
+    display: none;
+}
+
+.ou-frontend .ou-online-error {
+    color: rgb(255, 120, 110);
+}
+
+.ou-online-secondary {
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.ou-frontend .ou-online-secondary > .ou-chip {
+    margin: 0 8px 0 0;
+}
+
+.ou-frontend .ou-online .ou-online-password, .ou-frontend .ou-host .ou-host-text {
+    width: 230px;
+}
+
+/* the three ways in (ONLINE with nothing selected) */
+.ou-online-step {
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 6px 4px 14px 2px;
+}
+
+.ou-frontend .ou-online-step-n {
+    width: 34px;
+    height: 34px;
+    margin-right: 14px;
+    flex-shrink: 0;
+    border-radius: 17px;
+    background-color: var(--ou-red);
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-online-step-body {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-frontend .ou-online-step-title {
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--ou-text);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-online-step-text {
+    white-space: normal;
+    font-size: 14px;
+    margin: 2px 0 0 0;
+}
+
+/* ------------------------------------------------------------------ LAP LEADERBOARDS (MxaMainMenu.Leaderboard.cs) */
+
+.ou-lb-box {
+    margin-top: 4px;
+}
+
+.ou-frontend .ou-lb-status {
+    white-space: normal;
+    margin: 6px 10px 4px 12px;
+    font-size: 14px;
+}
+
+.ou-frontend .ou-lb-view {
+    align-self: flex-start;
+    margin: 10px 0 2px 4px;
+}
+
+/* the LEADERBOARD view over the browser */
+.ou-lb-veil {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.62);
+    align-items: center;
+    justify-content: center;
+}
+
+.ou-frontend .ou-lb-panel {
+    width: 1040px;
+    max-width: 92%;
+    height: 82%;
+    padding: 22px 26px 18px 26px;
+    flex-direction: column;
+    background-color: var(--ou-glass-hi);
+}
+
+.ou-lb-head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+}
+
+.ou-lb-titles {
+    flex-shrink: 1;
+    margin-right: 20px;
+}
+
+.ou-frontend .ou-lb-title {
+    font-size: 40px;
+    color: var(--ou-text);
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-lb-sub {
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-lb-seg {
+    flex-shrink: 0;
+}
+
+.ou-lb-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    border-top-width: 1px;
+    border-color: var(--ou-line);
+}
+
+.ou-lb-row {
+    flex-direction: row;
+    align-items: center;
+    height: 46px;
+    padding: 0 16px 0 14px;
+    border-bottom-width: 1px;
+    border-color: var(--ou-line);
+    border-left-width: 3px;
+    border-left-color: rgba(0, 0, 0, 0);
+}
+
+.ou-lb-row:focus {
+    background-color: var(--ou-red-wash);
+}
+
+.ou-lb-me {
+    background-color: rgba(232, 28, 36, 0.2);
+    border-left-color: var(--ou-red);
+}
+
+.ou-frontend .ou-lb-rank, .ou-frontend .ou-lb-name, .ou-frontend .ou-lb-time {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-frontend .ou-lb-rank {
+    width: 70px;
+    font-size: 22px;
+    color: var(--ou-muted);
+}
+
+.ou-frontend .ou-lb-name {
+    width: 300px;
+    font-size: 23px;
+    color: var(--ou-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ou-frontend .ou-lb-detail {
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--ou-faint);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ou-frontend .ou-lb-time {
+    width: 150px;
+    font-size: 25px;
+    color: var(--ou-text);
+    -unity-text-align: middle-right;
+}
+
+.ou-frontend .ou-lb-gap {
+    -unity-text-align: middle-center;
+    color: var(--ou-faint);
+    margin: 4px 0;
+}
+
+.ou-frontend .ou-lb-empty {
+    white-space: normal;
+    margin: 40px 30px;
+    font-size: 17px;
+    -unity-text-align: middle-center;
+}
+
+.ou-lb-foot {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-lb-foot-note {
+    font-size: 13px;
+    flex-shrink: 1;
+    margin-right: 16px;
+}
+
+/* ------------------------------------------------------------------ setup page (Setup.uxml: RACE / FREE RIDE's event, HOST A SESSION's session) */
+
+.ou-setup {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-setup-info {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    margin-right: 26px;
+}
+
+.ou-setup-hero {
+    height: 410px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: rgb(16, 17, 20);
+    -unity-background-scale-mode: scale-and-crop;
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-top-color: rgba(232, 28, 36, 0.7);
+    border-top-width: 2px;
+}
+
+.ou-setup-hero-shade {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 62%;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgba(0, 0, 0, 0.95);
+}
+
+.ou-setup-map {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    width: 150px;
+    height: 150px;
+    border-radius: 6px;
+    background-color: rgba(8, 9, 11, 0.74);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.ou-setup-hero-copy {
+    position: absolute;
+    left: 30px;
+    right: 190px;
+    bottom: 22px;
+}
+
+.ou-setup-badges {
+    flex-direction: row;
+    margin-bottom: 4px;
+}
+
+.ou-setup-title {
+    font-size: 66px;
+    color: rgb(255, 255, 255);
+    margin: -6px 0 -8px 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-setup-sub {
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-setup-cards {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-top: 6px;
+}
+
+.ou-setup-cards > .unity-scroll-view__content-viewport > .unity-scroll-view__content-container {
+    padding-right: 8px;
+}
+
+.ou-setup-summary {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+/* a summary chip: what a setting comes to */
+.ou-schip {
+    min-width: 132px;
+    padding: 8px 14px 9px 14px;
+    margin: 0 8px 8px 0;
+    border-radius: 5px;
+    background-color: var(--ou-glass);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    border-left-width: 3px;
+    border-left-color: rgba(255, 255, 255, 0.16);
+}
+
+.ou-schip-accent {
+    background-color: var(--ou-red-wash);
+    border-left-color: var(--ou-red);
+}
+
+.ou-schip-label {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--ou-faint);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-schip-value {
+    font-size: 21px;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-setup-summary-small .ou-schip {
+    min-width: 0;
+    padding: 5px 10px 6px 10px;
+    margin: 0 6px 6px 0;
+}
+
+.ou-setup-summary-small .ou-schip-value {
+    font-size: 16px;
+}
+
+/* YOUR RIDE and the lap records, side by side */
+.ou-setup-duo {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.ou-setup-col {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+}
+
+.ou-setup-col-b {
+    margin-left: 22px;
+}
+
+/* YOUR RIDE: the vehicle's picture, its model, livery and gear */
+.ou-setup-ride {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 16px 10px 10px;
+    border-radius: 6px;
+    background-color: var(--ou-glass);
+    border-width: 1px;
+    border-color: var(--ou-line);
+    margin-bottom: 4px;
+}
+
+.ou-setup-ride-pic {
+    width: 210px;
+    height: 123px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.03);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.ou-setup-ride-copy {
+    margin-left: 18px;
+    flex-shrink: 1;
+}
+
+.ou-setup-ride-name {
+    font-size: 36px;
+    color: rgb(255, 255, 255);
+    margin: -4px 0 -2px 0;
+    padding: 0;
+}
+
+.ou-setup-panel {
+    width: 740px;
+    flex-shrink: 0;
+    padding: 0 12px 18px 16px;
+}
+
+.ou-frontend .ou-setup-tabs .ou-gtab > .mxa-button-label {
+    font-size: 25px;
+}
+
+.ou-setup-rows {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-spage {
+    flex-shrink: 0;
+}
+
+.ou-setup-actions {
+    padding: 10px 6px 0 2px;
+    flex-shrink: 0;
+}
+
+.ou-setup-actions > .ou-online-status {
+    margin: 0 0 8px 4px;
+}
+
+/* the rotation's tracks: number and name */
+.ou-frontend .ou-rot-row .mxa-row-label {
+    color: var(--ou-text);
+}
+
+/* ------------------------------------------------------------------ LEADERBOARDS (MxaMainMenu.Leaderboards.cs) */
+
+.ou-lbm {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.ou-lbm-tracks {
+    width: 500px;
+    flex-shrink: 0;
+    padding: 14px 10px 14px 14px;
+    margin-right: 24px;
+}
+
+.ou-frontend .ou-lbm-filters {
+    margin: 0 0 10px 0;
+    align-self: flex-start;
+}
+
+.ou-frontend .ou-lbm-count {
+    font-size: 14px;
+    margin: 0 0 6px 6px;
+}
+
+.ou-lbm-track-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-lbm-track {
+    flex-direction: row;
+    align-items: center;
+    height: 64px;
+    padding: 0 14px 0 12px;
+    margin: 0 6px 3px 0;
+    border-radius: 4px;
+    border-left-width: 3px;
+    border-left-color: rgba(0, 0, 0, 0);
+    background-color: rgba(255, 255, 255, 0.025);
+}
+
+.ou-lbm-track:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.ou-lbm-track-on {
+    background-color: var(--ou-red-wash);
+    border-left-color: var(--ou-red);
+}
+
+.ou-lbm-track:focus {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-left-color: var(--ou-red-hot);
+}
+
+.ou-lbm-track-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.ou-lbm-track-name {
+    font-size: 20px;
+    color: var(--ou-text);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ou-lbm-track-sub {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--ou-faint);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-lbm-track-times {
+    align-items: flex-end;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.ou-lbm-track-time {
+    font-size: 22px;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-lbm-track-me {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--ou-red-hot);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-lbm-empty {
+    white-space: normal;
+    margin: 20px 10px;
+}
+
+.ou-lbm-board {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    padding: 16px 18px 16px 18px;
+}
+
+.ou-lbm-head {
+    flex-direction: row;
+    align-items: flex-start;
+    flex-shrink: 0;
+}
+
+.ou-lbm-titles {
+    flex-shrink: 1;
+    min-width: 0;
+}
+
+.ou-lbm-title {
+    font-size: 50px;
+    color: rgb(255, 255, 255);
+    margin: -6px 0 -4px 0;
+    padding: 0;
+}
+
+.ou-lbm-sub {
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-lbm-rules {
+    margin-right: 0;
+}
+
+/* PRO / ARCADE (MX bikes and ATVs): the side without laps on this track dimmer */
+.ou-frontend .ou-lbm-physics {
+    margin-right: 12px;
+}
+
+.ou-frontend .ou-lbm-physics > .ou-seg-item > .mxa-button-label {
+    color: var(--ou-faint);
+}
+
+.ou-frontend .ou-lbm-physics > .ou-lbm-physics-has > .mxa-button-label {
+    color: var(--ou-muted);
+}
+
+.ou-frontend .ou-lbm-physics > .ou-seg-on > .mxa-button-label,
+.ou-frontend .ou-lbm-physics > .ou-seg-item:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-lbm-vehicles {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 12px 0 6px -8px;
+    flex-shrink: 0;
+}
+
+.ou-frontend .ou-lbm-vehicle {
+    height: 34px;
+    margin-bottom: 4px;
+}
+
+.ou-frontend .ou-lbm-vehicle-on {
+    background-color: var(--ou-red-wash);
+    border-color: var(--ou-red);
+}
+
+.ou-frontend .ou-lbm-vehicle-on > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-lbm-cards {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 6px 0 4px 0;
+    flex-shrink: 0;
+}
+
+.ou-lbm-colhead {
+    height: 30px;
+    flex-shrink: 0;
+    border-bottom-width: 0;
+}
+
+.ou-frontend .ou-lbm-colhead > Label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--ou-faint);
+}
+
+.ou-lbm-list {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-lbm-row-on {
+    border-left-color: var(--ou-red);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.ou-frontend .ou-lbm-gap {
+    width: 110px;
+    font-size: 17px;
+    color: var(--ou-muted);
+    -unity-text-align: middle-right;
+    margin-right: 16px;
+}
+
+.ou-frontend .ou-lbm-ghost {
+    width: 74px;
+    margin-left: 14px;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.ou-lbm-actions {
+    flex-shrink: 0;
+    padding-top: 10px;
+}
+
+.ou-frontend .ou-lbm-status {
+    margin: 0 0 8px 4px;
+    white-space: normal;
+}
+
+.ou-lbm-buttons {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.ou-frontend .ou-lbm-race {
+    width: 480px;
+    margin-left: 12px;
+}
+
+/* ------------------------------------------------------------------ SERVER RUNNING: a headless host on this computer
+   (MxaMainMenu.Headless.cs): the hub's card on top of the others, ONLINE's box above HOST A SESSION */
+.ou-server-card {
+    padding: 16px 24px 18px 24px;
+    border-left-width: 4px;
+    border-left-color: rgb(64, 200, 110);
+}
+
+.ou-server-card-compact {
+    padding: 12px 14px 14px 14px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-left-width: 4px;
+    border-color: rgba(64, 200, 110, 0.35);
+    border-left-color: rgb(64, 200, 110);
+    background-color: rgba(64, 200, 110, 0.08);
+}
+
+.ou-server-card.ou-server-stopped {
+    border-left-color: var(--ou-faint);
+}
+
+.ou-server-head {
+    flex-direction: row;
+    align-items: center;
+}
+
+.ou-server-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    margin-right: 10px;
+    background-color: rgb(64, 200, 110);
+}
+
+.ou-server-stopped .ou-server-dot {
+    background-color: var(--ou-faint);
+}
+
+.ou-frontend .ou-server-eyebrow {
+    color: rgb(92, 220, 130);
+}
+
+.ou-frontend .ou-server-stopped .ou-server-eyebrow {
+    color: var(--ou-muted);
+}
+
+.ou-server-name {
+    font-size: 34px;
+    color: rgb(255, 255, 255);
+    margin: -2px 0 0 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-server-card-compact .ou-server-name {
+    font-size: 24px;
+    margin-top: 2px;
+}
+
+.ou-server-sub {
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-server-note {
+    font-size: 15px;
+    color: var(--ou-faint);
+    margin: 6px 0 0 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-server-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.ou-frontend .ou-server-actions > .ou-chip {
+    margin: 0 8px 0 0;
+}

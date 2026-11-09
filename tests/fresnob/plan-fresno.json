@@ -1,0 +1,5 @@
+{"event": "Supercross/SX_Fresno", "prefix": "FresnoA", "settle": 8, "adapt": 3, "perf": 0, "ai": 5, "modes": ["original"], "views": [
+ {"name": "gate", "cam": "game", "t": 6},
+ {"name": "race", "cam": "game", "t": 20},
+ {"name": "overview", "cam": "pose", "t": 21, "at": [0, 15, 0], "frame": "world", "offset": [-430, 260, -430], "look": "anchor", "lookY": 0, "fov": 60}
+]}

@@ -1,0 +1,4 @@
+{ "event": "Powercross/PX_Laguna", "ai": 0, "ride": 8, "prefix": "utv", "settle": 2, "fps": 60, "scan": true, "shots": [
+  { "name": "chase", "face": "replay", "cam": "Chase", "back": 4, "fx": "off", "play": 0.5 },
+  { "name": "orbit", "face": "replay", "cam": "Orbit", "back": 4, "fx": "off" },
+  { "name": "wheel", "face": "replay", "cam": "Wheel", "back": 4, "fx": "off" } ] }

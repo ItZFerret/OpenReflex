@@ -1,0 +1,4 @@
+{ "event": "National/NAT_Stillwater", "ai": 0, "ride": 12, "prefix": "scan", "settle": 2, "fps": 60, "scan": true, "shots": [
+  { "name": "chase", "face": "replay", "cam": "Chase", "back": 7, "fx": "off", "play": 0.5 },
+  { "name": "wheel", "face": "replay", "cam": "Wheel", "back": 7, "fx": "off", "play": 0.5 },
+  { "name": "orbit", "face": "replay", "cam": "Orbit", "back": 7, "fx": "off", "play": 0 } ] }

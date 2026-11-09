@@ -1,0 +1,97 @@
+# rng_audit_verdicts.tsv -- the hand-checked classification of every RNG-drawing function core/tools/rng_audit.py finds (agent w-rng,
+# 2026-10-27). addr <TAB> verdict <TAB> evidence. Reach counts "w:N" are the calls the oracle probe (core/oracle/rng_probe.cpp RX_RNG_LOG)
+# saw: C = National_NAT_Concord, A = National_NAT_Concord_ai11, F = FreeRide_FR_Alpine, S = SX_Springfield_ai11, T = Terracross_TRX_Verde_ai11
+# (the five reference worlds, verify.sh's frames and drive), bC / bP / bF = baton boots NAT_Concord 12 riders / PX_Laguna 12 / FR_Alpine.
+004240e0	ok	phys_rigbody.c (both builds); C/A/S/T: 8 calls each (rx_phys)
+004625d0	ok	build_vehicle.c rx_vehicle_moto_vf28 (both builds); event setup: product LCG sequence = the oracle's (counts 37/38) bC:12
+0050a360	ok	race_math.c (both builds); A:3405 S:2556 T:4481 (rx_race)
+0050b590	ok	race_driver_update.c rx_ai_start_lean (both builds; AI start variants not in the reference worlds)
+0050c7f0	ok	race_driver_update.c rx_free_ride_timer (both builds; Free Ride AI)
+0050d1c0	ok	race_freestyle_driver.c (both builds; Freestyle events: w-freestyle's probes)
+0050fb00	ok	race_driver_update.c rx_driver_vf5 (both builds; gridfix: the AI start reactions, CRT + LCG); C:1 A:25 S:25 T:12 bP:12
+0050fd30	ok	race_driver_update.c (both builds); C:1 A/S/T:12 (rx_race)
+0050fef0	ok	race_driver_update.c rx_ai_race_start (both builds); A:379 S:370 T:22; product-vs-oracle reseeded CRT counts per frame equal (2 one-frame shifts from AI positions)
+00510010	ok	race_driver_ai.c (both builds); A:3405 S:2556 T:7359
+00511760	ok	race_driver_update.c (both builds); A:4405 S:3813 T:3300 bP:1111
+005118c0	ok	race_driver_update.c (both builds); A:3405 S:2556 T:7359
+00517800	ok	waypoint_driver.c (both builds; Waypoint races)
+005192f0	not-reached	PathfinderDriver::vf6: MXActivityPathfinderChallenge, which no shipped level stages (race_challenge_pathfinder.c); a product call would stop at the unported vf6 (STOP_AUDIT: not a silent skip)
+005223e0	ok	race_beh1_small.c (both builds); A:3405 S:2556 T:7359
+00527360	ok	race_beh1_nav.c (both builds); A:3405 S:2556 T:5762
+0052ab80	ok	race_beh2_perform_stunt.c (both builds; Free Ride AI, w-stunts)
+0052b0a0	ok	race_beh2_perform_stunt.c (both builds; Free Ride AI, w-stunts)
+0052b6e0	not-reached	BehaviorRoamTrack (0052d0a0 vf4): Free Ride AI only, not ported (STOP_AUDIT NEEDS-PORT "API-only: EventRiders > 1 in a Free Ride"): the product stops at the unported behaviour, no silent skip
+0052bcf0	not-reached	the free-ride behaviours' block next to BehaviorRoamTrack (no direct caller: a jump / vtable target of the same, unported family): as 0052b6e0
+0052d464	not-reached	a draw site inside BehaviorRoamTrack::vf4's body past Ghidra's bounds (entry recovered after padding): as 0052b6e0
+0052dc50	ok	waypoint_navigation_select.c (both builds; Waypoint AI)
+0052ed50	ok	race_beh2_perform_init.c (both builds); bF:1
+00535090	ok	race_beh2_misc.c (both builds); A:929 S:532 T:1420
+005352c0	ok	race_beh2_misc.c (both builds); T:65
+00535380	ok	race_beh2_misc.c (both builds); S:125
+00535710	not-reached	PathfinderRoam's chain (005363a0): Free Ride AI behaviour, not ported (as 0052b6e0)
+00535b20	ok	waypoint_navigation_follow.c (both builds; Waypoint AI)
+0054a7b0	ok	build_activity_player.c (both builds); event setup: product sequence = oracle's (12 draws, counts 25..36) bC:12
+0054cec0	ok	loop_player.c (both builds); every frame in all five worlds (rx_loop)
+00564c90	not-reached	the mode 0 / 2 start grid from the track: the core's port is an act_unreached stop (build_activity_grid.c), so the product would stop, not skip; no reference event or matrix run reaches it
+00565040	ok	race_activity_stub.c rx_race_vf38 (both builds): the countdown length (CRT); C/A/S:1
+00571ca0	not-reached	MXActivityPokerRace::vf38 / 00571d60: Poker Race, a party mode (reserved for the online framework; not offered offline)
+00581570	ok	race_activity_audio.c (both builds, w-sfx); every frame C/A/S/T
+005816e0	ok	race_activity_audio.c (both builds); C/A/S/T:1
+00581760	ok	race_activity_audio.c rx_audio_end_race_cheer (both builds since w-sfx; the product had skipped its draw); rx_sfx Verify in the race-end worlds (w-rng): NAT_Concord 1 lap 14000 frames, 3 laps 32000, Eliminator series 5 16000: 1 / 1 / 0 each
+00581830	ok	fx_stunt.c rx_fx_stunt_audio_begin (both builds)
+005818c0	ok	race_activity_audio.c (both builds); F:2 S:14 T:6
+00581950	ok	fx_stunt.c (both builds)
+005819f0	ok	race_activity_audio.c (both builds); F:2 S:14 T:6
+00582520	not-reached	GraffitiActivityAudioLogic's handler (registered by 0058b190 / 0058b250, its vf29): Graffiti, a party mode (online framework)
+0059ebc0	ok	build_activity_event.c rx_ai_rider_add_of_class (both builds); event setup: product sequence = oracle's (11 draws)
+0059f3e0	ok	MXUIManager_BuildAIRoster: the event setup's roster in build_activity_event.c (act_rand, product + oracle); product sequence = oracle's (12 draws, counts 2..13)
+005a00b0	not-reached	MXUIManager::StartEvent -> 0059c950 -> 005a00b0: the front end's vehicle pick for a Player List row without a vehicle (UI); none of the oracle boots draws in it, and the product's event setup (StartEvent's game part) gives the oracle's LCG sequence 0 .. 1829 on NAT_Concord 12 riders
+005a9a30	ok	career_single_registry.c single_process_gate (both builds; the career API's gate selection)
+005c1360	ok	std::random_shuffle of the AI roster (CRT): build_activity_event.c random_shuffle (both builds); product = oracle (10 draws at the event setup)
+00613880	fixed	the results page's projected times (App_PopulateResultsTable 00742c40 -> 00613dd0 -> 00614890 -> 00614950 -> 00613880: one LCG draw per unfinished driver behind the leader; it writes the driver's gap +0x10b4 and, in a race of more than one lap, a best lap +0x10c4 for a rider without one). Measured in the oracle (event boots NAT_Concord 1 / 3 laps, SX_Springfield 2 laps, 12 riders, the local human finished at k 1200, the in-game UI routed to the HUD page): "Show Activity Results" at the Post sub-state 2 frame N (005f42e0, arcade: GotoHub with the routing GotoPostEvent), PostEventResults:Start -> App.PopulateResultsTable at N + 14 in the UI manager's update (UIManager::vf19 005db820, the first ticker of the engine context's scene +0x24, after the event scene's tick), 12 calls (one per driver), 10 draws in the NAT_Concord runs. w-resultsrng ported the table walk (game/race_results_table.c: 00742c40, 00613dd0, 00614890 (race types), 00614950, 006146f0, 00616000, 00613830, 005ba450, 00613880; group rx_results, per call 0 mismatches) and the product starts the page itself at the same frame and place (rx_results_page_observe / _hub / _frame: loop_engine.c at the UI scene's slot); the table is exported (rx_session_results_page) and Unity's results page shows the projected TOTAL / BEST LAP. Oracle replay of the product's timing (core/oracle/results_probe.cpp RX_RESULTS_PAGE=replace) vs the originals: every frame's streams identical. w-wpfill: the other offline fillers draw nothing (Waypoint 00615450 with its projected total 00613a30, which only mirrors the gap +0x10a4; Freestyle 00614bf0; Section Race 006152e0; the Eliminator's place column 005dc7a0; 00613880 returns before its draw in mode 5) and are ported and started by the product at the original's tick (14 UI ticks from the HUD page, the next one from the Event Outro page after a finish scenario, one more from the career's queued AdvancePostEvent, which the original drains in UIManager::vf41): per frame across the results page (event boots Freestyle FMX_BuenaVista, Waypoint FR_Gibson, Section Race NAT_ConcordB, Eliminator series 5) the core On and the product's timing replayed (RX_RESULTS_PAGE=replace) against the originals: 0 frames differ
+00619490	ok	build_rider_init.c game_rand (both builds); product sequence = oracle's (the rider init draw); bC:12
+0061f160	ok	world_rider_62.c rx_world_rider_update_state (CRT, both builds); F:1 bF:1
+00623f30	ok	anim_rider_a.c (both builds); all five worlds
+006258a0	ok	world_rider_62.c (both builds); A:12 S:2 T:7
+0062aa30	ok	world_rider_62.c (both builds); all five worlds
+006373e0	ok	world_wreck_checker.c (both builds); all five worlds (rx_world)
+00648aa0	ok	loop_cam_misc.c rx_replay_camera_vf19 (CRT, both builds; the replay cameras)
+0066cd30	fixed	XenonGrassAsset_Parse (GrassAssetIO::vf3, the renderer's asset): one LCG step per blade (the value unused), the product's plain load skipped them: build_asset.c grass_parse_draws (the header's +0xc blades). NAT_Renne: 79 = the oracle's 79 (REFLEX_WATCH 0x9cb864 writes from 0066cd30); the only grass levels are NAT_Renne / NAT_RenneB
+00674540	ok	world_wreck_misc.c rx_world_crowd_event (both builds); C/A/S:6 T:5 bP:2
+00677220	ok	the playlist shuffle (00677440 -> 00677220): music_player.c rx_music_tracks (product, w-sfx; the boundary had skipped it); bC/bP/bF:1 (56 draws in bC); the product's shuffle is at the activity's track list as the original's
+00677750	ok	MusicPlayer_StartScenarioMusic: music_player.c rx_music_start_score (product, w-sfx) at the intro's StartScenarioMusic command (anim_scenario_race_intro.c, the original's Scenario_AudioCommand point); C/A/S/T:1
+00677840	not-reached	the front end's UI music (Lua SetEnableUIMusic 007303f0 -> 00677840): front end only (the product's front end is Unity's FeUiMusic); before any event, where the generator is GetTickCount-seeded anyway
+0067f6d0	ok	world_crowd_audio.c rx_crowd_wander (both builds, w-sfx; the boundary had skipped it); T:1 bC:1
+00686870	fixed	(also the baton boots NAT_Concord / SX_Springfield 12 riders from process start through the intro and 700 race frames: replace vs originals 1117 / 1117 frames identical, skip 741 differ) the engine emitter's Rev enter (the revs in a row, a car's rev target): engine_startline.c (w-rng), run in the product's audio tick (rx_game_tick_during_sync -> rx_vehicle_audio_tick) and exported to Unity (rx_vehicle_audio_rider start_line_*). rng_boundary_probe verify: 00685610 18000 / 18000 / 18000 / 21600 / 18000 calls in the five worlds and 13224 in the bC boot, 0 mismatches; replace vs the originals: per-frame RNG states identical in all five worlds (skip control: 1346 .. 1512 frames differ, 4 state hashes change)
+00686e20	fixed	the engine emitter's StartLine enter (the time to the next rev): engine_startline.c at the intro's EnableStartLineState (vehicle_audio.c rx_vehicle_audio_scenario_sound, the original's Scenario_AudioCommand point) and after each Rev; rng_boundary_probe verify in the bC boot: 00681880 1 call (12 emitters) 0 mismatches, 006818e0 1 / 0
+006944c0	ok	fx_emit.c (both builds); every world (rx_fx)
+00694ba0	ok	fx_emit.c (both builds); C/A/F/S
+00695780	ok	fx_emit.c (both builds); every world. SCHEDULE (not a skip): during the event load the original's UI-world emitters keep emitting while its loader thread loads over ~30 frames (NAT_Concord: 409 LCG steps before the grid pass), the product loads in fewer frames; every draw of a frame is the same, the number of load frames is the loader's timing (on PC the disk / CPU), so the stream after the load differs (the start grid's zone draw: product zone 1 vs oracle 5 on NAT_Concord); the product's LCG sequence equals the oracle's up to that point (counts 0 .. 1829)
+0069a170	ok	fx_emit.c rx_yring_spawn (both builds)
+0069ad60	ok	fx_worldparticles.c (both builds); bC:3729
+006a2980	not-reached	OnFieldCrowd (CRT): the on-field crowd class is outside the core and absent from every level (build_scene.c outside_core: "the on-field crowd (absent from every level)"); called from the race area setup 007677e0 only for those entities
+006a2c80	not-reached	OnFieldCrowd: as 006a2980
+006a38e0	not-reached	OnFieldCrowd::vf19: as 006a2980
+006a6d00	not-reached	OnFieldCrowd (from 006a2c80): as 006a2980
+006aadc0	ok	anim_scenario_clip.c rx_clip_recorder_find_slot (both builds); C/A:1 T:2
+006b6a30	ok	anim_ik_ent.c rx_anim_alias_pick (both builds); every world
+006b8e50	not-reached	AnimEntityProximity::vf5 (class 0x1054): the product's scene factory does not build it and stops on it ("entity type not built yet"); the event matrix (STOP_AUDIT M1, every level) never stops there: no shipped level's loaded subscenes hold it
+006b9b90	fixed	AnimEntitySingleAnimLoop::vf5 (CRT on the original's level loader thread): build_scene_anim.c drew from a private generator of its own (seed 1) without the loader's other draws; now crt_rand on the core's loader CRT thread (crt_thread_switch in rx_scene_load_subscene). Product loader stream after the load = the oracle's: NAT_Concord 98d77da3 (162 draws), PX_Laguna 94c52060 (16545), FR_Alpine 3a5ecbdb (16378)
+006ba690	fixed	AnimEntitySplineAnimLoop::vf5: as 006b9b90
+006bc0d0	not-reached	AnimEntitySplineWithStopLogic::vf5 (class 0x1053): not built by the product's scene factory (as 006b8e50)
+006c6650	no-stream	BillboardCrowdEntity::vf19: its own LCG (seed 0x009cae3c, count 0x009cae40, read and written only here); ported with it (loop_entity.c crowd_rand, both builds)
+006ccc70	ok	race_activity_freestyle.c (both builds; Freestyle AI)
+006ccd10	ok	race_activity_freestyle.c (both builds; Freestyle AI)
+006cecf0	not-reached	AirAnimalSoaring::vf5 (class 0x1056): not built by the product's scene factory (as 006b8e50)
+006cfd80	fixed	LandAnimalProximity::vf5 (animal_load): drew from the MAIN thread's CRT stream; the original reads it on the loader thread: now on the core's loader CRT thread (rx_scene_load_subscene)
+006d6e70	no-stream	ViewportEffectMudSplatter::vf4's own LCG (seed 0x00db4688, only here): the render's lens overlay (Unity's)
+006d7700	no-stream	ViewportEffectMudSplatter::vf4's second own LCG (seed 0x00db13c4, only here): render
+007510c0	ok	TutorialManager_CheckWreckAvoidance (lesson 5: the knock off balance, 006381c0's request from the game LCG): fx_tutorial_manager.c rx_tutorial_check_wreck_avoidance (both builds; w-tutorials: the product builds and updates the manager at MXUIWorld +0x22180, the lessons from the open front end through rx_session_tutorial_*); oracle tutorial boot (REFLEX_EVENT_SPEC=Tutorial,0,UI_Compound,0,0,-1,,0,8, the lesson driver): 992 Verify calls, 0 mismatches; On: the 9000-frame drive's memory hash identical (QUEUE.md w-tutorials)
+0075f890	fixed	the grid pass (ported, both builds) reached by the front end's MXGame_SwitchToUIWorld (0075ac90 -> 0075ae48: one draw), which the product never ran: build_ui_world.c runs it after the UI world (product), and the port constructs the series manager on demand there as the original (0075f8b2). The product's LCG sequence now equals the oracle's from count 1 (was one behind from the AI roster on)
+0077c560	not-reached	Lua math.random (the front end's UI scripts, main thread CRT): the product has no Lua VM (Unity front end); no oracle boot or world draws in it
+0077c720	not-reached	Lua math.randomseed (srand): as 0077c560
+007ea9e0	fixed	Ocean_InitSpectrum (the level loader thread's CRT): 4 draws per non-zero k (+ the redraws of a 0), 16372 on PX_Laguna / FR_Alpine, skipped by the product (Unity generated its own spectrum): build_water.c ocean_spectrum_draws on the loader CRT thread at Ocean_Create (FUN_007eb420), the seed exported (rx_session_rng ocean_seed) for Unity's ReflexWater.Ocean.Generate, now in the original's (output) order: Python model vs the PX world's h0 = 2e-8
+0080bbd0	left	AudioEvent_OnSelectIndex: FMOD's SOUNDDEF_SELECTINDEX callback (programmer-selected sounds: the crowd's 006743b0 rotation, a cue's sound index) draws the game's LCG on the sound engine's thread when FMOD starts such an event: the timing is FMOD's (nondeterministic in the original), the oracle's FMOD stand-ins never call back (no draw in any run); the host (OriginalAudio) picks the entry itself
+00835170	ok	anim_character.c rx_character_random_motion_time (CRT, both builds); C:2 A:27 S:24 T:27 bC:12
+0084e320	ok	Engine::Startup's srand(GetTickCount()) / g_GameRandSeed = GetTickCount(): build_globals_engine.c (product)
+00853220	ok	phys_mech.c phys_noise_init_tables (both builds): 1791 steps; product sequence = oracle's (counts 38 .. 1829)

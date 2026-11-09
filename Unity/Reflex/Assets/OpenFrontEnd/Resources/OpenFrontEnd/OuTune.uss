@@ -1,0 +1,62 @@
+/* OuTuneRow (Scripts/OpenFrontEnd/OuTuneRow.cs): a tuning row of the garage's VEHICLE TUNING and the race pause's TUNING.
+   The name and the verdict on top, the slider between the setting's two ends (the game's words) below, each end's value under it. */
+
+.ou-frontend .mxa-row.ou-tune2-row.ou-tune2 {
+    height: auto;
+    min-height: 104px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding: 10px 14px 10px 18px;
+    margin-bottom: 6px;
+}
+
+.ou-tune2 .ou-tune2-head { flex-direction: row; align-items: center; justify-content: space-between; }
+.ou-frontend .ou-tune2 .ou-tune2-name { margin: 0; padding: 0; }
+.ou-tune2 .ou-tune2-verdict {
+    font-size: 21px; letter-spacing: 1px; color: var(--ou-gold); margin: 0; padding: 0;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+
+.ou-tune2 .ou-tune2-line { flex-direction: row; align-items: center; margin-top: 6px; }
+.ou-frontend .ou-tune2 .ou-tune2-arrow { font-size: 38px; margin: -8px 4px 0 4px; padding: 0; width: 22px; -unity-text-align: middle-center; }
+.ou-frontend .ou-tune2 .ou-tune2-arrow-off { opacity: 0.2; }
+
+.ou-tune2 .ou-tune2-end { width: 132px; flex-shrink: 0; }
+.ou-tune2 .ou-tune2-end-low { align-items: flex-start; }
+.ou-tune2 .ou-tune2-end-high { align-items: flex-end; }
+.ou-tune2 .ou-tune2-end-name {
+    font-size: 17px; letter-spacing: 1px; color: var(--ou-muted); margin: 0; padding: 0; white-space: nowrap;
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-tune2 .ou-tune2-end-value { font-size: 15px; color: var(--ou-faint); margin: 0; padding: 0; }
+.ou-tune2 .ou-tune2-end-on > .ou-tune2-end-name { color: var(--ou-text); }
+.ou-tune2 .ou-tune2-end-on > .ou-tune2-end-value { color: var(--ou-muted); }
+
+.ou-tune2 .ou-tune2-track {
+    flex-grow: 1; height: 10px; margin: 0 14px; border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+.ou-tune2 .ou-tune2-mid { position: absolute; left: 50%; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; background-color: rgba(255, 255, 255, 0.35); }
+.ou-tune2 .ou-tune2-fill { position: absolute; top: 0; bottom: 0; border-radius: 5px; background-color: var(--ou-red-hot); }
+.ou-tune2 .ou-tune2-thumb {
+    position: absolute; top: -7px; width: 24px; height: 24px; margin-left: -12px; border-radius: 12px;
+    background-color: var(--ou-text); border-width: 3px; border-color: rgba(14, 15, 15, 0.85);
+}
+
+/* a stock part: nothing to move */
+.ou-tune2.ou-tune2-locked .ou-tune2-line { opacity: 0.4; }
+.ou-tune2.ou-tune2-locked .ou-tune2-verdict { color: var(--ou-muted); }
+
+/* the focused row (the gold fill): ink on gold */
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-name { color: rgb(14, 15, 15); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-verdict { color: rgb(14, 15, 15); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-end-name { color: rgba(14, 15, 15, 0.62); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-end-value { color: rgba(14, 15, 15, 0.5); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-end-on > .ou-tune2-end-name { color: rgb(14, 15, 15); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-end-on > .ou-tune2-end-value { color: rgba(14, 15, 15, 0.75); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-track { background-color: rgba(14, 15, 15, 0.22); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-mid { background-color: rgba(14, 15, 15, 0.45); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-fill { background-color: rgb(14, 15, 15); }
+.ou-frontend .mxa-row.ou-tune2:focus .ou-tune2-thumb { background-color: rgb(14, 15, 15); border-color: rgb(246, 246, 244); }
+.ou-frontend .mxa-row.ou-tune2.ou-tune2-locked:focus .ou-tune2-verdict { color: rgba(14, 15, 15, 0.7); }

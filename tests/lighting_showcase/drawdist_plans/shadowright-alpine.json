@@ -1,0 +1,10 @@
+{
+ "event": "FreeRide/FR_Alpine", "prefix": "R_Alpine", "settle": 6, "adapt": 3, "perf": 0,
+ "modes": ["enhanced-dd0", "enhanced-dd1", "enhanced-dd2"],
+ "views": [
+  {"name": "swpA", "cam": "path", "frame": "forest", "tree": 3, "offset": [0, 0, 0], "yaw": -30, "turn": 1.0, "pitch": -5, "fov": 70, "t": 4,
+   "frames": 100, "step": 0.0, "ground": 6, "every": 1},
+  {"name": "swpB", "cam": "path", "frame": "forest", "tree": 2, "offset": [0, 0, 0], "yaw": 0, "turn": 1.0, "pitch": -5, "fov": 70, "t": 4.2,
+   "frames": 100, "step": 0.0, "ground": 6, "every": 1}
+ ]
+}

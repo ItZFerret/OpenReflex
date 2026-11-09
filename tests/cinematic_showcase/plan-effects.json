@@ -1,0 +1,27 @@
+{
+  "event": "National/NAT_Stillwater", "ai": 0, "ride": 8, "prefix": "fx", "settle": 2, "fps": 60, "scan": true,
+  "shots": [
+    { "name": "chase_off",  "face": "replay", "cam": "Chase", "back": 3.2, "fx": "off" },
+    { "name": "chase_dof",  "face": "replay", "cam": "Chase", "back": 3.2, "fx": "dof", "ap": 2.8 },
+    { "name": "chase_dof_wide", "face": "replay", "cam": "Chase", "back": 3.2, "fx": "dof", "ap": 1.4 },
+    { "name": "chase_lens", "face": "replay", "cam": "Chase", "back": 3.2, "fx": "lens+flare" },
+    { "name": "chase_mb",   "face": "replay", "cam": "Chase", "back": 4.5, "fx": "off", "fx2": "mb", "shutter": 180, "play": 0.5 },
+    { "name": "chase_all",  "face": "replay", "cam": "Chase", "back": 3.2, "fx": "all", "shutter": 180, "ap": 2.8 },
+    { "name": "chase_auto", "face": "replay", "cam": "Chase", "back": 4.5, "fx": "auto", "play": 0.5 },
+    { "name": "heli_off",   "face": "replay", "cam": "Helicopter", "back": 4.5, "fx": "off" },
+    { "name": "heli_auto",  "face": "replay", "cam": "Helicopter", "back": 4.5, "fx": "auto", "play": 0.5 },
+    { "name": "track_auto", "face": "replay", "cam": "Trackside", "back": 4.5, "fx": "auto", "play": 0.5 },
+    { "name": "board_auto", "face": "replay", "cam": "Onboard", "back": 4.5, "fx": "auto", "play": 0.5 },
+    { "name": "wheel_auto", "face": "replay", "cam": "Wheel", "back": 4.5, "fx": "auto", "play": 0.5 },
+    { "name": "sun_off",   "face": "replay", "cam": "Free", "back": 3.2, "fx": "off", "sun": true, "sunLow": 6 },
+    { "name": "sun_lens",  "face": "replay", "cam": "Free", "back": 3.2, "fx": "lens+flare", "sun": true, "sunLow": 6 },
+    { "name": "sun_auto",  "face": "replay", "cam": "Free", "back": 3.2, "fx": "auto", "sun": true, "sunLow": 6 },
+    { "name": "sun_low_lens", "face": "replay", "cam": "Free", "back": 3.2, "fx": "lens+flare", "sun": true, "sunLow": -18, "sunYaw": 24 },
+    { "name": "sun_edge_off",  "face": "replay", "cam": "Free", "back": 3.2, "fx": "off", "sun": true, "sunLow": -18, "sunYaw": 24 },
+    { "name": "sun_edge_flare", "face": "replay", "cam": "Free", "back": 3.2, "fx": "flare", "sun": true, "sunLow": -18, "sunYaw": 24 },
+    { "name": "photo_off",  "face": "photo", "cam": "Orbit", "back": 3.2, "fx": "auto", "focusMode": 0, "mb": 0, "lens": 0 },
+    { "name": "photo_dof",  "face": "photo", "cam": "Orbit", "back": 3.2, "fx": "auto", "focusMode": 1, "aperture": 1, "mb": 0, "lens": 0 },
+    { "name": "photo_mb",   "face": "photo", "cam": "Orbit", "back": 3.2, "fx": "auto", "focusMode": 0, "mb": 0.3, "lens": 0 },
+    { "name": "photo_all",  "face": "photo", "cam": "Orbit", "back": 3.2, "fx": "auto", "focusMode": 1, "aperture": 3, "mb": 0.3, "lens": 1 }
+  ]
+}

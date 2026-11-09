@@ -1,0 +1,8 @@
+{
+ "event": "National/NAT_Stillwater", "prefix": "G_Stillwater", "settle": 4, "adapt": 1.0, "perf": 0, "ai": 6,
+ "modes": ["enhanced-aaoff", "enhanced-taa-sharp50", "enhanced-taa-upq-sharp50"],
+ "views": [
+  {"name": "chaseopp", "cam": "pose", "t": 26, "freeze": false, "frame": "opp", "opp": 0, "offset": [0, 2.4, -6.5], "look": "anchor", "lookY": 0.8, "fov": 62, "seq": 30},
+  {"name": "sideopp", "cam": "pose", "t": 30, "freeze": false, "frame": "opp", "opp": 1, "offset": [5.5, 1.6, 0.0], "look": "anchor", "lookY": 0.7, "fov": 50, "seq": 30}
+ ]
+}

@@ -1,0 +1,64 @@
+/* GARAGE > RIDER PRESETS / BIKE PRESETS (Scripts/OpenFrontEnd/OpenShell.GaragePresets.cs): the save card, the delete card's armed state and
+   the WHAT'S IN IT panel. The selectors carry the restyle's own (.ou-frontend.mxa-root .mxa-layer .ou-gcard) so they win over it. */
+
+/* + SAVE CURRENT AS PRESET: an outlined card in the accent, so it reads as an action, not a preset */
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-new {
+    background-color: rgba(204, 95, 41, 0.14);
+    border-left-color: var(--ou-red);
+    border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px;
+    border-top-color: rgba(204, 95, 41, 0.55); border-right-color: rgba(204, 95, 41, 0.55); border-bottom-color: rgba(204, 95, 41, 0.55);
+}
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-new > .ou-gcard-copy > .ou-gcard-title { color: var(--ou-red-hot); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-new:focus { background-color: var(--oc-gold); border-top-color: var(--oc-gold); border-right-color: var(--oc-gold); border-bottom-color: var(--oc-gold); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-new:focus > .ou-gcard-copy > .ou-gcard-title { color: var(--oc-ink); }
+
+/* LOAD PRESET: the page's first action, a little taller */
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-load { min-height: 88px; border-left-color: var(--ou-green); }
+
+/* RENAME / SAVE CURRENT OVER IT / DELETE: compact rows under LOAD, so WHAT'S IN IT shows below them */
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-action { min-height: 56px; padding-top: 4px; padding-bottom: 4px; margin-bottom: 4px; }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-action > .ou-gcard-copy > .ou-gcard-title { font-size: 28px; }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-action > .ou-gcard-copy > .ou-gcard-sub { font-size: 17px; }
+
+/* DELETE: quiet until pressed once, then red */
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete > .ou-gcard-copy > .ou-gcard-title { color: rgba(224, 224, 200, 0.62); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete:focus > .ou-gcard-copy > .ou-gcard-title { color: var(--oc-ink); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete-armed,
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete-armed:focus { background-color: rgb(176, 52, 40); border-left-color: rgb(255, 120, 100); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete-armed > .ou-gcard-copy > .ou-gcard-title,
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete-armed:focus > .ou-gcard-copy > .ou-gcard-title { color: rgb(255, 255, 255); }
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete-armed > .ou-gcard-copy > .ou-gcard-sub,
+.ou-frontend.mxa-root .mxa-layer .ou-gcard.ou-preset-delete-armed:focus > .ou-gcard-copy > .ou-gcard-sub { color: rgba(255, 255, 255, 0.82); }
+
+/* WHAT'S IN IT: one line per piece, its type on the left, the piece on the right, NOT OWNED / MISSING marked */
+.ou-preset-contents {
+    flex-shrink: 0;
+    margin: 0 6px 8px 2px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    background-color: rgba(12, 22, 24, 0.72);
+    border-left-width: 6px; border-left-color: rgba(224, 224, 200, 0.14);
+}
+.ou-preset-line {
+    flex-direction: row; align-items: center; min-height: 38px; padding: 0 8px;
+    border-bottom-width: 1px; border-bottom-color: rgba(224, 224, 200, 0.08);
+}
+.ou-frontend .ou-preset-line:focus { background-color: var(--oc-gold); border-radius: 3px; }
+.ou-frontend .ou-preset-line:focus > .ou-preset-line-label { color: rgba(14, 15, 15, 0.7); }
+.ou-frontend .ou-preset-line:focus > .ou-preset-line-value { color: rgb(14, 15, 15); }
+.ou-frontend .ou-preset-line:focus > .ou-preset-line-state { background-color: rgb(14, 15, 15); color: var(--oc-gold); }
+.ou-preset-line-label {
+    width: 170px; flex-shrink: 0; margin: 0; padding: 0;
+    font-size: 17px; letter-spacing: 1.5px; color: var(--ou-muted);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}
+.ou-preset-line-value {
+    flex-grow: 1; flex-shrink: 1; margin: 0; padding: 0; white-space: normal;
+    font-size: 21px; color: var(--ou-text);
+    -unity-font-definition: url("Fonts/BarlowCondensed-SemiBold.ttf"); -unity-font-style: normal;
+}
+.ou-preset-line-state {
+    flex-shrink: 0; margin: 0 0 0 10px; padding: 1px 8px; border-radius: 3px;
+    font-size: 15px; letter-spacing: 1px; color: rgb(14, 15, 15); background-color: rgb(226, 172, 64);
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf"); -unity-font-style: normal;
+}

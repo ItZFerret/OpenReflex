@@ -1,0 +1,9 @@
+{
+ "event": "Terracross/TRX_Halifax", "prefix": "AA_Halifax", "settle": 8, "adapt": 2.5, "perf": 4,
+ "modes": ["enhanced-aaoff", "enhanced-msaa4", "enhanced-taa-sharp0", "enhanced-taa-sharp50", "enhanced-taa-upq-sharp50", "enhanced-taa-upb-sharp50", "enhanced-ss2", "original"],
+ "views": [
+  {"name": "valley", "cam": "game", "t": 3},
+  {"name": "front34", "cam": "pose", "t": 12, "frame": "bike", "offset": [4.6, 1.5, 4.2], "look": "anchor", "lookY": 0.6, "fov": 40},
+  {"name": "gate", "cam": "game", "t": 13}
+ ]
+}

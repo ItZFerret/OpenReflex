@@ -1,0 +1,51 @@
+# an arcade live race as the Unity client drives it between frames (OriginalWorldRuntime, OriginalEventIntro, OriginalInput, OriginalLiveUi)
+world persist attach
+world garage apply_tuning 0
+world garage tuning 0
+world pages com_stubs
+world ui_voice
+world pages ui RulesType
+world pages ui_images
+world ui_setting EffectsVolume 8 2
+world ui_setting EffectsVolume 0 0
+world ui_setting MusicVolume 6 2
+world ui_setting MusicVolume 0 0
+world ui_setting EngineVolume 7 2
+world ui_setting HUDVisibility 1 2
+world pages state
+world ui_setting DrivingCamera 1 2
+world ui_setting MouseSensitivity 5 2
+world ui_setting Vibration 1 2
+world remap apply
+world ui_setting DrivingCamera 0 0
+world ui_activate
+world ui_setting HUDVisibility 1 1
+world ui_frame
+world mode
+world mode_objects
+world ui_requests
+world ui_sounds
+frames 30 1
+world ui_frame
+world mode
+world ui_requests
+world ui_sounds
+world pages state
+world ui_voice
+world pages ui_images
+frames 600 1
+world pages state
+world ui_frame
+world ui_sounds
+world ui_setting DrivingCamera 2 1
+world garage tuning 0
+world garage lua local d = 0; local t = App.LookupPlayerTable( "PlayerVehicleTuning", d ); local id = App.LookupPlayerTable( "PlayerRider", d ):cell_int( 0, "LastEquippedVehicle" ); local r = t:searchUnique_int( "PlayerVehicleId", id ); r:setCell_int( "Engine1", 10 ); r:setCell_int( "Engine2", 5 ); r:setCell_int( "Suspension1", 0 ); r:setCell_int( "Suspension2", 0 ); r:setCell_int( "Tire1", 5 ); r:setCell_int( "Tire2", 0 ); r:setCell_int( "Braking", 50 ); r:setCell_int( "Steering", 100 ); App.ApplyVehicleTuning( d )
+world garage tuning 0
+frames 900 1
+world race
+world career results
+world ui_frame
+world pages state
+world memhash
+world persist leave
+world memhash

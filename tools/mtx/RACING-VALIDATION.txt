@@ -1,0 +1,30 @@
+MTX offline racing validation — 2026-11-05
+Branch: codex/experimental-mtx-national
+
+All 16 compressed RXPK tracks now contain the portable RXRA race route.
+Terrain, textures, scenery and collision payloads are preserved from the imports.
+
+Passed:
+- Native build and macOS Unity player build (zero errors).
+- 12-rider, one-lap races on all 16 tracks: all 11 opponents finished,
+  tested at native skills 50 and 95 (the launcher's Amateur setting).
+- Denver: all 11 opponents finished a three-lap race.
+- Daytona: all 11 opponents finished three laps at Amateur after the final
+  rapid-crash recovery fix (last finisher at 431.5 seconds race time).
+- Local-player input test: countdown, full timed lap, finish and four-rider results.
+- Rendered McKenna Rock, Los Angeles and Hawaii: 12 riders, three laps,
+  advancing simulation, terrain relief, scenery, animation and live tire marks;
+  no reported exceptions. Installed desktop build also passed the launch test.
+- Hawaii: scale hotkeys reload at 165% and 160% with the race settings preserved.
+- Paradise Valley Free Ride: driving, deformation and terrain reset.
+- Stock Concord race regression.
+- Package rejection tests: malformed sizes/counts, NaN, truncation and CRC;
+  ordered-sector lap validation and rapid-crash retry state.
+- Installed app signature verified. Existing saves preserved.
+
+Logs: builds/mtx-racing/{normal-validation,release-validation} and *.log.
+Reproduce the full-field test with tools/mtx/test_racing.py (riders 12, skill 95).
+
+Limitations: offline racing only. The source gates are static; riders stage
+beyond them and the native countdown holds/releases the field. AI follows the
+imported routes and can still crash at difficult jumps, particularly Daytona.

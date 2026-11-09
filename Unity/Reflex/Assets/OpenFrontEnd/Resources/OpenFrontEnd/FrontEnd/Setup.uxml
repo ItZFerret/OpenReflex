@@ -1,0 +1,20 @@
+<!-- The setup page (OpenShell.Setup.cs, after Open Unleashed's Setup.uxml), the step after the track browser: the location large on
+     the left with what the setup comes to, the settings in tabs on the right with the button that starts it. -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../OuFrontEnd.uss" />
+    <ui:VisualElement name="setup" class="ou-setup">
+        <ui:VisualElement name="setup-info" class="ou-setup-info">
+            <ui:VisualElement name="setup-hero" class="ou-setup-hero">
+                <ui:VisualElement name="setup-hero-shade" class="ou-setup-hero-shade" />
+                <ui:VisualElement name="setup-map" class="ou-setup-map" />
+                <ui:VisualElement name="setup-hero-copy" class="ou-setup-hero-copy" />
+            </ui:VisualElement>
+            <ui:ScrollView name="setup-cards" class="ou-setup-cards" />
+        </ui:VisualElement>
+        <ui:VisualElement name="setup-panel" class="ou-panel ou-setup-panel">
+            <ui:VisualElement name="setup-tabs" class="ou-gtabs ou-setup-tabs" />
+            <ui:ScrollView name="setup-rows" class="mxa-option-rows ou-setup-rows" />
+            <ui:VisualElement name="setup-actions" class="ou-setup-actions" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

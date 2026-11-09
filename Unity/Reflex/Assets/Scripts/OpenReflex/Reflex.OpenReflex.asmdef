@@ -1,0 +1,14 @@
+{
+    "name": "Reflex.OpenReflex",
+    "rootNamespace": "Reflex.Port.RxCore",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

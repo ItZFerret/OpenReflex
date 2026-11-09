@@ -1,0 +1,6 @@
+-xc++
+-std=c++17
+-I.
+-I../drafts/world_runtime
+-I../../_re/.venv/lib/python3.14/site-packages/capstone/include
+-fwrapv

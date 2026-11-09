@@ -1,0 +1,17 @@
+{
+ "event": "Supercross/Beta_Sx_Track_Slot_5/@",
+ "prefix": "MEC_race",
+ "settle": 0,
+ "adapt": 1.5,
+ "perf": 0,
+ "ai": 11,
+ "modes": ["original"],
+ "_note": "w-fb-customtrack: the community's 2014 Monster Energy Cup (Beta_Sx_Track_Slot_5) installed from its archive (a RAR 4 named .zip) and raced with 11 AI: the gate in the countdown, the start, the race; an overhead of the field",
+ "views": [
+  {"name": "gate", "cam": "game", "state": 1, "after": 1.5},
+  {"name": "gate_high", "cam": "pose", "frame": "bike", "offset": [0, 18, -26], "look": "anchor", "lookY": 0, "fov": 60, "state": 1, "after": 2.5},
+  {"name": "start", "cam": "game", "state": 2, "after": 3.0},
+  {"name": "race", "cam": "game", "state": 2, "after": 14.0},
+  {"name": "stadium", "cam": "pose", "frame": "bike", "offset": [0, 70, -90], "look": "anchor", "lookY": 0, "fov": 70, "state": 2, "after": 16.0}
+ ]
+}

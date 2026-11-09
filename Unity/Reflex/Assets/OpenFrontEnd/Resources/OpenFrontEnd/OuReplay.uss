@@ -1,0 +1,642 @@
+/* REPLAY and PHOTO MODE (Reflex.Port.Replay.ReflexReplayUi) over the world, in the OPEN REFLEX look (OuModern.uss: the logo's hot red,
+   white and silver on near-black glass; Barlow Condensed ExtraBold Italic for titles, Barlow Condensed Bold for labels). Ported from
+   Open Unleashed's MxaReplay.uss. Everything is scoped to .ou-replay (the viewer document's root). Reference size 1920 x 1080, scaled by
+   height (OPTIONS > INTERFACE > UI SCALE too). */
+
+.ou-replay {
+    --ou-red: rgb(232, 28, 36);
+    --ou-red-hot: rgb(255, 72, 64);
+    --ou-red-deep: rgb(140, 8, 14);
+    --ou-glass: rgba(11, 12, 15, 0.8);
+    --ou-glass-hi: rgba(24, 26, 31, 0.92);
+    --ou-line: rgba(255, 255, 255, 0.09);
+    --ou-text: rgb(246, 246, 244);
+    --ou-muted: rgba(246, 246, 244, 0.6);
+    --ou-faint: rgba(246, 246, 244, 0.36);
+    -unity-font-definition: url("Fonts/Barlow-SemiBold.ttf");
+    color: var(--ou-text);
+}
+
+.ou-replay .rp-title, .ou-replay .rp-badge-text, .ou-replay .rp-shoot > .mxa-button-label, .ou-replay .rp-rider-name,
+.ou-replay .rp-toast-title {
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+}
+
+.ou-replay .mxa-row-label, .ou-replay .mxa-value, .ou-replay .mxa-button-label, .ou-replay .rp-section, .ou-replay .rp-chip-label,
+.ou-replay .rp-chip-value, .ou-replay .rp-time, .ou-replay .rp-sub, .ou-replay .mxa-key, .ou-replay .mxa-hint-label,
+.ou-replay .rp-rider-info, .ou-replay .rp-note, .ou-replay .rp-tick {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+}
+
+/* ------------------------------------------------------------------ frame mask, grid, flash */
+
+.rp-mask {
+    position: absolute;
+    background-color: rgba(4, 4, 6, 0.86);
+}
+
+.rp-grid {
+    position: absolute;
+}
+
+.rp-grid-line {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.42);
+}
+
+.rp-flash {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgb(255, 255, 255);
+    opacity: 0;
+}
+
+/* ------------------------------------------------------------------ top bar */
+
+.rp-top {
+    position: absolute;
+    left: 56px; right: 56px; top: 40px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.rp-top-left {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rp-badge {
+    flex-direction: row;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px 0 16px;
+    background-color: var(--ou-red);
+    border-radius: 3px;
+    margin-right: 18px;
+}
+
+.rp-badge-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background-color: rgb(255, 255, 255);
+    margin-right: 10px;
+}
+
+.rp-badge-text {
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+}
+
+.rp-sub {
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+}
+
+.rp-rider {
+    flex-direction: row;
+    align-items: stretch;
+    background-color: var(--ou-glass);
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: var(--ou-line);
+}
+
+.rp-rider-bar {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.rp-rider-bar {
+    width: 6px;
+    background-color: var(--ou-red);
+}
+
+.rp-rider-text {
+    padding: 8px 18px 10px 14px;
+    align-items: flex-end;
+}
+
+.rp-rider-name {
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+}
+
+.rp-rider-info {
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: var(--ou-muted);
+}
+
+/* ------------------------------------------------------------------ transport (REPLAY) */
+
+.rp-transport {
+    position: absolute;
+    left: 56px; right: 56px; bottom: 104px;
+    background-color: var(--ou-glass);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: var(--ou-line);
+    padding: 14px 18px 16px 18px;
+}
+
+.rp-timeline {
+    height: 34px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.rp-track {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+}
+
+.rp-track-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background-color: var(--ou-red);
+}
+
+.rp-live {
+    position: absolute;
+    right: 0; top: -6px;
+    width: 4px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.rp-head {
+    position: absolute;
+    top: 3px;
+    width: 26px;
+    height: 26px;
+    margin-left: -13px;
+    border-radius: 13px;
+    background-color: rgb(255, 255, 255);
+    border-width: 4px;
+    border-color: var(--ou-red);
+}
+
+.rp-timeline:hover .rp-head {
+    width: 30px; height: 30px; margin-left: -15px; top: 1px; border-radius: 15px;
+}
+
+.rp-controls {
+    flex-direction: row;
+    align-items: center;
+}
+
+/* KEYFRAMES: the keys' diamonds on the timeline and the key row above it */
+.rp-keymarks {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+}
+.rp-keymark {
+    position: absolute;
+    top: 9px;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    rotate: 45deg;
+    background-color: rgb(255, 196, 40);
+    border-width: 2px;
+    border-color: rgba(0, 0, 0, 0.6);
+}
+.rp-keymark:hover, .rp-keymark-here {
+    background-color: rgb(255, 255, 255);
+    border-color: rgb(255, 196, 40);
+}
+.rp-keyrow {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6px;
+}
+.rp-keyrow-title {
+    font-size: 16px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(255, 196, 40);
+    margin-right: 14px;
+}
+.rp-key-button {
+    height: 30px;
+    margin-right: 6px;
+}
+.rp-key-button > .mxa-button-label {
+    font-size: 16px;
+}
+.rp-keynote {
+    font-size: 16px;
+    color: rgba(242, 242, 238, 0.7);
+    margin-left: 12px;
+}
+
+.rp-icon-button {
+    width: 52px;
+    height: 46px;
+    border-radius: 4px;
+    margin-right: 6px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.06);
+    transition-property: background-color;
+    transition-duration: 0.1s;
+}
+
+.rp-icon-button:hover, .rp-icon-button:focus {
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.rp-play {
+    width: 64px;
+    background-color: var(--ou-red);
+}
+
+.rp-play:hover, .rp-play:focus {
+    background-color: var(--ou-red-hot);
+}
+
+.rp-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.rp-time {
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin: 0 18px 0 12px;
+    min-width: 170px;
+    color: var(--ou-text);
+}
+
+.rp-time-dim {
+    color: var(--ou-faint);
+}
+
+.rp-spacer {
+    flex-grow: 1;
+}
+
+.rp-chip {
+    flex-direction: row;
+    align-items: center;
+    height: 46px;
+    padding: 0 6px;
+    margin-left: 10px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.rp-chip:hover {
+    border-color: rgba(255, 255, 255, 0.26);
+}
+
+.rp-chip-label {
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--ou-faint);
+    margin: 0 8px 0 8px;
+}
+
+.rp-chip-value {
+    font-size: 21px;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.rp-chip-arrow {
+    font-size: 26px;
+    width: 26px;
+    -unity-text-align: middle-center;
+    color: var(--ou-muted);
+}
+
+.rp-chip-arrow:hover {
+    color: var(--ou-red-hot);
+}
+
+.rp-text-button {
+    height: 46px;
+    padding: 0 22px;
+    margin-left: 10px;
+    border-radius: 4px;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    transition-property: background-color, border-color;
+    transition-duration: 0.1s;
+}
+
+.rp-text-button > .mxa-button-label {
+    font-size: 19px;
+    letter-spacing: 2px;
+    color: var(--ou-text);
+}
+
+.rp-text-button:hover, .rp-text-button:focus {
+    background-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.rp-text-accent {
+    border-color: rgba(232, 28, 36, 0.75);
+}
+
+.rp-text-accent:hover, .rp-text-accent:focus {
+    background-color: var(--ou-red);
+    border-color: var(--ou-red);
+}
+
+/* ------------------------------------------------------------------ PHOTO MODE panel */
+
+.rp-panel {
+    position: absolute;
+    right: 40px; top: 108px; bottom: 104px;
+    width: 470px;
+    background-color: var(--ou-glass);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: var(--ou-line);
+    padding: 14px 10px 12px 14px;
+}
+
+.rp-title {
+    font-size: 40px;
+    color: rgb(255, 255, 255);
+    margin: 0 0 2px 6px;
+}
+
+.rp-panel-sub {
+    font-size: 17px;
+    margin: 0 0 8px 8px;
+}
+
+.rp-scroll {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.rp-section {
+    font-size: 15px;
+    letter-spacing: 3px;
+    color: var(--ou-red-hot);
+    margin: 14px 0 4px 10px;
+}
+
+.rp-note {
+    font-size: 16px;
+    color: rgb(255, 196, 120);
+    white-space: normal;
+    margin: 6px 10px 4px 10px;
+}
+
+.ou-replay .mxa-row {
+    height: 44px;
+    padding: 0 6px 0 10px;
+    border-radius: 4px;
+    border-left-width: 4px;
+    border-left-color: rgba(0, 0, 0, 0);
+}
+
+.ou-replay .mxa-row:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-left-color: var(--ou-red);
+}
+
+.ou-replay .mxa-row-label {
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--ou-muted);
+}
+
+.ou-replay .mxa-row:focus > .mxa-row-label {
+    color: rgb(255, 255, 255);
+}
+
+.ou-replay .mxa-value {
+    font-size: 18px;
+    min-width: 150px;
+}
+
+.ou-replay .mxa-arrow {
+    font-size: 24px;
+    width: 22px;
+    -unity-text-align: middle-center;
+    color: var(--ou-faint);
+}
+
+.ou-replay .mxa-row:focus .mxa-arrow {
+    color: var(--ou-red-hot);
+}
+
+.rp-num-value {
+    font-size: 18px;
+    min-width: 70px;
+    -unity-text-align: middle-right;
+    margin-right: 4px;
+}
+
+.rp-bar {
+    width: 120px;
+    height: 6px;
+    border-radius: 3px;
+    margin: 0 8px;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.rp-bar-fill {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
+.ou-replay .mxa-row:focus .rp-bar-fill {
+    background-color: var(--ou-red);
+}
+
+.rp-bar-zero {
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    width: 2px;
+    height: 14px;
+    margin-left: -1px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.rp-row-off > .mxa-row-label, .rp-row-off .mxa-value, .rp-row-off .rp-num-value {
+    color: var(--ou-faint);
+}
+
+.rp-panel-buttons {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-top: 10px;
+}
+
+.rp-panel-buttons > .rp-text-button {
+    flex-grow: 1;
+    margin: 0 4px;
+    padding: 0 8px;
+}
+
+.rp-shoot {
+    height: 64px;
+    flex-shrink: 0;
+    margin: 10px 4px 0 4px;
+    border-radius: 4px;
+    background-color: var(--ou-red);
+    align-items: center;
+    justify-content: center;
+    transition-property: background-color;
+    transition-duration: 0.1s;
+}
+
+.rp-shoot:hover, .rp-shoot:focus {
+    background-color: var(--ou-red-hot);
+}
+
+.rp-shoot > .mxa-button-label {
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+}
+
+/* the photo face's moment strip (bottom left) */
+.rp-moment {
+    position: absolute;
+    left: 56px; bottom: 104px;
+    width: 640px;
+    background-color: var(--ou-glass);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: var(--ou-line);
+    padding: 10px 16px 12px 16px;
+}
+
+.rp-moment-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ------------------------------------------------------------------ toast, hints, hidden note */
+
+.rp-toast {
+    position: absolute;
+    left: 50%;
+    bottom: 190px;
+    width: 560px;
+    margin-left: -280px;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--ou-glass-hi);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(232, 28, 36, 0.7);
+    padding: 10px;
+    opacity: 0;
+    translate: 0 20px;
+    transition-property: opacity, translate;
+    transition-duration: 0.25s;
+}
+
+.rp-toast-on {
+    opacity: 1;
+    translate: 0 0;
+}
+
+.rp-thumb {
+    width: 176px;
+    height: 99px;
+    border-radius: 3px;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgb(0, 0, 0);
+    margin-right: 14px;
+}
+
+.rp-toast-text {
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+.rp-toast-title {
+    font-size: 28px;
+    color: rgb(255, 255, 255);
+}
+
+.rp-toast-path {
+    font-size: 16px;
+    color: var(--ou-muted);
+    white-space: normal;
+}
+
+.ou-replay .mxa-hints {
+    right: 56px;
+    bottom: 26px;
+}
+
+.ou-replay .mxa-hint {
+    margin-left: 22px;
+}
+
+.ou-replay .mxa-key {
+    background-color: rgba(255, 255, 255, 0.16);
+    font-size: 15px;
+    padding: 2px 9px;
+    margin-right: 8px;
+}
+
+.ou-replay .mxa-hint-label {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--ou-muted);
+}
+
+.rp-hidden-note {
+    position: absolute;
+    right: 56px;
+    bottom: 26px;
+    flex-direction: row;
+    align-items: center;
+    opacity: 0.85;
+    transition-property: opacity;
+    transition-duration: 0.6s;
+}
+
+.rp-hidden-note-fade {
+    opacity: 0;
+}
+
+/* the OPEN REFLEX logo's place in the frame (PHOTO MODE's LOGO), as the photo will have it */
+.rp-logo {
+    position: absolute;
+    -unity-background-scale-mode: stretch-to-fill;
+    opacity: 0.92;
+}
+
+/* the moment strip's parts sit flush (the transport's have margins) */
+.ou-replay .rp-section-flush { margin-left: 0; }
+.ou-replay .rp-time-flush { margin-right: 0; min-width: 0; }
+.ou-replay .rp-timeline-flush { margin-bottom: 0; }
+
+/* the shell's buttons inside the panel take the panel's look */
+.ou-replay .rp-panel .mxa-button { border-left-width: 0; }
+.ou-replay .rp-panel-buttons > .rp-text-button:focus,
+.ou-replay .rp-panel-buttons > .mxa-button:focus {
+    background-color: var(--ou-red);
+    border-color: var(--ou-red);
+}
+.ou-replay .rp-shoot:focus { background-color: var(--ou-red-hot); border-width: 2px; border-color: rgb(255, 255, 255); }

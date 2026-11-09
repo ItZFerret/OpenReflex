@@ -1,0 +1,181 @@
+# phys_studio_desc.txt -- PHYSICS STUDIO labels, descriptions, units and natural bounds (w-physdesc). One line per distinct parameter name
+# of the nine vehicle parameter files (the same name in several classes shares the line). Fields, separated by " | ":
+#   name | label | unit | unit of a curve's x | bounds | description
+# unit: the value's unit ("-" none, "ratio" a plain number; a curve: its y). The unit of a curve's end slopes is "unit/x unit".
+# bounds: "-" the generic bounds (0 .. 5x the file's value; 5 % .. 5x for what must stay positive); otherwise a list of  lo=<n>x (a
+#   multiple of the file's value) | lo=<n> | hi=<n>x | hi=<n> | toggle (a 0 / 1 switch); they apply to a value, or to a curve's y knots.
+# The file's value always stays inside the bounds (the core widens them to hold it). Units are read from the original's code: the
+# simulation works in feet, slugs (1 slug = 32.2 lb), seconds and pounds-force; engine speeds in the curves are rad/s, the registered
+# limits rpm (the code divides by 9.55). "(unknown)" = the port could not read the unit / effect off the code.
+# Vector values: X = sideways, Y = up, Z = forward of the vehicle. A value with three entries (tyre ones) is for the ground value
+# 0 / 0.5 / 1 under the tyre (the TERRAIN page's tables decide what each ground gives; in between the game blends).
+#
+# ---- VehicleSim (the vehicle as a whole)
+VehicleSim_Gravity | Gravity | ft/s2 | - | - | Gravity pulling the vehicle (X sideways, Y up, Z forward). Y is negative: lower it for floaty jumps, raise it for heavy ones.
+VehicleSim_SpeedFilterTimeConstant | Speed smoothing time | s | - | - | How slowly the vehicle's speed reading is smoothed. The game uses it to tell when the vehicle has come to rest.
+VehicleSim_GroundDragCurve | Ground drag vs speed | lb | ft/s | - | Air and rolling resistance on the ground, by forward speed: the faster you go the harder it pulls you back. Higher means a lower top speed.
+VehicleSim_AirBorneDragCurve | Air drag vs speed | lb | ft/s | - | The same resistance while airborne, by forward speed. Higher slows the vehicle down in jumps.
+VehicleSim_AirBorneDownForceCurve | Air downforce vs speed | lb | ft/s | - | Extra push down while airborne, by forward speed (four-wheel vehicles). Higher drops the nose of a jump faster at speed.
+VehicleSim_MaxSteeringAngleCurve | Steering lock vs speed | rad | ft/s | lo=0 hi=1.5708 | The most the front wheel can turn, by forward speed. Low values at speed give stable high-speed riding. Capped at 90 degrees.
+VehicleSim_SteeringTimeConstant | Steering response time | s | - | - | How long the steering takes to follow the stick. Lower is a sharper, twitchier front end.
+VehicleSim_BikeLeanTimeConstant | Lean response time | s | - | - | How long the bike takes to lean to its target angle in a corner. Lower leans in faster.
+VehicleSim_ThetaLeanMaxCurve | Lean angle vs speed | rad | ft/s | lo=0 hi=1.5708 | The lean angle the bike aims for at full steering, by forward speed. Higher leans over further. Capped at 90 degrees.
+VehicleSim_UpVectorTimeConstant | Ground-up smoothing time | s | - | - | How slowly the bike's idea of the ground's up direction follows bumps. Higher gives a smoother, floatier ride over rough ground.
+# ---- MassProps
+MassProps_MainBodyCMOffset | Frame centre of mass offset | ft | - | - | Moves the frame's centre of mass (X sideways, Y up, Z forward). Higher or further back makes wheelies easier and the front lighter.
+MassProps_MainBodyMass | Frame mass | slug | - | - | Mass of the bike or vehicle body (1 slug is 32.2 lb). Heavier is harder to throw around and slower to accelerate.
+MassProps_RiderBodyMass | Rider mass | slug | - | - | Mass of the rider (1 slug is 32.2 lb). A heavier rider loads the suspension and shifts the balance.
+MassProps_FrontTireMass | Front wheel mass | slug | - | - | Mass of the front wheel and tyre. Heavier needs more braking and steering effort and soaks up bumps differently.
+MassProps_RearTireMass | Rear wheel mass | slug | - | - | Mass of the rear wheel and tyre. Heavier is harder to spin up.
+MassProps_MainBodyInertia | Frame rotational inertia | slug ft2 | - | - | How hard the frame is to rotate about its sideways, up and forward axes (X pitch, Y yaw, Z roll). Higher is lazier in the air and in turns.
+MassProps_RiderBodyInertia | Rider rotational inertia | slug ft2 | - | - | How hard the rider is to rotate (X, Y, Z axes). Affects how the rider's weight swings.
+MassProps_FrontTireInertia | Front wheel inertia | slug ft2 | - | - | How hard the front wheel is to spin or tilt (the first value is its spin). Higher keeps the wheel turning and resists steering.
+MassProps_RearTireInertia | Rear wheel inertia | slug ft2 | - | - | How hard the rear wheel is to spin or tilt (the first value is its spin). Higher is slower to rev up and slower to slow down.
+MassProps_EngineInertia | Engine inertia | slug ft2 | - | - | How hard the engine is to rev up or slow down. Higher revs more slowly.
+MassProps_DriveTrainInertia | Drivetrain inertia | slug ft2 | - | - | Spinning weight between the engine and the rear wheel. Higher is slower to accelerate.
+MassProps_FrontAArmMass | Front arm mass | slug | - | - | Mass of the front suspension arm (four-wheel vehicles). It is 0 in the files and the port found nothing that reads it (no known effect).
+MassProps_RearTrailingArmMass | Rear arm mass | slug | - | - | Mass of the rear suspension arm (four-wheel vehicles). It is 0 in the files and the port found nothing that reads it (no known effect).
+MassProps_FrontAArmInertia | Front arm inertia | slug ft2 | - | - | Rotational inertia of the front suspension arm (four-wheel vehicles). It is 0 in the files and the port found nothing that reads it (no known effect).
+MassProps_RearTrailingArmInertia | Rear arm inertia | slug ft2 | - | - | Rotational inertia of the rear suspension arm (four-wheel vehicles). It is 0 in the files and the port found nothing that reads it (no known effect).
+# ---- Brakes
+Brakes_TimeConstant | Brake response time | s | - | - | How long the brakes take to build up after you press them. Higher feels softer.
+Brakes_FrontBrakeMaxTorque | Front brake strength | lb ft | - | - | The torque of a fully pressed front brake. Higher stops harder but locks the front wheel sooner.
+Brakes_FrontBrakeTorqueCurve | Front brake vs wheel speed | ratio | rad/s | - | How much of the front brake's strength is used at each wheel spin speed. 1 is the full strength.
+Brakes_RearBrakeMaxTorque | Rear brake strength | lb ft | - | - | The torque of a fully pressed rear brake. Higher stops harder and skids the rear sooner.
+Brakes_RearBrakeTorqueCurve | Rear brake vs wheel speed | ratio | rad/s | - | How much of the rear brake's strength is used at each wheel spin speed. 1 is the full strength.
+Brakes_WheelRollingFrictionTorsionDamping | Wheel spin keep | ratio | rad/s | lo=0 hi=1 | How much of a wheel's spin (relative to the frame) survives each physics step, by spin speed. 1 never slows, lower slows the wheels down (rolling resistance).
+# ---- Front suspension
+FrontSuspension_ForkAttachmentPoint | Fork top position | ft | - | - | Where the fork joins the frame (X sideways, Y up, Z forward). Moves the front end's geometry.
+FrontSuspension_RakeAngle | Fork rake angle | rad | - | lo=0 hi=1.5708 | The tilt of the fork from vertical. More rake is more stable in a straight line, less is quicker to steer. Capped at 90 degrees.
+FrontSuspension_SpringRestLength | Front spring rest length | ft | - | - | Length of the front suspension when it carries no load. Longer raises the front end.
+FrontSuspension_ShockKSpring | Front spring rate | lb/ft | - | lo=0.05x | Stiffness of the front spring: force per foot of compression. Higher is stiffer and bottoms out less.
+FrontSuspension_ShockDampCompression | Front compression damping | lb s/ft | - | - | How hard the front shock resists being squashed. Higher is firmer over landings and bumps.
+FrontSuspension_ShockDampDeCompression | Front rebound damping | lb s/ft | - | - | How hard the front shock resists springing back out. Higher recovers more slowly.
+FrontSuspension_BottomOutLength | Front bottom-out length | ft | - | - | The front suspension length at which it counts as bottomed out (the harsh stop on big landings).
+FrontSuspension_FullyExtendedLength | Front full extension length | ft | - | - | The front suspension length at which it counts as fully extended (top-out).
+FrontSuspension_SpringYAttachmentPoint | Front spring mount height | ft | - | - | Height of the front spring's mount on the frame (four-wheel vehicles).
+FrontSuspension_AArmMainBodyAttachmentVector | Front arm mount | ft | - | - | Where the front suspension arm joins the frame (X sideways, Y up, Z forward) on four-wheel vehicles.
+FrontSuspension_AArmLength | Front arm length | ft | - | - | Length of the front suspension arm on four-wheel vehicles. Longer moves the wheel further out as it travels.
+# ---- Rear suspension
+RearSuspension_SpringRestLength | Rear spring rest length | ft | - | - | Length of the rear suspension when it carries no load. Longer raises the rear end.
+RearSuspension_SpringYAttachmentPoint | Rear spring mount height | ft | - | - | Height of the rear spring's mount on the frame.
+RearSuspension_ShockKSpring | Rear spring rate | lb/ft | - | lo=0.05x | Stiffness of the rear spring: force per foot of compression. Higher is stiffer and bottoms out less.
+RearSuspension_ShockDampCompression | Rear compression damping | lb s/ft | - | - | How hard the rear shock resists being squashed. Higher is firmer over landings and bumps.
+RearSuspension_ShockDampDeCompression | Rear rebound damping | lb s/ft | - | - | How hard the rear shock resists springing back out. Higher recovers more slowly.
+RearSuspension_BottomOutLength | Rear bottom-out length | ft | - | - | The rear suspension length at which it counts as bottomed out (the harsh stop on big landings).
+RearSuspension_SwingArmMainBodyAttachmentVector | Swingarm pivot position | ft | - | - | Where the swingarm pivots on the frame (X sideways, Y up, Z forward).
+RearSuspension_SwingArmLength | Swingarm length | ft | - | - | Length of the swingarm. Longer is more stable under power, shorter turns quicker.
+RearSuspension_FullyExtendedLength | Rear full extension length | ft | - | - | The rear suspension length at which it counts as fully extended (top-out).
+RearSuspension_AxleLength | Rear axle length | ft | - | - | Length of the rear axle on the ATV (the distance between the rear wheels' mounts).
+RearSuspension_AArmMainBodyAttachmentVector | Rear arm mount | ft | - | - | Where the rear suspension arm joins the frame (X sideways, Y up, Z forward) on the UTV.
+RearSuspension_AArmLength | Rear arm length | ft | - | - | Length of the rear suspension arm on the UTV.
+RearSuspension_TrailingArmMainBodyAttachmentVector | Rear trailing arm mount | ft | - | - | Where the rear trailing arm joins the frame (X sideways, Y up, Z forward) on the buggy and trucks.
+RearSuspension_TrailingArmLength | Rear trailing arm length | ft | - | - | Length of the rear trailing arm on the buggy and trucks.
+# ---- Front tyre (bike)
+FrontTire_Radius | Front tyre radius | ft | - | - | Radius of the front wheel. Bigger rolls over bumps better and raises the front end.
+FrontTire_TerrainDrag | Front tyre ground drag | lb | - | - | A steady resistance from soft ground that slows the front wheel, for three ground values (0, 0.5, 1). Higher bogs down on that ground.
+FrontTire_TerrainVelocityDrag | Front tyre ground drag by speed | lb s/ft | - | - | Resistance from soft ground that grows with speed, for three ground values. Higher slows you more the faster you go.
+FrontTire_StaticMuRoll | Front rolling grip | mu | - | - | Grip of the front tyre along its rolling direction (braking and drive), for three ground values. Higher grips more.
+FrontTire_StaticMuRollCurve | Front rolling grip vs speed | ratio | ft/s | - | A multiplier on the front tyre's rolling grip, by forward speed.
+FrontTire_DynamicMuRollMultiplier | Front rolling grip when sliding | ratio | - | lo=0 hi=1 | The share of rolling grip the front tyre keeps once it slides, for three ground values. 1 keeps all of it.
+FrontTire_StaticMuSideSlip | Front cornering grip | mu | - | - | Grip of the front tyre against sliding sideways, for three ground values. Higher holds the front in corners.
+FrontTire_StaticMuSideSlipCurve | Front cornering grip vs speed | ratio | ft/s | - | A multiplier on the front tyre's cornering grip, by forward speed.
+FrontTire_DynamicMuSideMultiplier | Front cornering grip when sliding | ratio | - | lo=0 hi=1 | The share of cornering grip the front tyre keeps once it slides, for three ground values. 1 keeps all of it.
+FrontTire_SideSlipDragForce | Front slide drag | lb | - | - | The drag a sliding front tyre adds, for three ground values. Higher scrubs speed off when the front slides.
+FrontTire_SideSlipDragForceCurve | Front slide drag vs speed | ratio | ft/s | - | How the front slide drag builds up with the tyre's rolling speed (1 is full).
+FrontTire_LeanAngleMuSideModifierCurve | Front grip vs lean | ratio | lean | - | A multiplier on the front cornering grip by how far the rider leans into the corner (-1 to 1).
+FrontTire_RiderShiftMuRollModifierCurve | Front rolling grip vs rider shift | ratio | shift | - | A multiplier on the front rolling grip by how far the rider shifts forward or back (-1 to 1).
+FrontTire_RiderShiftMuSideModifierCurve | Front cornering grip vs rider shift | ratio | shift | - | A multiplier on the front cornering grip by how far the rider shifts forward or back (-1 to 1).
+# ---- Rear tyre (bike)
+RearTire_Radius | Rear tyre radius | ft | - | - | Radius of the rear wheel. Bigger is a taller effective gear and raises the rear end.
+RearTire_TerrainDrag | Rear tyre ground drag | lb | - | - | A steady resistance from soft ground that slows the rear wheel, for three ground values (0, 0.5, 1). Higher bogs down on that ground.
+RearTire_TerrainVelocityDrag | Rear tyre ground drag by speed | lb s/ft | - | - | Resistance from soft ground that grows with speed, for three ground values. Higher slows you more the faster you go.
+RearTire_StaticMuRoll | Rear rolling grip | mu | - | - | Grip of the rear tyre along its rolling direction (drive and braking), for three ground values. Higher puts more power down.
+RearTire_StaticMuRollCurve | Rear rolling grip vs speed | ratio | ft/s | - | A multiplier on the rear tyre's rolling grip, by forward speed.
+RearTire_DynamicMuRollMultiplier | Rear rolling grip when sliding | ratio | - | lo=0 hi=1 | The share of rolling grip the rear tyre keeps once it slides, for three ground values. 1 keeps all of it.
+RearTire_StaticMuSideSlip | Rear cornering grip | mu | - | - | Grip of the rear tyre against sliding sideways, for three ground values. Higher holds the rear in corners.
+RearTire_StaticMuSideSlipCurve | Rear cornering grip vs speed | ratio | ft/s | - | A multiplier on the rear tyre's cornering grip, by forward speed.
+RearTire_DynamicMuSideMultiplier | Rear cornering grip when sliding | ratio | - | lo=0 hi=1 | The share of cornering grip the rear tyre keeps once it slides, for three ground values. 1 keeps all of it.
+RearTire_SideSlipDragForce | Rear slide drag | lb | - | - | The drag a sliding rear tyre adds, for three ground values. Higher scrubs speed off when the rear slides.
+RearTire_SideSlipDragForceCurve | Rear slide drag vs speed | ratio | ft/s | - | How the rear slide drag builds up with the tyre's rolling speed (1 is full).
+RearTire_LeanAngleMuSideModifierCurve | Rear grip vs lean | ratio | lean | - | A multiplier on the rear cornering grip by how far the rider leans into the corner (-1 to 1).
+RearTire_RiderShiftMuRollModifierCurve | Rear rolling grip vs rider shift | ratio | shift | - | A multiplier on the rear rolling grip by how far the rider shifts forward or back (-1 to 1).
+RearTire_RiderShiftMuSideModifierCurve | Rear cornering grip vs rider shift | ratio | shift | - | A multiplier on the rear cornering grip by how far the rider shifts forward or back (-1 to 1).
+RearTire_DoughnutForce | Rear doughnut push | lb | - | - | The sideways-slide push on the rear tyre when you steer hard while it slides: it helps the bike spin round in a doughnut. Three ground values.
+# ---- Front tyres (four-wheel)
+FrontTires_Radius | Front tyre radius | ft | - | - | Radius of the front tyres. Bigger rolls over bumps better and raises the front end.
+FrontTires_Width | Front tyre width | ft | - | - | Width of the front tyres (the contact patch and the wheel's collision shape).
+FrontTires_TerrainDrag | Front tyre ground drag | lb | - | - | A steady resistance from soft ground that slows the front tyres, for three ground values (0, 0.5, 1). Higher bogs down on that ground.
+FrontTires_TerrainVelocityDrag | Front tyre ground drag by speed | lb s/ft | - | - | Resistance from soft ground that grows with speed, for three ground values. Higher slows you more the faster you go.
+FrontTires_StaticMuRoll | Front rolling grip | mu | - | - | Grip of the front tyres along their rolling direction (braking and drive), for three ground values. Higher grips more.
+FrontTires_StaticMuRollCurve | Front rolling grip vs speed | ratio | ft/s | - | A multiplier on the front tyres' rolling grip, by forward speed.
+FrontTires_DynamicMuRollMultiplier | Front rolling grip when sliding | ratio | - | lo=0 hi=1 | The share of rolling grip the front tyres keep once they slide, for three ground values. 1 keeps all of it.
+FrontTires_StaticMuSideSlip | Front cornering grip | mu | - | - | Grip of the front tyres against sliding sideways, for three ground values. Higher holds the front in corners.
+FrontTires_StaticMuSideSlipCurve | Front cornering grip vs speed | ratio | ft/s | - | A multiplier on the front tyres' cornering grip, by forward speed.
+FrontTires_DynamicMuSideMultiplier | Front cornering grip when sliding | ratio | - | lo=0 hi=1 | The share of cornering grip the front tyres keep once they slide, for three ground values. 1 keeps all of it.
+FrontTires_SideSlipDragForce | Front slide drag | lb | - | - | The drag sliding front tyres add, for three ground values. Higher scrubs speed off when the front slides.
+FrontTires_SideSlipDragForceCurve | Front slide drag vs speed | ratio | ft/s | - | How the front slide drag builds up with the tyres' rolling speed (1 is full).
+# ---- Rear tyres (four-wheel)
+RearTires_Radius | Rear tyre radius | ft | - | - | Radius of the rear tyres. Bigger is a taller effective gear and raises the rear end.
+RearTires_Width | Rear tyre width | ft | - | - | Width of the rear tyres (the contact patch and the wheel's collision shape).
+RearTires_TerrainDrag | Rear tyre ground drag | lb | - | - | A steady resistance from soft ground that slows the rear tyres, for three ground values (0, 0.5, 1). Higher bogs down on that ground.
+RearTires_TerrainVelocityDrag | Rear tyre ground drag by speed | lb s/ft | - | - | Resistance from soft ground that grows with speed, for three ground values. Higher slows you more the faster you go.
+RearTires_StaticMuRoll | Rear rolling grip | mu | - | - | Grip of the rear tyres along their rolling direction (drive and braking), for three ground values. Higher puts more power down.
+RearTires_StaticMuRollCurve | Rear rolling grip vs speed | ratio | ft/s | - | A multiplier on the rear tyres' rolling grip, by forward speed.
+RearTires_DynamicMuRollMultiplier | Rear rolling grip when sliding | ratio | - | lo=0 hi=1 | The share of rolling grip the rear tyres keep once they slide, for three ground values. 1 keeps all of it.
+RearTires_StaticMuSideSlip | Rear cornering grip | mu | - | - | Grip of the rear tyres against sliding sideways, for three ground values. Higher holds the rear in corners.
+RearTires_StaticMuSideSlipCurve | Rear cornering grip vs speed | ratio | ft/s | - | A multiplier on the rear tyres' cornering grip, by forward speed.
+RearTires_DynamicMuSideMultiplier | Rear cornering grip when sliding | ratio | - | lo=0 hi=1 | The share of cornering grip the rear tyres keep once they slide, for three ground values. 1 keeps all of it.
+RearTires_SideSlipDragForce | Rear slide drag | lb | - | - | The drag sliding rear tyres add, for three ground values. Higher scrubs speed off when the rear slides.
+RearTires_SideSlipDragForceCurve | Rear slide drag vs speed | ratio | ft/s | - | How the rear slide drag builds up with the tyres' rolling speed (1 is full).
+RearTires_DoughnutForce | Rear doughnut push | lb | - | - | The sideways-slide push on the rear tyres when you steer hard while they slide: it helps the vehicle spin round in a doughnut. Three ground values.
+# ---- Engine
+Engine_TorqueCurve | Engine torque vs engine speed | lb ft | rad/s | - | The torque the engine makes at each engine speed (the speed is in rad/s; 1 rad/s is 9.55 rpm). Raise it for more power, move the knots to shift the power band.
+Engine_MaximumSpeed | Engine rev limit | rpm | - | lo=0.4x | The highest engine speed. The gears run out here, so it sets the top speed in each gear.
+Engine_MinimumSpeed | Engine idle speed | rpm | - | lo=0 hi=2x | The lowest engine speed (idle). Keep it well under the rev limit.
+Engine_PeakClutchRPM | Clutch slip engine speed | rpm | - | - | The engine speed the engine jumps to while the clutch slips, for example on a launch. Higher launches with more revs.
+Engine_MaximumDragTorque | Engine braking strength | lb ft | - | - | The torque with which the engine drags the wheel when you are off the throttle. Higher slows you more when you lift.
+Engine_MaximumDragTorqueCurve | Engine braking vs engine speed | ratio | rad/s | - | How much of the engine braking strength applies at each engine speed. 1 is the full strength.
+Engine_MaximumTorqueFeedback | Engine reaction (air / lean back) | ratio | - | - | How much of the engine's torque twists the frame back (squat and wheelie lift) while airborne or leaning back. 1 is full.
+Engine_MinimumTorqueFeedback | Engine reaction (riding) | ratio | - | - | How much of the engine's torque twists the frame back (squat and wheelie lift) in normal riding. 1 is full.
+Engine_DragCoefficient | Engine braking by gear | ratio | - | - | Scales how strongly the engine braking is felt through the gear ratio. Higher means more braking, most in low gears.
+Engine_ClutchResetTime | Clutch re-engage time | s | - | lo=0.05x | How long the clutch takes to bite again after it was used. Longer slips for longer.
+Engine_ReverseTorque | Reverse torque | lb ft | - | - | The engine torque used when reversing (four-wheel vehicles).
+Engine_ClutchCoefficient | Clutch coefficient | (unknown) | - | - | Registered for the UTV, buggy and trucks, but the port found nothing that reads it (no known effect).
+# ---- Drivetrain
+DriveTrain_ManualTransmission | Manual transmission | switch | - | toggle | 0 shifts gears for you, 1 leaves the shifting to you.
+DriveTrain_PrimaryReduction | Primary reduction | ratio | - | lo=0.05x | The first gear reduction between the engine and the gearbox. It multiplies every gear: higher is more acceleration and a lower top speed.
+DriveTrain_GearRatio1 | Gear 1 ratio | ratio | - | lo=0.05x | The ratio of first gear. Higher is stronger acceleration and a lower top speed in that gear.
+DriveTrain_GearRatio2 | Gear 2 ratio | ratio | - | lo=0.05x | The ratio of second gear. Higher is stronger acceleration and a lower top speed in that gear.
+DriveTrain_GearRatio3 | Gear 3 ratio | ratio | - | lo=0.05x | The ratio of third gear. Higher is stronger acceleration and a lower top speed in that gear.
+DriveTrain_GearRatio4 | Gear 4 ratio | ratio | - | lo=0.05x | The ratio of fourth gear. Higher is stronger acceleration and a lower top speed in that gear.
+DriveTrain_GearRatio5 | Gear 5 ratio | ratio | - | lo=0.05x | The ratio of fifth gear. Higher is stronger acceleration and a lower top speed in that gear.
+DriveTrain_FinalRatio | Final drive ratio | ratio | - | lo=0.05x | The last reduction before the wheel (the sprocket ratio). It multiplies every gear: higher is more acceleration and a lower top speed.
+# ---- Rider
+Rider_RiderCenterOfMass | Rider position | ft | - | - | Where the rider's weight sits on the bike at rest (X sideways, Y up, Z forward).
+Rider_LeanForwardBack | Rider lean forward / back | ft | - | - | How far the rider's weight moves forward or back at full stick. Higher gives more control over wheelies and the nose.
+Rider_LeanLeftRight | Rider lean left / right | ft | - | - | How far the rider's weight moves sideways at full stick. Higher shifts the weight more when you lean.
+# ---- Air control
+AirBorne_CourseCorrectionForce | Air steering push | lb | - | - | A sideways push on the vehicle in the air from the steering stick, to nudge the landing line. 0 gives none.
+AirBorne_AngularRateDamping | Air spin keep | ratio | - | lo=0 hi=1 | How much of the vehicle's spin it keeps each physics step in the air, for each axis (X pitch, Y yaw, Z roll). 1 never slows, lower stops the spin faster.
+AirBorne_AngularRateDampingOnTakeoff | Air spin keep after take-off | ratio | - | lo=0 hi=1 | The same, applied on top of it right after take-off, for each axis. Lower stops the take-off spin faster.
+AirBorne_ControlSpringK | Air control spring | (unknown) | - | - | Registered for the bikes, but the port found nothing in the bike's air control that reads it (no known effect).
+AirBorne_ReturnSpringK | Air return spring | (unknown) | - | - | Registered for the bikes, but the port found nothing in the bike's air control that reads it (no known effect).
+AirBorne_LeftStickXRPY | Air left stick X axes | (unknown) | - | - | Registered for the bikes, but the port found nothing in the bike's air control that reads it (no known effect).
+AirBorne_LeftStickYRPY | Air left stick Y axes | (unknown) | - | - | Registered for the bikes, but the port found nothing in the bike's air control that reads it (no known effect).
+AirBorne_RightStickXRPY | Air right stick X axes | (unknown) | - | - | Registered for the bikes, but the port found nothing in the bike's air control that reads it (no known effect).
+AirBorne_RightStickYRPY | Air right stick Y axes | (unknown) | - | - | Registered for the bikes, but the port found nothing in the bike's air control that reads it (no known effect).
+AirBorne_RPYTimeConstants | Air control response time | s | - | - | How long the roll, pitch and yaw air controls take to follow the sticks (X roll, Y pitch, Z yaw). Lower is snappier.
+AirBorne_UnwindFrameTimeConstant | Air reference frame time | s | - | - | The smoothing time of the air control's reference frame (the orientation the bike unwinds toward).
+AirBorne_LeftStickXVelocityCurve | Air left stick X response | ratio | stick speed | - | Shapes how a quick flick of the left stick sideways turns into air spin: the multiplier by flick speed (1 is a full flick).
+AirBorne_LeftStickYVelocityCurve | Air left stick Y response | ratio | stick speed | - | Shapes how a quick flick of the left stick forward or back turns into air spin: the multiplier by flick speed.
+AirBorne_RightStickXVelocityCurve | Air right stick X response | ratio | stick speed | - | Shapes how a quick flick of the right stick sideways turns into air spin: the multiplier by flick speed.
+AirBorne_RightStickYVelocityCurve | Air right stick Y response | ratio | stick speed | - | Shapes how a quick flick of the right stick forward or back turns into air spin: the multiplier by flick speed.
+AirBorne_LeftStickXAngularAcceleration | Air left stick X power | (unknown) | - | - | How strongly the left stick sideways spins the vehicle in the air (four-wheel vehicles). 0 turns the stick off.
+AirBorne_LeftStickYAngularAcceleration | Air left stick Y power | (unknown) | - | - | How strongly the left stick forward or back spins the vehicle in the air (four-wheel vehicles). 0 turns the stick off.
+AirBorne_RightStickXAngularAcceleration | Air right stick X power | (unknown) | - | - | How strongly the right stick sideways spins the vehicle in the air (four-wheel vehicles). 0 turns the stick off.
+AirBorne_RightStickYAngularAcceleration | Air right stick Y power | (unknown) | - | - | How strongly the right stick forward or back spins the vehicle in the air (four-wheel vehicles). 0 turns the stick off.
+AirBorne_LeftStickXRPYMix | Air left stick X mix | ratio | - | - | How the left stick sideways is shared between roll, pitch and yaw in the air (X roll, Y pitch, Z yaw), on four-wheel vehicles.
+AirBorne_LeftStickYRPYMix | Air left stick Y mix | ratio | - | - | How the left stick forward or back is shared between roll, pitch and yaw in the air (X roll, Y pitch, Z yaw), on four-wheel vehicles.
+AirBorne_RightStickXRPYMix | Air right stick X mix | ratio | - | - | How the right stick sideways is shared between roll, pitch and yaw in the air (X roll, Y pitch, Z yaw), on four-wheel vehicles.
+AirBorne_RightStickYRPYMix | Air right stick Y mix | ratio | - | - | How the right stick forward or back is shared between roll, pitch and yaw in the air (X roll, Y pitch, Z yaw), on four-wheel vehicles.

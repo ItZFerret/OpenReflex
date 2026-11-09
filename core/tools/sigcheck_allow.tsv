@@ -1,0 +1,22 @@
+# sigcheck.py allow-list: address TAB reason. Every entry was reviewed against the disassembly (w-sigfix, 2026-10-26); an entry stays valid
+# only while the signature and the reason hold -- sigcheck.py reports an entry that no longer matches a finding as stale.
+00568140	stack arg 0 (the previous state) is only forwarded to Activity::vf37 005589c0, which pops it (RET 4) and never reads it; the C port takes (act) and ignores it, so the extra positional argument is harmless
+00568da0	stack arg 0 (the previous state) is only forwarded to Activity::vf41 00559900, which pops it (RET 4) and never reads it; the C port takes (act) and ignores it
+00568f60	stack arg 0 (the previous state) is only forwarded to Activity::vf40 00559600, which pops it (RET 4) and never reads it; the C port takes (act) and ignores it
+00565030	tail-jump thunk onto 00568140 (see there): the one stack argument is never used
+00565560	tail-jump thunk onto 00568da0 (see there): the one stack argument is never used
+00568fb0	reads no stack argument (RET 4 pops the unused previous state; the body only touches its own frame and fstp [esp]); the tool cannot resolve the stack depth past the indirect calls
+00581f50	reads no stack argument (RET 8 pops two unused arguments; the body calls vtable slots with its own pushes); the tool cannot resolve the stack depth past the indirect calls
+00581cb0	the 4th C parameter is the caller's EBP, which the port only stores into the dead-stack saved-EBP slot (rx_world_rider_sound_stop -> rx_world_event_queue); no result depends on it, a positional caller leaves it unset
+0080bc80	the 4th C parameter is the caller's EBP, which the port only stores into the dead-stack saved-EBP slot (rx_world_event_queue); no result depends on it, a positional caller leaves it unset
+0058a360	EAX = the channel is a register argument (LTCG): called only through the owner's prototype (waypoint_activity.c); the 0x0058a360 literal in the core is the diagnostic tag act_subscribe takes
+009043b0	generated static initializer (_initterm slot) called by rx_globals_static_init as void (*)(void); in_ebx / in_esi are the callee-saved registers the generator forwards to FUN_00545380, which only push/pops them (dead stack)
+009043d0	generated static initializer, as 009043b0 (in_ebx / in_esi forwarded to FUN_00545380, only pushed and popped)
+009043f0	generated static initializer, as 009043b0 (in_ebx / in_esi forwarded to FUN_00545380, only pushed and popped)
+00904410	generated static initializer, as 009043b0 (in_ebx / in_esi forwarded to FUN_00545380, only pushed and popped)
+0090a6a0	generated static initializer; in_eax is forwarded to FUN_006aa5f0, which overwrites EAX (or eax, -1) before using it
+0090e8b0	generated static initializer; in_ebx / in_esi / in_edi are forwarded to FUN_0080d0c0, which never reads them
+0090fe70	generated static initializer; in_ebx / in_esi / in_edi are forwarded to FUN_008181a0, which never reads them
+009103b0	generated static initializer; in_edx only feeds `in_edx | 0xffffffff` (a constant -1)
+vt:race_activity.c:driver_done:0xf4	slot 61 of the race classes: MXActivityRaceStub / MXActivityRace* vf61 is 00566e70 (driver index finished: the call passes the index and uses the result); the void port in the Challenge family (0057acc0 MXActivityChallenge, 0057cf50 StepUp: the start-position routine) is a sibling class's own vf61. driver_done runs only in race_activity.c's end-of-race state, on MXActivityRace objects (it reads the race fields +0xff088 / +0x2d0), never on a challenge
+vt:loop_anim.c:bone_to_node:lit007db7e0	Node_Invalidate (007db7e0) is called with the record only: the port's three more parameters are the caller's saved EBX / ESI / EDI, which invalidate_at() (world_node.c) only stores into dead emulated-stack words; they never reach game state, and the value of the call is unused

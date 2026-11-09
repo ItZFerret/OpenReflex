@@ -1,0 +1,205 @@
+/* What the OPEN REFLEX shell adds to Open Unleashed's front-end theme (OuFrontEnd.uss over OuMenu.uss, both kept as they came):
+   the wordmark (OuTheme.Logo: the shell's name in type, no picture), the progress bars (world builds, signing in), the world cache
+   rows of GAME LIBRARY, the crash card, and the pictures of the install (the locations' previews are 16:9 / 2:1, not the
+   Unleashed screenshots' 4:3 letterbox). */
+
+/* ------------------------------------------------------------------ wordmark */
+
+.ou-logo {
+    flex-shrink: 0;
+    align-items: flex-start;
+    padding-left: 18px;
+}
+
+.ou-logo-bar {
+    position: absolute;
+    left: 0;
+    bottom: 12%;
+    --shape-fill: rgb(232, 28, 36);
+    --shape-skew: 18;
+}
+
+.ou-frontend .ou-logo-top {
+    -unity-font-definition: url("Fonts/BarlowCondensed-Bold.ttf");
+    -unity-font-style: normal;
+    color: rgba(246, 246, 244, 0.86);
+    margin: 0 0 0 6px;
+    padding: 0;
+}
+
+.ou-frontend .ou-logo-big {
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+    color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+    letter-spacing: 2px;
+}
+
+.ou-logo-small {
+    flex-direction: row;
+    align-items: flex-end;
+    padding-left: 8px;
+}
+
+.ou-logo-small > .ou-logo-bar {
+    bottom: 4px;
+    --shape-skew: 6;
+}
+
+.ou-frontend .ou-logo-small > .ou-logo-top {
+    margin: 0 6px 2px 2px;
+}
+
+.ou-hub-logo {
+    margin: 0 0 34px 0;
+}
+
+.ou-status-logo {
+    margin-right: 18px;
+}
+
+.ou-loading-logo > .ou-logo {
+    flex-direction: row;
+}
+
+/* ------------------------------------------------------------------ pictures of the install */
+
+.ou-continue-shot, .ou-continue-photo, .ou-loading-shot, .ou-setup-hero, .ou-detail-shot, .ou-card-thumb {
+    background-size: cover;
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.ou-card-dlc {
+    left: auto;
+    right: 8px;
+    background-color: rgba(232, 28, 36, 0.85);
+}
+
+/* ------------------------------------------------------------------ progress bars */
+
+.ou-progress {
+    height: 10px;
+    margin: 10px 0 4px 0;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ou-progress-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+}
+
+.ou-progress-fill > .ou-backdrop {
+    --shape-fill: rgb(232, 28, 36);
+    --shape-skew: 5;
+}
+
+.ou-progress-busy > .ou-progress-fill {
+    width: 30%;
+    transition-property: left;
+    transition-duration: 0.9s;
+}
+
+.ou-loading-bar {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ou-loading-bar > .ou-loading-bar-fill {
+    right: auto;
+    width: 0;
+}
+
+.ou-working {
+    width: 900px;
+    align-self: center;
+    margin-top: 120px;
+}
+
+/* ------------------------------------------------------------------ GAME LIBRARY: the world cache */
+
+.ou-cache-head {
+    margin-top: 18px;
+}
+
+.ou-cache-total {
+    margin: 2px 0 8px 6px;
+}
+
+.ou-cache-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 4px;
+    border-left-width: 3px;
+    border-left-color: rgba(232, 28, 36, 0.6);
+}
+
+.ou-cache-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.ou-frontend .ou-cache-name {
+    font-size: 22px;
+    margin: 0;
+    padding: 0;
+}
+
+.ou-frontend .ou-cache-sub {
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: var(--ou-muted);
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------------------------------------------ texts on the setup page and the browser's preview */
+
+.ou-setup-text {
+    margin: 0 0 10px 6px;
+    white-space: normal;
+}
+
+.ou-detail-text {
+    margin: 4px 0 12px 0;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ the crash card on the hub (Reflex.Port.Platform.ReflexCrashLog) */
+
+.ou-crash-card {
+    padding: 18px 24px 20px 24px;
+    border-left-width: 3px;
+    border-left-color: var(--ou-red);
+}
+
+.ou-frontend .ou-crash-title {
+    -unity-font-definition: url("Fonts/BarlowCondensed-ExtraBoldItalic.ttf");
+    -unity-font-style: normal;
+    font-size: 34px;
+    color: rgb(255, 255, 255);
+    margin: -2px 0 4px 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-frontend .ou-crash-text {
+    margin: 0 0 12px 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.ou-crash-buttons {
+    flex-direction: row;
+}
+
+.ou-crash-buttons > .ou-chip {
+    margin: 0 10px 0 0;
+    flex-grow: 0;
+}
+

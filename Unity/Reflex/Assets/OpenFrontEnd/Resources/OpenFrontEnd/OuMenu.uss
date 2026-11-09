@@ -1,0 +1,926 @@
+/* The MXA menus (MxaMainMenu, MxaRideMenus). Reference size 1920 x 1080, scaled by height (16:10 is 1728 wide).
+   One accent (the yellow of the game's bike art), photo backgrounds from the install, dark panels, no chrome. */
+
+.mxa-root {
+    flex-grow: 1;
+    color: rgb(242, 242, 238);
+    font-size: 18px;
+}
+
+.mxa-bg {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgb(10, 11, 13);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.mxa-scrim {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 72%;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.mxa-layer {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    padding: 64px 96px 104px 96px;
+}
+
+.mxa-dim {
+    background-color: rgba(8, 9, 11, 0.62);
+}
+
+.mxa-dim.mxa-options-open {
+    background-color: rgba(8, 9, 11, 0.95);
+}
+
+/* ------------------------------------------------------------------ hints */
+
+.mxa-hints {
+    position: absolute;
+    right: 96px;
+    bottom: 38px;
+    flex-direction: row;
+}
+
+.mxa-hint {
+    flex-direction: row;
+    align-items: center;
+    margin-left: 30px;
+}
+
+.mxa-key {
+    background-color: rgba(255, 255, 255, 0.14);
+    border-radius: 5px;
+    padding: 3px 10px;
+    margin-right: 10px;
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+
+.mxa-hint-label {
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.62);
+}
+
+/* ------------------------------------------------------------------ main */
+
+.mxa-main-col {
+    flex-grow: 1;
+    justify-content: center;
+    width: 680px;
+}
+
+.mxa-logo {
+    -unity-background-scale-mode: scale-to-fit;
+    margin-bottom: 44px;
+    margin-left: -8px;
+}
+
+.mxa-title {
+    font-size: 64px;
+    -unity-font-style: bold;
+    margin-bottom: 40px;
+}
+
+.mxa-button {
+    flex-direction: row;
+    align-items: center;
+}
+
+.mxa-main-button {
+    padding: 8px 0 8px 22px;
+    border-left-width: 5px;
+    border-left-color: rgba(0, 0, 0, 0);
+    transition-property: translate, border-color;
+    transition-duration: 0.12s;
+}
+
+.mxa-main-button > .mxa-button-label {
+    font-size: 46px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgba(242, 242, 238, 0.5);
+}
+
+.mxa-main-button:focus {
+    border-left-color: rgb(245, 180, 0);
+    translate: 10px 0;
+}
+
+.mxa-main-button:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+.mxa-footer {
+    position: absolute;
+    left: 96px;
+    bottom: 38px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mxa-footnote {
+    font-size: 15px;
+    color: rgba(242, 242, 238, 0.45);
+}
+
+.mxa-link {
+    margin-left: 16px;
+    padding: 3px 10px;
+    border-radius: 5px;
+}
+
+.mxa-link > .mxa-button-label {
+    font-size: 14px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.6);
+}
+
+.mxa-link:focus {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.mxa-link:focus > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+/* ------------------------------------------------------------------ screen head + tabs */
+
+.mxa-head {
+    flex-direction: row;
+    align-items: flex-end;
+    height: 84px;
+    flex-shrink: 0;
+}
+
+.mxa-screen-title {
+    font-size: 54px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+}
+
+.mxa-tabs {
+    flex-direction: row;
+    margin-left: 52px;
+    margin-bottom: 4px;
+}
+
+.mxa-tab {
+    padding: 10px 18px 12px 18px;
+    border-bottom-width: 3px;
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.mxa-tab > .mxa-button-label {
+    font-size: 21px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.5);
+}
+
+.mxa-tab:hover > .mxa-button-label {
+    color: rgba(242, 242, 238, 0.85);
+}
+
+.mxa-tab-on {
+    border-bottom-color: rgb(245, 180, 0);
+}
+
+.mxa-tab-on > .mxa-button-label {
+    color: rgb(255, 255, 255);
+}
+
+/* ------------------------------------------------------------------ panels */
+
+.mxa-panel {
+    background-color: rgba(14, 15, 18, 0.88);
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.mxa-panel-title {
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgba(242, 242, 238, 0.5);
+    margin-bottom: 14px;
+    margin-left: 4px;
+}
+
+.mxa-note {
+    font-size: 15px;
+    color: rgba(242, 242, 238, 0.5);
+    white-space: normal;
+    margin: 16px 4px 0 4px;
+}
+
+/* the OPPONENTS row above the original game's 7 */
+.mxa-note-fun {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgb(255, 176, 48);
+    margin-top: 10px;
+}
+
+.mxa-error {
+    color: rgb(255, 110, 90);
+    white-space: normal;
+    margin-top: 8px;
+}
+
+/* ------------------------------------------------------------------ setup */
+
+.mxa-setup {
+    flex-direction: row;
+    flex-grow: 1;
+    margin-top: 26px;
+}
+
+.mxa-tracks {
+    width: 420px;
+    flex-shrink: 0;
+    padding-right: 10px;
+}
+
+.mxa-track-scroll {
+    flex-grow: 1;
+}
+
+/* a thin, quiet scroll bar */
+.mxa-root .unity-scroller--vertical {
+    width: 6px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.mxa-root .unity-scroller--vertical .unity-scroller__low-button,
+.mxa-root .unity-scroller--vertical .unity-scroller__high-button {
+    display: none;
+}
+
+.mxa-root .unity-scroller--vertical .unity-base-slider__tracker {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-width: 0;
+    border-radius: 3px;
+    width: 6px;
+}
+
+.mxa-root .unity-scroller--vertical .unity-base-slider__dragger {
+    background-color: rgba(255, 255, 255, 0.28);
+    border-width: 0;
+    border-radius: 3px;
+    width: 6px;
+    left: 0;
+    margin: 0;
+}
+
+.mxa-root .unity-scroller--vertical .unity-base-slider__drag-container {
+    left: 0;
+    right: 0;
+}
+
+.mxa-track {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px 10px 12px;
+    margin-bottom: 2px;
+    margin-right: 8px;
+    border-radius: 6px;
+    border-left-width: 4px;
+    border-left-color: rgba(0, 0, 0, 0);
+}
+
+.mxa-track-name {
+    font-size: 21px;
+    -unity-font-style: bold;
+    color: rgba(242, 242, 238, 0.62);
+}
+
+.mxa-track-id {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: rgba(242, 242, 238, 0.32);
+}
+
+.mxa-untamed-track > .mxa-track-name {
+    flex-shrink: 1;
+    white-space: normal;
+}
+
+.mxa-track-on > .mxa-track-name {
+    color: rgb(245, 180, 0);
+}
+
+.mxa-track:focus {
+    background-color: rgba(255, 255, 255, 0.09);
+    border-left-color: rgb(245, 180, 0);
+}
+
+.mxa-track:focus > .mxa-track-name {
+    color: rgb(255, 255, 255);
+}
+
+.mxa-preview-col {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 28px;
+}
+
+.mxa-preview {
+    width: 100%;
+    align-self: center;
+    border-radius: 10px;
+    background-color: rgb(18, 19, 22);
+    -unity-background-scale-mode: stretch-to-fill;
+    overflow: hidden;
+}
+
+.mxa-preview-map {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 148px;
+    height: 148px;
+    border-radius: 8px;
+    background-color: rgba(10, 11, 13, 0.72);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.mxa-preview-caption {
+    margin-top: 20px;
+}
+
+.mxa-track-title {
+    font-size: 40px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+}
+
+.mxa-track-sub {
+    font-size: 17px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.55);
+    margin-top: 6px;
+}
+
+.mxa-options {
+    width: 440px;
+    flex-shrink: 0;
+}
+
+.mxa-option-rows {
+    flex-grow: 1;
+}
+
+/* value rows (spinners, sliders, toggles) */
+.mxa-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
+    padding: 0 10px 0 12px;
+    border-radius: 6px;
+    border-left-width: 4px;
+    border-left-color: rgba(0, 0, 0, 0);
+    flex-shrink: 0;
+}
+
+.mxa-row:focus {
+    background-color: rgba(255, 255, 255, 0.09);
+    border-left-color: rgb(245, 180, 0);
+}
+
+.mxa-row-label {
+    font-size: 17px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.62);
+}
+
+.mxa-row:focus > .mxa-row-label {
+    color: rgb(255, 255, 255);
+}
+
+.mxa-row-value {
+    flex-direction: row;
+    align-items: center;
+}
+
+.mxa-value {
+    font-size: 20px;
+    -unity-font-style: bold;
+    min-width: 128px;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+}
+
+.mxa-value-narrow {
+    min-width: 64px;
+    -unity-text-align: middle-right;
+}
+
+.mxa-arrow {
+    font-size: 36px;
+    padding: 0 8px 6px 8px;
+    color: rgba(242, 242, 238, 0.25);
+}
+
+.mxa-row:focus .mxa-arrow {
+    color: rgb(245, 180, 0);
+}
+
+.mxa-slider {
+    width: 260px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.14);
+    margin-right: 8px;
+}
+
+.mxa-slider-fill {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(242, 242, 238, 0.7);
+}
+
+.mxa-row:focus .mxa-slider-fill {
+    background-color: rgb(245, 180, 0);
+}
+
+/* call to action + secondary buttons */
+.mxa-start, .mxa-secondary {
+    justify-content: center;
+    height: 62px;
+    border-radius: 8px;
+    margin-top: 14px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition-property: background-color;
+    transition-duration: 0.12s;
+}
+
+.mxa-start > .mxa-button-label, .mxa-secondary > .mxa-button-label {
+    font-size: 22px;
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+}
+
+.mxa-start {
+    background-color: rgba(245, 180, 0, 0.22);
+}
+
+.mxa-start:focus, .mxa-secondary:focus {
+    background-color: rgb(245, 180, 0);
+}
+
+.mxa-start:focus > .mxa-button-label, .mxa-secondary:focus > .mxa-button-label {
+    color: rgb(16, 16, 16);
+}
+
+/* ------------------------------------------------------------------ options */
+
+.mxa-options-page {
+    width: 1080px;
+    margin-top: 26px;
+}
+
+.mxa-options-page > .mxa-row, .mxa-options-scroll .mxa-row {
+    height: 60px;
+}
+
+/* the page scrolls inside the panel (every page but CONTROLS); the focused row's help under it */
+.mxa-options-page {
+    max-height: 80%;
+    flex-shrink: 1;
+}
+.mxa-options-scroll {
+    flex-shrink: 1;
+    min-height: 0;
+}
+.mxa-options-section {
+    margin-top: 20px;
+    margin-bottom: 2px;
+}
+.mxa-options-help {
+    font-size: 15px;
+    color: rgba(242, 242, 238, 0.75);
+    white-space: normal;
+    min-height: 42px;
+    margin: 10px 4px 0 4px;
+    padding-top: 10px;
+    border-top-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.mxa-controls-row {
+    flex-direction: row;
+    align-items: center;
+    padding: 9px 12px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+}
+
+.mxa-controls-row:focus {
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.mxa-controls-head > Label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: rgba(242, 242, 238, 0.45);
+}
+
+.mxa-c-action {
+    width: 40%;
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgba(242, 242, 238, 0.8);
+}
+
+.mxa-c-key, .mxa-c-pad {
+    width: 30%;
+    font-size: 17px;
+    white-space: normal;
+}
+
+/* ------------------------------------------------------------------ install */
+
+.mxa-install {
+    width: 1000px;
+    align-self: center;
+    margin-top: 30px;
+    flex-grow: 1;
+}
+
+.mxa-install-text {
+    white-space: normal;
+    font-size: 19px;
+    color: rgba(242, 242, 238, 0.7);
+    margin: 12px 0 20px 0;
+}
+
+.mxa-path {
+    margin: 0;
+}
+
+.mxa-path > #unity-text-input {
+    font-size: 17px;
+    padding: 8px 10px;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-width: 0;
+    border-radius: 6px;
+    color: rgb(242, 242, 238);
+}
+
+.mxa-install-status {
+    margin: 10px 2px;
+    font-size: 16px;
+    color: rgba(255, 150, 120, 0.9);
+}
+
+.mxa-install-status.mxa-ok, .mxa-dir.mxa-ok {
+    color: rgb(245, 180, 0);
+}
+
+.mxa-dir-list {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+}
+
+.mxa-dir {
+    font-size: 19px;
+    padding: 7px 14px;
+    border-radius: 5px;
+    color: rgba(242, 242, 238, 0.75);
+}
+
+.mxa-dir:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgb(255, 255, 255);
+}
+
+.mxa-dir-header {
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 10px 14px 4px;
+    color: rgba(242, 242, 238, 0.45);
+}
+
+.mxa-dir.mxa-dir-current {
+    background-color: rgba(245, 180, 0, 0.12);
+}
+
+.mxa-install-buttons {
+    flex-direction: row;
+}
+
+.mxa-install-buttons > .mxa-start, .mxa-install-buttons > .mxa-secondary {
+    flex-grow: 1;
+    margin-right: 12px;
+}
+
+/* ------------------------------------------------------------------ loading */
+
+.mxa-loading {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.mxa-loading-shot {
+    width: 720px;
+    height: 540px;
+    border-radius: 10px;
+    background-color: rgb(18, 19, 22);
+    -unity-background-scale-mode: stretch-to-fill;
+    margin-bottom: 22px;
+}
+
+/* ------------------------------------------------------------------ ride: pause */
+
+.mxa-pause-col {
+    flex-grow: 1;
+    justify-content: center;
+    width: 620px;
+}
+
+.mxa-pause-menu {
+    margin-top: 28px;
+}
+
+/* the ride's actions: smaller than the front end's main buttons */
+.mxa-pause-menu .mxa-main-button {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.mxa-pause-menu .mxa-main-button > .mxa-button-label {
+    font-size: 34px;
+}
+
+/* QUICK SETTINGS: a small heading, then compact rows */
+.mxa-pause-section {
+    font-size: 15px;
+    -unity-font-style: bold;
+    letter-spacing: 3px;
+    color: rgba(242, 242, 238, 0.4);
+    margin: 22px 0 4px 27px;
+}
+
+.mxa-pause-exits {
+    margin-top: 18px;
+}
+
+.mxa-pause-row {
+    height: 44px;
+    margin: 1px 0;
+    padding-left: 22px;
+    border-left-width: 5px;
+    border-radius: 0;
+}
+
+.mxa-pause-row:focus {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.mxa-pause-row > .mxa-row-label {
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: rgba(242, 242, 238, 0.5);
+}
+
+.mxa-pause-row:focus > .mxa-row-label {
+    color: rgb(255, 255, 255);
+}
+
+.mxa-pause-row .mxa-value {
+    font-size: 19px;
+    min-width: 220px;
+}
+
+/* ------------------------------------------------------------------ ride: results */
+
+.mxa-results {
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(8, 9, 11, 0.5);
+}
+
+.mxa-results-card {
+    width: 780px;
+    padding: 34px 38px;
+}
+
+.mxa-results-top {
+    flex-direction: row;
+    align-items: center;
+    margin: 20px 0 18px 0;
+}
+
+.mxa-place {
+    flex-direction: row;
+    width: 250px;
+}
+
+.mxa-place-num {
+    font-size: 150px;
+    -unity-font-style: bold;
+    color: rgb(245, 180, 0);
+}
+
+.mxa-place-suffix {
+    font-size: 44px;
+    -unity-font-style: bold;
+    color: rgb(245, 180, 0);
+    margin-top: 26px;
+    margin-left: 4px;
+}
+
+.mxa-results-stats {
+    flex-grow: 1;
+}
+
+.mxa-stat {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.mxa-stat-label {
+    font-size: 16px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.55);
+}
+
+.mxa-stat-value {
+    font-size: 26px;
+    -unity-font-style: bold;
+}
+
+.mxa-laps {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.mxa-lap {
+    width: 25%;
+    padding: 8px 4px;
+}
+
+.mxa-lap-n {
+    font-size: 13px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.45);
+}
+
+.mxa-lap-t {
+    font-size: 21px;
+    -unity-font-style: bold;
+}
+
+.mxa-lap-best > .mxa-lap-t {
+    color: rgb(245, 180, 0);
+}
+
+.mxa-results-buttons {
+    flex-direction: row;
+    margin-top: 24px;
+}
+
+/* the whole field (opponents): the card grows a scrolling finishing-order column */
+.mxa-results-cols {
+    flex-direction: row;
+}
+
+.mxa-results-main {
+    width: 704px;
+    flex-shrink: 0;
+}
+
+.mxa-results-main > * {
+    flex-shrink: 0;
+}
+
+.mxa-results-wide {
+    width: 1500px;
+}
+
+.mxa-standings {
+    flex-grow: 1;
+    margin-left: 40px;
+    padding-left: 30px;
+    border-left-width: 1px;
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+.mxa-standings-scroll {
+    height: 470px;
+    margin-top: 4px;
+}
+
+.mxa-standing {
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.mxa-standing > Label {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: rgba(242, 242, 238, 0.8);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.mxa-standing-head > Label {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: rgba(242, 242, 238, 0.45);
+}
+
+.mxa-standing-head {
+    margin-top: 12px;
+}
+
+.mxa-standing:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.mxa-standing-you {
+    background-color: rgba(245, 180, 0, 0.18);
+}
+
+.mxa-standing-you > Label {
+    color: rgb(245, 180, 0);
+}
+
+.mxa-s-pos { width: 48px; }
+.mxa-s-name { width: 176px; }
+.mxa-s-bike { width: 136px; }
+.mxa-s-laps { width: 52px; }
+.mxa-s-time { width: 108px; }
+.mxa-s-best { width: 96px; }
+
+.mxa-results-buttons > .mxa-start, .mxa-results-buttons > .mxa-secondary {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin: 0 6px;
+}
+
+/* Eight event categories fit the same header; mod sources use a second, ellipsized line. */
+.mxa-event-tabs { margin-left: 30px; flex-shrink: 1; flex-wrap: wrap; }
+.mxa-event-tabs .mxa-tab { padding-left: 12px; padding-right: 12px; }
+.mxa-event-tabs .mxa-tab > .mxa-button-label { font-size: 19px; }
+.mxa-mod-track { flex-direction: column; align-items: flex-start; }
+.mxa-mod-track > .mxa-track-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.mxa-mod-track > .mxa-track-id { max-width: 100%; overflow: hidden; text-overflow: ellipsis; margin-top: 5px; }
+.mxa-mod-refresh { align-self: flex-start; margin: 0 12px 10px 12px; padding: 7px 10px; }
+.mxa-mod-refresh > .mxa-button-label { font-size: 15px; color: rgb(245, 180, 0); }
+.mxa-iso-install { width: 88%; max-width: 1100px; }
+.mxa-iso-install .mxa-install-status { white-space: normal; }
+.mxa-iso-install .mxa-dir-list { min-height: 100px; }
+
+.mxa-library { width: 92%; max-width: 1180px; }
+.mxa-library-list { flex-grow: 1; min-height: 120px; }
+.mxa-library-card { flex-direction: row; align-items: center; padding: 10px 18px; margin-bottom: 8px; background-color: rgba(0, 0, 0, 0.28); border-radius: 8px; }
+.mxa-library-copy { flex-grow: 1; flex-shrink: 1; margin-right: 20px; }
+.mxa-library-platform { font-size: 13px; color: rgb(245, 180, 0); margin-bottom: 4px; }
+.mxa-library-description { font-size: 16px; white-space: normal; color: rgba(242, 242, 238, 0.76); margin-top: 5px; }
+.mxa-library-state { font-size: 12px; margin-top: 8px; color: rgba(242, 242, 238, 0.55); }
+.mxa-library-action { min-width: 160px; flex-shrink: 0; }
+.mxa-library-secret { border-width: 1px; border-color: rgba(245, 180, 0, 0.32); }
+
+.mxa-library-card .mxa-track-title { font-size: 28px; margin: 0; padding: 0; }
+.mxa-library-card Label { margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
+.mxa-library-card .mxa-library-description { margin-top: 4px; }
+.mxa-library-card .mxa-library-state { margin-top: 6px; }
+
+.mxa-server-panel { width: 980px; max-width: 94%; max-height: 94%; }
+.mxa-server-panel .mxa-library-list { min-height: 140px; flex-shrink: 1; }
+.mxa-server-panel .mxa-path { margin-top: 8px; }
+.mxa-server-panel .mxa-note { white-space: normal; }
+
+.mxa-network-status { position: absolute; bottom: 22px; left: 22%; right: 22%; padding: 9px 14px; background-color: rgba(12, 17, 23, 0.85); color: rgb(255, 224, 161); -unity-text-align: middle-center; font-size: 17px; }
+.mxa-network-panel { position: absolute; top: 9%; bottom: 9%; left: 20%; right: 20%; padding: 26px; background-color: rgba(12, 17, 23, 0.97); }
+.mxa-network-list { flex-grow: 1; min-height: 80px; margin-top: 12px; margin-bottom: 12px; }
+.mxa-network-row { font-size: 18px; padding: 7px 10px; border-bottom-width: 1px; border-bottom-color: rgba(255,255,255,0.08); }
+.mxa-network-me { color: rgb(255, 213, 135); background-color: rgba(255, 213, 135, 0.07); }
+.mxa-network-chat { font-size: 15px; white-space: normal; margin-bottom: 10px; color: rgb(198, 211, 223); }

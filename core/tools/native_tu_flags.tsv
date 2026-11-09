@@ -1,0 +1,8 @@
+game/bike_contact.c	-DRX_CONTACT_FRAME_OBSERVERS
+game/bike_sim.c	-DRX_FOURWHEEL_REST_FRAME_OBSERVERS
+game/fourwheel_active_native_bridge.c	-DRX_FOURWHEEL_ACTIVE_STACK
+game/fourwheel_terrain_query.c	-DRX_FOURWHEEL_QUERY_TYPED_BRIDGE
+game/phys_constraint.c	-DRX_CONTACT_FRAME_OBSERVERS
+game/phys_math.c	-DRX_FOURWHEEL_ACTIVE_STACK
+game/phys_mech_kernel.c	-DRX_CONTACT_FRAME_OBSERVERS
+game/query_dependencies.c	-DRX_FOURWHEEL_QUERY_TYPED_BRIDGE

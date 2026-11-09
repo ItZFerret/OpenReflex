@@ -1,0 +1,99 @@
+{
+ "event": "National/NAT_Concord",
+ "prefix": "Concord",
+ "settle": 0,
+ "adapt": 1.5,
+ "perf": 0,
+ "camera": "custom:1",
+ "camlog": 60,
+ "modes": [
+  "original",
+  "enhanced"
+ ],
+ "views": [
+  {
+   "name": "gate",
+   "cam": "game",
+   "state": 1,
+   "after": 1.5
+  },
+  {
+   "name": "drop",
+   "cam": "game",
+   "state": 2,
+   "after": 0.15
+  },
+  {
+   "name": "race",
+   "cam": "game",
+   "state": 2,
+   "after": 2.0
+  },
+  {
+   "name": "near-rider-old",
+   "cam": "pose",
+   "state": 2,
+   "after": 2.5,
+   "frame": "bike",
+   "offset": [
+    0.4,
+    2.3,
+    -2.4
+   ],
+   "look": "anchor",
+   "lookY": 2.0,
+   "fov": 62,
+   "near": 2.0
+  },
+  {
+   "name": "near-rider-new",
+   "cam": "pose",
+   "state": 2,
+   "after": 2.5,
+   "frame": "bike",
+   "offset": [
+    0.4,
+    2.3,
+    -2.4
+   ],
+   "look": "anchor",
+   "lookY": 2.0,
+   "fov": 62,
+   "near": 0.25
+  },
+  {
+   "name": "near-ground-old",
+   "cam": "pose",
+   "state": 2,
+   "after": 2.5,
+   "frame": "bike",
+   "offset": [
+    1.5,
+    1.4,
+    -7.0
+   ],
+   "look": "yawpitch",
+   "yaw": 0,
+   "pitch": -38,
+   "fov": 62,
+   "near": 2.0
+  },
+  {
+   "name": "near-ground-new",
+   "cam": "pose",
+   "state": 2,
+   "after": 2.5,
+   "frame": "bike",
+   "offset": [
+    1.5,
+    1.4,
+    -7.0
+   ],
+   "look": "yawpitch",
+   "yaw": 0,
+   "pitch": -38,
+   "fov": 62,
+   "near": 0.25
+  }
+ ]
+}

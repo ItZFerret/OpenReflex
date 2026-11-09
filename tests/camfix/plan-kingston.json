@@ -1,0 +1,33 @@
+{
+ "event": "Supercross/SX_Kingston",
+ "prefix": "Kingston",
+ "settle": 0,
+ "adapt": 1.5,
+ "perf": 0,
+ "camera": "custom:1",
+ "camlog": 60,
+ "modes": [
+  "original",
+  "enhanced"
+ ],
+ "views": [
+  {
+   "name": "gate",
+   "cam": "game",
+   "state": 1,
+   "after": 1.5
+  },
+  {
+   "name": "drop",
+   "cam": "game",
+   "state": 2,
+   "after": 0.15
+  },
+  {
+   "name": "race",
+   "cam": "game",
+   "state": 2,
+   "after": 2.0
+  }
+ ]
+}

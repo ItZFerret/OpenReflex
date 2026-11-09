@@ -1,0 +1,9 @@
+{
+ "event": "Terracross/TRX_Halifax", "prefix": "P_Halifax", "settle": 8, "adapt": 1.0, "perf": 4,
+ "modes": ["enhanced-aaoff", "enhanced-taa-sharp50", "enhanced-taa-sharp50-taaprof3", "enhanced-taa-sharp50-taaprof4", "enhanced-taa-sharp50-taaprof5", "enhanced-taa-taaprof1",
+           "enhanced-aaoff-x", "enhanced-taa-sharp50-x", "enhanced-taa-sharp50-taaprof3-x", "enhanced-taa-sharp50-taaprof4-x", "enhanced-taa-taaprof1-x",
+           "enhanced-taa-upq-sharp50", "enhanced-msaa4", "enhanced-aaoff-y", "enhanced-taa-sharp50-y", "original"],
+ "views": [
+  {"name": "valley", "cam": "game", "t": 3}
+ ]
+}

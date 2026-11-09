@@ -1,0 +1,207 @@
+0090039c import call [0091640c] @9003cc call dword ptr [0x91640c]
+00910ba0 recursion at 00883e60 @884661 call 0x883e60
+00910c00 recursion at 00883e60 @884661 call 0x883e60
+00910c60 recursion at 00883e60 @884661 call 0x883e60
+00910c80 recursion at 00883e60 @884661 call 0x883e60
+00910ca0 recursion at 00883e60 @884661 call 0x883e60
+00910cc0 recursion at 00883e60 @884661 call 0x883e60
+00910ce0 recursion at 00883e60 @884661 call 0x883e60
+00910d00 recursion at 00883e60 @884661 call 0x883e60
+00910d20 recursion at 00883e60 @884661 call 0x883e60
+00910d40 recursion at 00883e60 @884661 call 0x883e60
+00910d60 recursion at 00883e60 @884661 call 0x883e60
+00910d80 indirect call @8b1d89 call eax
+00910e40 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00910e70 recursion at 00883e60 @884661 call 0x883e60
+00910eb0 import call [00916098] @8b994a call dword ptr [0x916098]
+00910ef0 import call [00916098] @8b994a call dword ptr [0x916098]
+00910f30 import call [00916098] @8b994a call dword ptr [0x916098]
+00910f80 recursion at 00883e60 @884661 call 0x883e60
+00910fa0 indirect call @8b1d89 call eax
+00911000 recursion at 00883e60 @884661 call 0x883e60
+00911030 recursion at 00883e60 @884661 call 0x883e60
+009110e0 recursion at 00883e60 @884661 call 0x883e60
+00911100 recursion at 00883e60 @884661 call 0x883e60
+00911120 recursion at 00883e60 @884661 call 0x883e60
+00911160 indirect call @8b1d89 call eax
+009111c0 recursion at 00883e60 @884661 call 0x883e60
+009111e0 import call [00916098] @8b994a call dword ptr [0x916098]
+00911220 import call [00916098] @8b994a call dword ptr [0x916098]
+00911260 import call [00916098] @8b994a call dword ptr [0x916098]
+009112a0 import call [00916098] @8b994a call dword ptr [0x916098]
+009112e0 recursion at 00883e60 @884661 call 0x883e60
+00911320 recursion at 00883e60 @884661 call 0x883e60
+00911360 indirect call @8b1d89 call eax
+009113e0 instruction imul @8ca5cf imul edi, edi, 0x10dcd
+00911420 recursion at 00883e60 @884661 call 0x883e60
+00911460 recursion at 00883e60 @884661 call 0x883e60
+00911480 recursion at 00883e60 @884661 call 0x883e60
+009114e0 recursion at 00883e60 @884661 call 0x883e60
+00911530 recursion at 00883e60 @884661 call 0x883e60
+00911570 recursion at 00883e60 @884661 call 0x883e60
+009115a0 indirect call @8b1d89 call eax
+00911640 indirect call @8b1d89 call eax
+009116a0 indirect call @8b1d89 call eax
+00911700 8-bit load from the stack @8a03c7 mov dl, byte ptr [esp + 0x10]
+00911740 recursion at 00883e60 @884661 call 0x883e60
+00911770 recursion at 00883e60 @884661 call 0x883e60
+009117d0 recursion at 00883e60 @884661 call 0x883e60
+00911800 recursion at 00883e60 @884661 call 0x883e60
+00911820 8-bit load from the stack @8a03c7 mov dl, byte ptr [esp + 0x10]
+00911850 8-bit load from the stack @8a03c7 mov dl, byte ptr [esp + 0x10]
+00911880 8-bit load from the stack @8a03c7 mov dl, byte ptr [esp + 0x10]
+009118b0 indirect call @8b1d89 call eax
+00911910 indirect call @8b1d89 call eax
+00911970 recursion at 00883e60 @884661 call 0x883e60
+009119f0 8-bit load from the stack @8a03c7 mov dl, byte ptr [esp + 0x10]
+00911a20 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00911a50 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00911a80 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00911ab0 recursion at 00883e60 @884661 call 0x883e60
+00911ad0 recursion at 00883e60 @884661 call 0x883e60
+00911b10 recursion at 00883e60 @884661 call 0x883e60
+00911b90 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00911bc0 recursion at 00883e60 @884661 call 0x883e60
+00911c20 recursion at 00883e60 @884661 call 0x883e60
+00911c40 recursion at 00883e60 @884661 call 0x883e60
+00911c70 indirect call @8b1d89 call eax
+00911ca0 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00911cf0 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+00911d20 8-bit move into an unknown register @8fbf36 mov cl, 1
+00903970 instruction cvttss2si @90398e cvttss2si eax, xmm0
+00903b10 backward jmp
+00904ee0 mov to al @593969 mov al, 1
+00904f70 mov to al @593969 mov al, 1
+00905000 mov to al @593969 mov al, 1
+00905090 mov to al @593969 mov al, 1
+00905120 mov to al @593969 mov al, 1
+009051b0 mov to al @593969 mov al, 1
+00905240 mov to al @593969 mov al, 1
+009052f0 mov to al @593969 mov al, 1
+00905380 mov to al @593969 mov al, 1
+00905410 mov to al @593969 mov al, 1
+009054a0 mov to al @593969 mov al, 1
+00905530 mov to al @593969 mov al, 1
+00905620 mov to al @593969 mov al, 1
+009056b0 mov to al @593969 mov al, 1
+00905740 mov to al @593969 mov al, 1
+009057d0 mov to al @593969 mov al, 1
+00905860 mov to al @593969 mov al, 1
+009058f0 mov to al @593969 mov al, 1
+00905980 mov to al @593969 mov al, 1
+00905a30 mov to al @593969 mov al, 1
+00905ac0 mov to al @593969 mov al, 1
+00905b50 mov to al @593969 mov al, 1
+00905be0 mov to al @593969 mov al, 1
+00905c70 mov to al @593969 mov al, 1
+00905d00 mov to al @593969 mov al, 1
+00905d90 mov to al @593969 mov al, 1
+00905e20 mov to al @593969 mov al, 1
+00905eb0 mov to al @593969 mov al, 1
+00905f40 mov to al @593969 mov al, 1
+00905fd0 mov to al @593969 mov al, 1
+00906060 mov to al @593969 mov al, 1
+009060f0 mov to al @593969 mov al, 1
+00906180 backward jmp @5e9d76 call 0x5446c0
+009061e0 backward jmp @5e9d76 call 0x5446c0
+00906240 backward jmp @5e9d76 call 0x5446c0
+009062a0 backward jmp @5e9d76 call 0x5446c0
+00906300 backward jmp @5e9d76 call 0x5446c0
+00906360 backward jmp @5e9d76 call 0x5446c0
+009063c0 backward jmp @5e9d76 call 0x5446c0
+00906420 backward jmp @5e9d76 call 0x5446c0
+00906480 mov to al @593969 mov al, 1
+00906510 mov to al @593969 mov al, 1
+009065a0 mov to al @593969 mov al, 1
+00906630 mov to al @593969 mov al, 1
+009066c0 mov to al @593969 mov al, 1
+009067b0 mov to al @593969 mov al, 1
+00906840 mov to al @593969 mov al, 1
+009068d0 mov to al @593969 mov al, 1
+00906960 mov to al @593969 mov al, 1
+009069f0 mov to al @593969 mov al, 1
+00906a80 mov to al @593969 mov al, 1
+00906b10 backward jmp @5e9d76 call 0x5446c0
+00906b30 backward jmp @5e9d76 call 0x5446c0
+00906b50 mov to al @593969 mov al, 1
+00906be0 mov to al @593969 mov al, 1
+00906ca0 backward jmp @5e9d76 call 0x5446c0
+00906d50 mov to al @593969 mov al, 1
+00906d90 mov to al @593969 mov al, 1
+00906dd0 mov to al @593969 mov al, 1
+00906e70 mov to al @593969 mov al, 1
+00906f00 mov to al @593969 mov al, 1
+00906f90 mov to al @593969 mov al, 1
+00907020 mov to al @593969 mov al, 1
+009070b0 mov to al @593969 mov al, 1
+00907140 mov to al @593969 mov al, 1
+009071d0 mov to al @593969 mov al, 1
+00907260 mov to al @593969 mov al, 1
+009072f0 mov to al @593969 mov al, 1
+00907380 mov to al @593969 mov al, 1
+00907410 mov to al @593969 mov al, 1
+009074a0 mov to al @593969 mov al, 1
+00907530 mov to al @593969 mov al, 1
+009075c0 mov to al @593969 mov al, 1
+00907650 mov to al @593969 mov al, 1
+009076e0 mov to al @593969 mov al, 1
+00907770 mov to al @593969 mov al, 1
+009077b0 mov to al @593969 mov al, 1
+009077f0 mov to al @593969 mov al, 1
+00907830 mov to al @593969 mov al, 1
+00907870 mov to al @593969 mov al, 1
+009078b0 mov to al @593969 mov al, 1
+009078f0 mov to al @593969 mov al, 1
+00907950 mov to al @593969 mov al, 1
+00907990 mov to al @593969 mov al, 1
+009079d0 mov to al @593969 mov al, 1
+00907a10 mov to al @593969 mov al, 1
+00907a50 mov to al @593969 mov al, 1
+00907a90 mov to al @593969 mov al, 1
+00907ad0 mov to al @593969 mov al, 1
+00907b10 mov to al @593969 mov al, 1
+00907b50 mov to al @593969 mov al, 1
+00907b90 mov to al @593969 mov al, 1
+00907bd0 mov to al @593969 mov al, 1
+00907c10 mov to al @593969 mov al, 1
+00907c50 mov to al @593969 mov al, 1
+00907c90 mov to al @593969 mov al, 1
+00907cd0 mov to al @593969 mov al, 1
+00907d10 mov to al @593969 mov al, 1
+00907d50 mov to al @593969 mov al, 1
+00907d90 mov to al @593969 mov al, 1
+00907dd0 mov to al @593969 mov al, 1
+00907e10 mov to al @593969 mov al, 1
+00907e50 mov to al @593969 mov al, 1
+00907e90 mov to al @593969 mov al, 1
+00907ed0 mov to al @593969 mov al, 1
+00907f10 mov to al @593969 mov al, 1
+00907f50 mov to al @593969 mov al, 1
+00907f90 mov to al @593969 mov al, 1
+00907fd0 mov to al @593969 mov al, 1
+00908010 mov to al @593969 mov al, 1
+00908050 mov to al @593969 mov al, 1
+00908090 mov to al @593969 mov al, 1
+009080d0 mov to al @593969 mov al, 1
+00908110 mov to al @593969 mov al, 1
+00908150 mov to al @593969 mov al, 1
+00908190 mov to al @593969 mov al, 1
+009081d0 mov to al @593969 mov al, 1
+00908500 forward jmp @659ed1 call 0x659ef0
+00909bb0 forward jmp @909bc2 call 0x684690
+0090a1c0 forward jmp @90a21a call 0x790640
+0090a220 forward jmp @90a27a call 0x790640
+0090a280 forward jmp @90a2da call 0x790640
+0090a2e0 forward jmp @90a33a call 0x790640
+0090cb30 8-bit load from the stack @88f932 mov cl, byte ptr [esp + 4]
+0090cb60 recursion at 00883e60 @884661 call 0x883e60
+0090cb80 recursion at 00883e60 @884661 call 0x883e60
+0090cba0 recursion at 00883e60 @884661 call 0x883e60
+0090cbc0 recursion at 00883e60 @884661 call 0x883e60
+0090cbe0 recursion at 00883e60 @884661 call 0x883e60
+0090cc00 recursion at 00883e60 @884661 call 0x883e60
+0090cc20 recursion at 00883e60 @884661 call 0x883e60
+0090cc40 recursion at 00883e60 @884661 call 0x883e60
+0090d690 no ret @8210af call 0x8430a0
+009101a0 forward jmp
+00910630 branch crossing a loop end @7cd86c call 0x42bf30

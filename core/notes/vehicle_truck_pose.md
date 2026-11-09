@@ -1,0 +1,24 @@
+# TrophyTruck model pose
+
+0046c090 RavenVehicleTrophyTruck vf60, ECX vehicle, stack float dt, RET4. Group `rx_TruckPose`. Source is a hand transliteration of `_re/out/decomp/reflex_001_00459400.c:10899` checked against `_re/tools/disasm.py`. No generated lifted source used.
+
+Vehicle sim pointer +15d0. Body world quaternion/position come from V+e0/c0. Physics wheel positions are S+220/2c0/360/400; wheel quaternions S+860/900/9a0/a40. Model nodes V+1360..13ec; rendered endpoints S+8810..892f. Class7 (Pro2) has distinct authored geometry; all other cases use ProLite constants. No Monstertruck branch or newly inferred support.
+
+Frame is push EBP, align16, subtract328, push ESI/EDI; steady ESP is `world_frame_enter(0x328,2,1)`. Cookie at ESP+32c is XOR ESP+8. Repeated quaternion output ESP+10; shock quaternion ESP+130. Main-thread x87 CW027f; CIatan2 rounds to float before the scalar trim. `_at` carries caller EBX for the node invalidation spill model, and the public virtual entry has standard this/stack parameters.
+
+The rear axle orientation comes from normalized rear-wheel span and the body anchor direction. Each rear side solves its two links independently; rendered endpoints are not the simulation frames. Front sides independently solve their two arms and shock rotations. The last four fan nodes compose a Rodrigues rotation into the local matrix, normalize all three resulting rows, and invalidate the nodes. Their axis uses one RSQRTPS Newton step. The four lag filters remain authoritative `phys_lag_filter_update` calls.
+
+Adapter and isolated restored-state probe are included. Probe enables via RX_TRUCK_POSE_PROBE=1 (default frame20) with `REFLEX_PORT=rx_TruckPose,rx_TruckPoseProbe`, `REFLEX_PORT_VERIFY=1` on original ProLite/Pro2. Saves V/S and complete affected node-set records/local/world matrices, covers both class branches and cooling/filter thresholds. Heavy build and oracle validation are owned by lead; syntax-only C check passed. This note does not claim oracle acceptance before lead validation.
+
+Lead verification after the CIatan2 operand-order and retained-left-endpoint corrections: vf60 passed 43/43 comparisons with zero mismatches in both original ProLite and Pro2 worlds (30 natural calls plus 13 restored probe calls).
+
+Added 00472d50 TrophyTruck vf35 as `rx_truck_publish_rider`, group `rx_TruckRuntime`. Audited complete original disassembly: frame58/two pushes; post-vf16 mutable locator matrix at ESP+20; position reads ESP+50/54/58; scalar sums preserve their distinct x/y/z association; movement flag globals db4710/db4700/db4704/db4708; sim pointer15d0. Four sim state copies pass through x87 float quieting. Final rider vf19 dispatch uses `world_vcall_f` and a float dt prototype (including oracle conversion), preserving host ABI when the rider is already ported. Syntax-only C check clean; new vf35 oracle validation pending lead.
+
+00473450 vf61 and 00459fa0 simulation poststep are in vehicle_truck_poststep.c/.h, adapters group rx_TruckPoststep. vf61 uses signed frame counter modulo3, tail-calling the simulation pass only on remainder1/2. The simulation pass preserves its aligned14c/one-push frame, calls authoritative shared0085c6a0 component vf4 iteration and four00459de0 wheel debug evaluations with original4-byte argument placement, evaluates the original debug geometry into its final scratch vectors, and clears S+8020. Original00459fa0 has no drawing calls or retained vector results: all debug geometry writes are to its own stack. It retains endpoint snapshots and optional indicator/contact-vector loops; overwritten intermediate spills are collapsed into readable quaternion helpers. Sharedhelper owner is vehicle_poststep_helpers (buggy agent), not duplicated here. Syntax check clean; lead verification pending.
+
+Poststep ABI audit: live.tsv mask10005 includes EAX/EDX/x87 for both entrypoints (vf61 is address-taken). Concrete 004302c0 caller ignores EAX/EDX before node-set copy, but adapters now compare them anyway. Simulation EDX=S; EAX=S+8470 if no positive contact count, else S+1c30+20*count, exactly as the original pointer loop leaves it. Vf61 no-tail EAX=signedcounter%3 and EDX=counter-remainder; tail inherits simulation results. `_regs` entrypoints expose these outputs without changing game behavior, and adapters declare OUT_EAX|OUT_EDX|OUT_FPU. Own poststep code is pure SSE and preserves incoming x87 stack.
+
+
+## Lead verification, 2026-10-21
+
+Accepted reference evidence and current native boundary are recorded in `HANDOFF/SESSION_2026-10-21_VEHICLE_POSES.md` and `builds/sol_vehicle_pose`. The 600-frame UTV/SuperBuggy/ProLite/Pro2 comparisons match, including whole-memory hashes. Restored probes cover articulation and post-step paths absent from natural recordings; the fixed-body node is verified separately on the real MX rider node. Native playability is a separate acceptance and is not implied by these method comparisons.

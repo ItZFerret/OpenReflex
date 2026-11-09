@@ -1,0 +1,20 @@
+<!-- The garage (OpenShell.Garage.cs): the drill-down on the left (the head: the VEHICLE / RIDER switch, the breadcrumb and the level's title;
+     the level's entries; TEST RIDE and DONE); the stage on the right with the 3D view, the rider's name, the credits and the card of what is
+     in view (a vehicle with its bars, a piece of gear, a part). The code fills the named elements; OuGarage.uss styles them. -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../OuFrontEnd.uss" />
+    <ui:VisualElement name="garage" class="ou-garage">
+        <ui:VisualElement name="garage-panel" class="ou-panel ou-garage-panel">
+            <ui:VisualElement name="garage-head" class="ou-ghead" />
+            <ui:ScrollView name="garage-rows" class="ou-garage-rows mxa-option-rows" />
+            <ui:VisualElement name="garage-actions" class="ou-garage-actions" />
+        </ui:VisualElement>
+        <ui:VisualElement name="garage-stage" class="ou-stage">
+            <ui:VisualElement name="stage-glow" class="ou-stage-glow" />
+            <ui:VisualElement name="stage-floor" class="ou-stage-floor" />
+            <ui:VisualElement name="stage-view" class="ou-stage-view" />
+            <ui:VisualElement name="stage-id" class="ou-stage-id" />
+            <ui:VisualElement name="stage-bottom" class="ou-stage-bottom" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,29 @@
+<!-- The track browser (OpenShell.Browser.cs, after Open Unleashed's Browser.uxml): header with the mode switch and the search field,
+     then three columns: the filters (event types), the event cards and the selected event's preview with the step to its setup
+     page (Setup.uxml). -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="../OuFrontEnd.uss" />
+    <ui:VisualElement name="browser" class="ou-browser">
+        <ui:VisualElement name="browser-sidebar" class="ou-panel ou-sidebar">
+            <ui:Label text="EVENTS" class="ou-panel-title" />
+            <ui:ScrollView name="browser-filters" class="ou-filter-scroll" />
+        </ui:VisualElement>
+        <ui:VisualElement name="browser-results" class="ou-results">
+            <ui:VisualElement name="browser-toolbar" class="ou-toolbar">
+                <ui:Label name="browser-count" text="0 TRACKS" class="ou-count" />
+                <ui:VisualElement class="ou-spacer" />
+                <ui:VisualElement name="browser-tools" class="ou-tools" />
+            </ui:VisualElement>
+            <ui:ScrollView name="browser-scroll" class="ou-grid-scroll" />
+            <ui:VisualElement name="browser-empty" class="ou-empty" />
+        </ui:VisualElement>
+        <ui:VisualElement name="browser-detail" class="ou-panel ou-detail">
+            <ui:VisualElement name="detail-shot" class="ou-detail-shot">
+                <ui:VisualElement name="detail-map" class="ou-detail-map" />
+            </ui:VisualElement>
+            <ui:VisualElement name="detail-caption" class="ou-detail-caption" />
+            <ui:ScrollView name="detail-body" class="ou-detail-body" />
+            <ui:VisualElement name="detail-actions" class="ou-detail-actions" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

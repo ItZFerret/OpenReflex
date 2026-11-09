@@ -1,0 +1,12 @@
+{
+ "event": "National/NAT_Concord", "prefix": "T_Concord", "settle": 8, "adapt": 2.5, "perf": 0,
+ "modes": ["enhanced-dd0", "enhanced-dd1", "enhanced-dd2"],
+ "views": [
+  {"name": "jitter", "cam": "path", "frame": "world", "at": [604.8, 0, -345.56], "offset": [0, 0, 0], "yaw": -31.4, "pitch": -4, "fov": 70, "t": 4,
+   "frames": 120, "step": 0.0, "ground": 5, "bobYaw": 3.0, "bobPeriod": 7, "every": 10},
+  {"name": "ride", "cam": "path", "frame": "world", "at": [604.8, 0, -345.56], "offset": [0, 0, 0], "yaw": -31.4, "pitch": -4, "fov": 70, "t": 4.2,
+   "frames": 150, "step": 1.5, "ground": 5, "bobPitch": 0.4, "bobHeight": 0.25, "bobPeriod": 9, "every": 10},
+  {"name": "sweep", "cam": "path", "frame": "world", "at": [604.8, 0, -345.56], "offset": [0, 0, 0], "yaw": -61.4, "turn": 0.5, "pitch": -4, "fov": 70, "t": 4.4,
+   "frames": 120, "step": 0.0, "ground": 5, "every": 10}
+ ]
+}
