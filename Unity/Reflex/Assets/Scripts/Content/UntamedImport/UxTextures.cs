@@ -95,7 +95,7 @@ namespace Reflex.Port.Content.UntamedImport
     {
         public const string SCHEMA = "ux_textures/1";
         /// The 'tool' of the manifest, and the versions of the reference modules this file reproduces (tool_md5, uxtex_md5): constants,
-        /// not measurements. tests/untamed_convert/textures checks them against the reference's files.
+        /// not measurements (checked against the reference's files).
         public const string TOOL = "ux_textures.py";
         public const string REFERENCE_TOOL_MD5 = "7bf36a07fe35fb003f5926ad3e6a35f9";
         public const string REFERENCE_UXTEX_MD5 = "77b39dabdbc113f0ba5e53d518bc1a36";

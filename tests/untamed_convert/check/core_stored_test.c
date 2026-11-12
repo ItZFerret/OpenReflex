@@ -1,7 +1,7 @@
-/* tests/untamed_convert/foundation/core_stored_test.c -- the C core's package resource reader (core/src/fmt_lzx.c fmt_xmem_resource) on the
- * resources the Untamed converter writes: every 64 KiB chunk stored (packed size == allocation), the whole logical size after the container.
- * Input: stored_blobs.bin as the foundation test writes it (per resource: u32 n, n bytes stored blob, u32 m, m bytes expected).
- * Built by core_stored_test.sh with the platform's C compiler from the core's own sources. Prints "core stored resources: N ok, M failed". */
+/* tests/untamed_convert/check/core_stored_test.c -- the C core's package resource reader (core/src/fmt_lzx.c fmt_xmem_resource) on the
+ * resources the Untamed converter writes (LZX and stored chunks, the whole logical size after the container).
+ * Input: a blob file as check/Program.cs writes it (per resource: u32 n, n bytes stored blob, u32 m, m bytes expected).
+ * Built by core_lzx_test.sh with the platform's C compiler from the core's own sources. Prints "core stored resources: N ok, M failed". */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

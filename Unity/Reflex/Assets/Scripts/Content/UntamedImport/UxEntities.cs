@@ -18,7 +18,7 @@
 // edge_clear / min_clearance / class_report (the race stage's --bale-edge-clear).
 // Environment data Python writes and this port cannot: source.tool / source.tool_md5 (the Python file and its md5: here TOOL and null),
 // and the absolute paths in source.level_json, source.manifests.*.path, source.hf, freeride.hf_source and options.manifest_paths (written
-// relative to the work store). Everything else is byte for byte Python's on the 12 levels (tests/untamed_convert/entities).
+// relative to the work store). Everything else is byte for byte Python's on the 12 levels (tests/untamed_convert/check holds the result).
 using System;
 using System.Collections.Generic;
 using System.Globalization;

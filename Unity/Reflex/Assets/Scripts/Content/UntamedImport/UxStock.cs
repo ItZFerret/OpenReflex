@@ -108,7 +108,7 @@ namespace Reflex.Port.Content.UntamedImport
         // tables (the stock base's own names are checked later, by the builder, against the SX_FortDodge package), so they decide
         // asset names. A player's Reflex library has neither slot. These are the only names of the two databases (962 and 341 assets)
         // that any asset of the 12 supported levels, or any fixed name the stages ask for, meets: 17 and 8 names, all stock Reflex
-        // names. With them every lookup of the 12 levels gives the full tables' answer (tests/untamed_convert/assembly_parts 'names').
+        // names. With them every lookup of the 12 levels gives the full tables' answer.
         static readonly (string type, string name)[] PinnedSx =
         {
             ("collis", "Editor_Default"),

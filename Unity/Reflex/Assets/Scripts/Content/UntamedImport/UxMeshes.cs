@@ -13,7 +13,7 @@
 // builder's panels and gates, with its own material list and the rigid rule), UxMeshes.VerifyLevel (verify_level: the read-back
 // checks), UxMeshLevel (level_data: the level's disc assets + level.json). The models of a level are converted and checked in
 // parallel; results are merged in name order, so the output does not depend on the thread count.
-// Unity-free (System only). Not ported: the CLI, --selftest and its synthetic tests (tests/untamed_convert/meshes covers them).
+// Unity-free (System only). Not ported: the CLI, --selftest and its synthetic tests (their cases were checked against the port).
 using System;
 using System.Collections.Generic;
 using System.Globalization;

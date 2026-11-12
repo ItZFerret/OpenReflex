@@ -3,18 +3,19 @@
 #   the foundation sources (foundation.txt: Content/UntamedImport/Ux*.cs of the foundation + the Alive importer's readers they use)
 #   + the part's own sources (<part>/sources.txt, repo-relative paths, one per line, '#' comments; may be missing or empty)
 #   + the shared test helper (UxTest.cs) + <part>/Program.cs
-# into <scratch>/bin/<part>.dll with its runtimeconfig. Each part (foundation, level, textures, meshes, materials, collision, terrain,
-# entities, race ...) has its own folder, source list and output, so parts being written at the same time never break each other's build.
+# into <scratch>/bin/<name>.dll with its runtimeconfig (<name>: the part folder's last component). The part in the repo is "check" (the
+# converter end to end against check/expected.txt); a local, git-ignored reference/ folder may hold more parts ("reference/<part>").
 #   Windows  (Git Bash) a Roslyn csc.exe (Visual Studio Build Tools; RX_CSC overrides the path) against the installed .NET 8 runtime's
 #            assemblies (RX_DOTNET_SHARED overrides the folder: ...\dotnet\shared\Microsoft.NETCore.App\8.x)
 #   macOS    Unity 6000.6.1f1's bundled csc and dotnet, as tests/untamed_import/build.sh does
 # The language version is 9 and unsafe code is off: what compiles here compiles in Unity 6. Prints the dll's path.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd); ROOT=$(cd "$HERE/../.." && pwd); S=${1:?scratch dir}; PART=${2:?part (a folder of tests/untamed_convert)}
+NAME=$(basename "$PART")
 [ -f "$HERE/$PART/Program.cs" ] || { echo "no $HERE/$PART/Program.cs" >&2; exit 2; }
 FLAGS="-nologo -nostdlib+ -target:exe -langversion:9 -optimize+ -nowarn:1701,1702,0618,0649,0169,0414"
 mkdir -p "$S/bin"
-LIST="$S/$PART.sources"
+LIST="$S/$NAME.sources"
 : > "$LIST"
 for l in "$HERE/foundation.txt" "$HERE/$PART/sources.txt"; do
   [ -f "$l" ] || continue
@@ -25,6 +26,7 @@ for l in "$HERE/foundation.txt" "$HERE/$PART/sources.txt"; do
   done
 done
 printf '%s\n' "$HERE/UxTest.cs" "$HERE/$PART/Program.cs" >> "$LIST"
+case "$PART" in reference/*) [ -f "$HERE/reference/UxTestReference.cs" ] && printf '%s\n' "$HERE/reference/UxTestReference.cs" >> "$LIST" ;; esac
 sort -u "$LIST" -o "$LIST"
 case "$(uname -s)" in
 MINGW*|MSYS*|CYGWIN*)
@@ -36,10 +38,10 @@ MINGW*|MSYS*|CYGWIN*)
     for f in "$R"/*.dll; do
       case "$(basename "$f")" in *Native*) ;; System.*|Microsoft.CSharp.dll|Microsoft.VisualBasic*.dll|Microsoft.Win32.*|mscorlib.dll|netstandard.dll|WindowsBase.dll) echo "-r:\"$(cygpath -w "$f")\"";; esac
     done
-    echo "-out:\"$(cygpath -w "$S/bin/$PART.dll")\""
+    echo "-out:\"$(cygpath -w "$S/bin/$NAME.dll")\""
     while IFS= read -r f; do echo "\"$(cygpath -w "$f")\""; done < "$LIST"
-  } > "$S/$PART.rsp"
-  "$CSC" -noconfig "@$(cygpath -w "$S/$PART.rsp")"
+  } > "$S/$NAME.rsp"
+  "$CSC" -noconfig "@$(cygpath -w "$S/$NAME.rsp")"
   ;;
 *)
   U=/Applications/Unity/Hub/Editor/6000.6.1f1/Unity.app/Contents/Resources/Scripting; D=$U/DotNetSdk
@@ -48,11 +50,11 @@ MINGW*|MSYS*|CYGWIN*)
   FW=$(ls "$D"/shared/Microsoft.NETCore.App | head -1)
   { echo "$FLAGS"
     for f in "$REF"/*.dll; do echo "-r:\"$f\""; done
-    echo "-out:\"$S/bin/$PART.dll\""
+    echo "-out:\"$S/bin/$NAME.dll\""
     while IFS= read -r f; do echo "\"$f\""; done < "$LIST"
-  } > "$S/$PART.rsp"
-  "$D/dotnet" "$CSC" -noconfig "@$S/$PART.rsp"
+  } > "$S/$NAME.rsp"
+  "$D/dotnet" "$CSC" -noconfig "@$S/$NAME.rsp"
   ;;
 esac
-printf '{"runtimeOptions":{"tfm":"net8.0","framework":{"name":"Microsoft.NETCore.App","version":"%s"},"configProperties":{"System.GC.Server":false,"System.GC.Concurrent":false}}}\n' "$FW" > "$S/bin/$PART.runtimeconfig.json"
-echo "$S/bin/$PART.dll"
+printf '{"runtimeOptions":{"tfm":"net8.0","framework":{"name":"Microsoft.NETCore.App","version":"%s"},"configProperties":{"System.GC.Server":false,"System.GC.Concurrent":false}}}\n' "$FW" > "$S/bin/$NAME.runtimeconfig.json"
+echo "$S/bin/$NAME.dll"

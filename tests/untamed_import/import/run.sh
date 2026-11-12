@@ -15,5 +15,5 @@ case "$(uname -s)" in
 MINGW*|MSYS*|CYGWIN*) DN=${RX_DOTNET:-"C:/Program Files/dotnet/dotnet.exe"} ;;
 *) DN=/Applications/Unity/Hub/Editor/6000.6.1f1/Unity.app/Contents/Resources/Scripting/DotNetSdk/dotnet ;;
 esac
-export UX_BUILD_EXPECTED=${UX_BUILD_EXPECTED:-$ROOT/tests/untamed_convert/build/expected_sha256.txt}
+export UX_BUILD_EXPECTED=${UX_BUILD_EXPECTED:-$ROOT/tests/untamed_convert/check/expected.txt}
 DOTNET_CLI_TELEMETRY_OPTOUT=1 "$DN" "$S/bin/import.dll" "$@" --scratch "$S"

@@ -1,14 +1,14 @@
 #!/bin/sh
-# tests/untamed_convert/build/core_lzx_test.sh <scratch dir> -- the C core's package resource reader (core/src/fmt_lzx.c
+# tests/untamed_convert/check/core_lzx_test.sh <scratch dir> -- the C core's package resource reader (core/src/fmt_lzx.c
 # fmt_xmem_resource) on the resources the track builder writes (UxLzxEncoder: LZX chunks, stored chunks). Input:
-# <scratch>/coreblobs/<short>.bin, written by "build --core-blobs" (per compressed resource: this build's stored bytes and the bytes
-# the REFERENCE's resource decodes to). Builds ../foundation/core_stored_test.c with the core's own sources (MSVC cl through
-# vcvars64.bat on Windows, cc elsewhere) and runs it on every file; exit 0 = every resource decodes to the reference's bytes.
+# <scratch>/coreblobs/<short>.bin, written by "run.sh <scratch> build --core-blobs" (per compressed resource: this build's stored bytes
+# and what the client's resource reader decodes them to), and _cases.bin (the 616 synthetic blobs). Builds core_stored_test.c with the core's own sources (MSVC cl through
+# vcvars64.bat on Windows, cc elsewhere) and runs it on every file; exit 0 = every resource decodes to the same bytes in the C core.
 set -eu
 HERE=$(cd "$(dirname "$0")" && pwd); ROOT=$(cd "$HERE/../../.." && pwd); S=${1:?scratch dir}
-ls "$S"/coreblobs/*.bin > /dev/null 2>&1 || { echo "no $S/coreblobs/*.bin (run: build --core-blobs)" >&2; exit 3; }
+ls "$S"/coreblobs/*.bin > /dev/null 2>&1 || { echo "no $S/coreblobs/*.bin (run: run.sh <scratch> build --core-blobs)" >&2; exit 3; }
 mkdir -p "$S/core_lzx"
-SRC="$HERE/../foundation/core_stored_test.c"
+SRC="$HERE/core_stored_test.c"
 case "$(uname -s)" in
 MINGW*|MSYS*|CYGWIN*)
   VC=${RX_VCVARS:-"C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Auxiliary/Build/vcvars64.bat"}

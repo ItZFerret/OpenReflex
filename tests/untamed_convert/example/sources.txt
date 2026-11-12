@@ -1,1 +1,0 @@
-# the example part has no stage sources of its own (repo-relative paths, one per line; # comments)

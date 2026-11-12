@@ -1,3 +1,0 @@
-# the terrain stage (S6, the port of ux_terrain.py); repo-relative paths, one per line
-Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTerrainStage.cs
-Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxImaging.cs

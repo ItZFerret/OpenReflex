@@ -70,7 +70,7 @@ namespace Reflex.Port.Content.UntamedImport
 
         /// layout(): the plan document restricted to what this module reads: {'overrides': {'<Level>/<material>': {'gain'}}, 'layout':
         /// {level: {material: {action, reason | still {name, recipe}, address, light {kind, gain, recipe}, light_address, mirror_u,
-        /// flip_v, canvas, dst_px}}}} (equal to those fields of the pinned file, checked by tests/untamed_convert/assembly_parts).
+        /// flip_v, canvas, dst_px}}}} (equal to those fields of the pinned file).
         public static JObj Layout()
         {
             var overrides = new JObj(); var layout = new JObj();

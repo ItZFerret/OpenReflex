@@ -5,7 +5,7 @@ custom track in stages that talk through files in `work/<Level>/`. The C# port k
 binary files in a work store, each stage compared with the Python output byte for byte. This file is what a stage port builds on (the plan
 is `UNTAMED_TRACKS.md`). Everything below is in `Unity/Reflex/Assets/Scripts/Content/UntamedImport/` (namespace
 `Reflex.Port.Content.UntamedImport`), is Unity-free ("System only", C# 9, .NET Standard 2.1) and is tested headless by
-`tests/untamed_convert/foundation` (439 checks on the 12 levels; numbers at the end).
+`tests/untamed_convert/check`: every file it writes for the 12 stadiums against SHA-256 hashes in the repo ("Tests" at the end).
 
 ## Rules for a stage port
 
@@ -22,25 +22,19 @@ is `UNTAMED_TRACKS.md`). Everything below is in `Unity/Reflex/Assets/Scripts/Con
 
 ## Build and run a part
 
-`tests/untamed_convert/build.sh <scratch> <part>` compiles (`-langversion:9`, the warnings of `tests/untamed_import/build.sh`)
-`foundation.txt` + `<part>/sources.txt` + `UxTest.cs` + `<part>/Program.cs` into `<scratch>/bin/<part>.dll` with its runtimeconfig. Each
-part has its own folder (`level`, `textures`, `meshes`, `materials`, `collision`, `terrain`, `entities`, `race`, `assembly_parts`, `build`),
-source list and output,
-so parts being written at the same time never break each other's build: list only your own sources (repo-relative, one per line, `#`
-comments; test-side `.cs` files too) and never edit `foundation.txt`, `build.sh` or `UxTest.cs`. `tests/untamed_convert/example/` is a
-working part to copy. Run with `"C:/Program Files/dotnet/dotnet.exe" <scratch>/bin/<part>.dll ...` (Git Bash; paths hold spaces).
-Scratch: a folder outside the repo (`<temp>/untamed-port/<part>/`); never write test output into the repo or into the reference.
+`tests/untamed_convert/build.sh <scratch> <part>` compiles (`-langversion:9`, no unsafe code: what compiles here compiles in Unity 6)
+`foundation.txt` + `<part>/sources.txt` + `UxTest.cs` + `<part>/Program.cs` into `<scratch>/bin/<name>.dll` with its runtimeconfig.
+The part in the repo is `check` (the converter end to end, "Tests" at the end); a local, git-ignored `reference/` folder may hold
+more parts (`reference/<part>`, which also get `reference/UxTestReference.cs`). Run with `"C:/Program Files/dotnet/dotnet.exe"
+<scratch>/bin/<name>.dll ...` (Git Bash; paths hold spaces). Scratch: a folder outside the repo; never write test output into the repo.
 
 `UxTest` (namespace `...UntamedImport.Tests`):
 
 | Member | Use |
 |---|---|
-| `OpenEnv(args)` -> `Env` | opens `--folder`/`UX_DISC_FOLDER` or `--iso`/`UX_DISC_ISO`, `--reflex`/`UX_REFLEX` or `--client`/`UX_CLIENT_LIB`, `--py`/`UX_PY_ROOT`, `--scratch`; fills `stock.templateNames` |
+| `OpenEnv(args)` -> `Env` | opens `--folder`/`UX_DISC_FOLDER` or `--iso`/`UX_DISC_ISO`, `--reflex`/`UX_REFLEX` or `--client`/`UX_CLIENT_LIB`, `--scratch` |
 | `Env.Level(lv, workName)` | a `UxContext` whose work store is `<scratch>/<workName>/<Level>` (emptied first) |
-| `Env.Seed(ctx, "level.json", "textures", ...)` | copies upstream PYTHON outputs into the work store, so a stage is tested alone on the reference's inputs |
-| `Env.PyWork(lv)` | `<py>/work/<Level>` |
-| `CompareFolder(what, produced, reference, include, allowJsonEqual, failExtra)` | every reference file against the produced one: bytes; JSON also as documents (exact numbers, int vs float) with the first differences |
-| `SameBytes`, `SameMd5`, `SameJsonFile`, `JsonDifferences`, `Difference` | single comparisons, first differing byte / JSON path |
+| `SameBytes`, `SameMd5`, `Difference`, `ReadMd5List` | byte comparisons (the first differing byte), hash lists |
 | `Check`, `Report`, `Fail`, `Skip`, `Section`, `Result(name)` | counting; `Result` prints `RESULT <name>: PASS|FAIL|INCOMPLETE` and gives the exit code |
 
 ## The foundation
@@ -125,8 +119,8 @@ Python's bytes; `stored: true` writes stored deflate instead (not Python's bytes
 The builder writes resources with `UxLzxEncoder` (real LZX chunks; see "The track builder"). The foundation's older form is still there:
 `UxPkg.EncodeBlob(data)` writes a resource as STORED 64 KiB chunks (packed size = allocation, the last chunk zero padded, the whole size
 after the container: the form `pkg.encode_blob` writes for an incompressible chunk). The C core reads it: `core/src/fmt_lzx.c`
-`fmt_xmem_resource` ("a stored chunk"), proved by `tests/untamed_convert/foundation/core_stored_test.sh`, which compiles that file and
-decodes the 2,544 re-encoded resources of SX_FortDodge to their original bytes; the client's reader (`RfxData.Lzx`, copied Unity-free as
+`fmt_xmem_resource` ("a stored chunk"; `tests/untamed_convert/check/core_lzx_test.sh` compiles that file and decodes stored and LZX
+blobs with it); the client's reader (`RfxData.Lzx`, copied Unity-free as
 `UxPkg.RfxLzx`) does too. It pads every resource to a multiple of 64 KiB (SX_FortDodge: 45.6 MB packed -> 269 MB), so prefer an asset
 WITHOUT a `Compress` element: its heap region is the raw bytes (`RebuildWithAdditions(..., compressed: false)`; core `fmt_db.c`
 `if (!a->lzx)`, client `RfxData` the same). In an extracted library (the client's game files) the stored blobs of the base do not
@@ -134,8 +128,7 @@ exist; `UxTrackSet.Blob` then re-encodes (`Reencode = true` forces that for an i
 
 ## Assembly parts (the libraries `ux_build_track` calls)
 
-Ported for the stock-base sx / ec builds of the 12 tracks; byte for byte Python's on all 12 (`tests/untamed_convert/assembly_parts`,
-numbers at the end). Entity lists are `List<KeyValuePair<string, UxElem>>` = Python's `[(subscene, Entity Elem)]` (what
+Ported for the stock-base sx / ec builds of the 12 tracks; byte for byte Python's on all 12. Entity lists are `List<KeyValuePair<string, UxElem>>` = Python's `[(subscene, Entity Elem)]` (what
 `UxEntities.Convert(write: false)` / `LoadElems` give); asset maps are `UxAssetMap` = `{(name, type): (bytes, source, origin)}` in
 insertion order (= the order they enter the package); ordered dicts are `UxOrdered<K, V>`. The path TEXT Python records (`Path.as_posix()`
 of its own folders) comes from `UxPaths`: `root = <the reference's folder>` reproduces the reference's strings, the default `""` writes
@@ -209,10 +202,6 @@ What the builder must know:
   base's. For the shore colour (`water_ground`) the ground is the TopDown map / 255 on the 2048 client grid (`--dirt-look
   untamed`: `UxDirtLook.OnClientRgb` of the terrain stage's TopDown picture), `S = 1023`; the maps are computed once (the water
   asks first, the terrain textures later). The reference's previews (`assembly/dirtlook_*.png`) are not written.
-- The values of the test are those of `ux_base.py` 2371e9b7, `ux_build_assets.py` d96c8433, `ux_tuff.py` eff893fb, `ux_water.py`
-  a51b3d57, `ux_screens.py` 96c8ccc9, `ux_ads.py` 4a1e8a65, `ux_splitgate.py` 0f52a059, `ux_stocklib.py` b12cc1e7, `ux_dirtlook.py`
-  566533af, `ux_build_track.py` 161ea48c (md5 prefixes; `ref_parts.py` records them in `<ref>/tools_md5.json` and the test names
-  every module that changed since).
 - `UxScreens.Build` needs the whole disc (`UxDisc`), not only the level being converted: the stills are made from the textures
   `Weststone_AD04` of WestStone_STADIUM (SX screens) and `endurocrosslogo` of Fairview_STADIUM (the EC arena). Nothing is stored in the
   repo: the layout plan is data in `UxScreens` (the fields `ux_screens` reads of the reference's pinned `screens_layout.json`, 19
@@ -376,31 +365,7 @@ Deviations from the reference's release folder:
   are the switches of `UxTrackOptions`, `assembly.output` describes the release-form files, the stored-size counters of
   `assembly.base_prune` are those of the library's own package.
 
-**Tests** (`tests/untamed_convert/build/`; the reference is read only, everything is written below `<scratch>`):
-
-- `run.sh <scratch> [lzx|options|build|all] [--levels a,b] [--packing lzx|stored|raw] [--threads N] [--reuse] [--core-blobs]
-  [--same-as <out folder of another run>] [--tag X]`: builds every level from the disc and the library and compares with the
-  release of the reference that the port mirrors (`Mirrors` in `Program.cs`; a NEWER `release/<short>-v<k>` is reported as a SKIP
-  and makes the result INCOMPLETE) and with `expected_sha256.txt` (the sha256 of the four `.dx9` files of
-  every level as this port writes them: they must be the same on every machine and platform; `--write-expected <file>` writes the
-  list); `run.sh <scratch> determinism --levels ...`: three runs per level; `run.sh <scratch> variants [--levels ...]`: the older
-  option values against the older releases (`OldLook` in `Program.cs`: `--dirt-look untamed --ec-water-shore untamed` = norton-v6
-  ... lincoln-v5; the two arenas also with the old water look and no spray = fairview-v4 / lincoln-v4);
-  `run.sh <scratch> cancel --levels norton`: a build cancelled after 0, 1.5, 5 and 9 s throws `OperationCanceledException` within 1 s.
-- `core_lzx_test.sh <scratch>`: the C core's resource reader on the blobs `--core-blobs` wrote.
-- `run_gates.sh <scratch> [tree|verify|orcheck|race|all] [short names]`: the reference's own gates on this port's output. `tree`
-  copies what the gates read of the reference into `<scratch>/gates/untamed` (tools, templates, extract, the slot-check tools, the
-  Open Reflex source snapshot; 2.3 GB), points the copy of `ux_racetest.py` at that folder, and builds every level there
-  (`release/<short>-cs`, `work/<Level>` = this port's stage outputs plus `collision/` = the collision stage with `--type9 refuse`,
-  the folder a release verify reads, and `build/<short>-cs` = `build_info.json` + package + level, where a release verify takes the
-  rollout record from). Then `UX_ROOT=<scratch>/gates/untamed python -I -B tools/ux_verify.py release/<short>-cs --release
-  --no-renders`, `tools/ux_orcheck.py release/<short>-cs`, `tools/ux_racetest.py release/<short>-cs` (11 AI, 3 laps, through the
-  installed client's `rxcore.dll`, no window). No gate needs LZX from Microsoft's encoder or the build folder's pictures; the release
-  verify needs `build_info.json`'s `rollout`, which this port writes (with `rollout.dirt_look`: the verifier's V7.10 reads its
-  option). The gates were run with the reference's tools as copied on 2026-11-11 16:00 (`ux_build_track.py` 161ea48c, `ux_verify.py`
-  ca86a57d, `ux_verify_engine.py` c9f652a7, `ux_verify_combined.py` 8f452094: after the dirt-look rounds, with V7.10 `gate_dirt_look`
-  and the W12 shore gate); `tree` copies the tools only when the copy does not exist, so a fresh scratch takes the reference's tools
-  of that day.
+**Tests**: `tests/untamed_convert/check` ("Tests" at the end).
 
 ## Template names
 
@@ -481,94 +446,26 @@ still records the template folder text (`template.dir`, an option of `UxLevel`).
 - Microsoft's XMemCompress is not reproduced: `UxLzxEncoder` writes its own LZX streams (decoded content equal, package about 6 %
   larger). Previews, contact sheets and logs of the Python stages are not ported.
 
-## What the foundation test proves (tests/untamed_convert/foundation/run.sh, 2026-11-11, Windows, .NET 8)
+## Tests
 
-| Test | Result |
-|---|---|
-| S0 from the disc image and from the extracted folder | 15,163 assets of the 12 levels (15,143 LZX), each md5 = `extract/<Level>/index.json`; `index.json` reproduced byte for byte; scene / level / database / tdf07 identical; parallel and serial reads equal; process peak 172 MB |
-| JSON | 174 files of `work/<Level>/` (135 MB) parsed and written again byte for byte |
-| zlib | 1,462 BXML documents (stock and Untamed scenes, databases, level files) recompress to their stored bytes; 10 synthetic inputs equal Python's |
-| stock (original install and client game files) | 136 `templates/stock-lib` files and 25 `templates/reflex-lib` files (shaders, exemplars, prototypes) with the pinned md5; SX_FortDodge: 2,545 assets = the Python decoder's md5; 149 surfaces, 413 models, 362 textures rewritten identically; the package written back stored decodes to identical bytes (C#, the client's reader, the C core) |
-| readers (12 levels) | 10,265 surface groups, 30,795 vertex conversions, 1,440 stripify runs, 1,557 models, 348 collis, 3,397 materials, 3,481 textures, 12 terrains (rasterise, heightfield, collision materials), 12 scenes: all equal the Python digests |
-| numpy / scipy / Pillow rules | fused multiply-add (400,000 cases against the processor), 49 BLAS cases, 16 pairwise sums, 20 structured argsorts, 10 distance transforms, 60,011 float16 conversions, 180 resizes, 208 BC encodings, 4 mip chains: all bit-identical |
+`sh tests/untamed_convert/check/run.sh <scratch> [lzx|half|build|variants|determinism|cancel|all] [--levels norton,lincoln]` with
+`UX_DISC_ISO` (or `UX_DISC_FOLDER`) and `UX_REFLEX` (or `UX_CLIENT_LIB`): the player's disc and a Reflex library are all it needs.
 
-## What the assembly_parts test proves (tests/untamed_convert/assembly_parts/run.sh, 2026-11-11, Windows, .NET 8)
+- `build` (in `all`): every stadium from the disc through S1 - S8 and the builder; each file it writes is hashed and compared with
+  `check/expected.txt`: the seven files of the track folder (`<short>/track/<file>`) and every file of its work store, the stage
+  outputs and the builder's records (`<short>/work/<path>`; `build_info.json` without its step times). 84 + 9,872 hashes. The build's
+  progress must rise to 1.
+- `variants`: the option values kept besides the defaults (the older ground, shore, water and reflection looks; packing `stored` and
+  `raw`, whose resources must also decode to the `lzx` build's bytes): 21 builds, their four `.dx9` files against the list.
+- `determinism`: three runs of a level (all threads, again without shared state, one thread) write the same files.
+- `cancel`: a build cancelled after 0, 1.5, 5 and 9 s ends with an `OperationCanceledException` within 3 s.
+- `lzx`, `half` (in `all`, no disc needed): 616 synthetic blobs through `UxLzxEncoder` and back through the client's decoders; every
+  float16 round trip.
+- `core_lzx_test.sh <scratch>`: the C core's resource reader (`fmt_xmem_resource`) on the blobs `run.sh ... --core-blobs` wrote.
 
-1,071 checks, all passing, from the disc image with the original install and from the extracted disc with the client's game files; the
-parts run on the constant template name tables. The reference values are what the current Python returns in memory with each track's
-build options (`ref_parts.py`); records are also compared with the ones the 12 reference builds (norton-v7 ... lincoln-v6) wrote
-into `build_info.json`.
-
-| Family | Result on the 12 levels |
-|---|---|
-| names | the 25 pinned names against the two template databases; 61,748 lookups (157 hits) answered as the full tables |
-| base (SX_FortDodge) | the keep policy on 3,024 stock entities (152 kept); prepared scene and level file byte-identical; record, `hf_roles`, script renames, literal rows, 3 global tables (756 + 54 + 401 names), 180 animation sets, the closure (685 kept), entity / asset strings, 8 constant textures, 5 `tex_bc` textures and 6 with straight alpha (alpha patterned, alpha 0, RGB), 234 resizes; the water spray kit (`splash`: atlas, particle and partattr byte-identical, 24 TireInWater records, the retargeted ParticleManager); `assembly.base` of a build; `UxRaceTemplate` = `UxBase` |
-| assets | 9,586 stage files indexed and read (md5, origin, clashes with the base); `entity_refs` / `rename_refs` on 10,038 entities; `filter_dropped`: 169 dropped materials, 44 entities re-pointed, 4 removed, 84 variant assets, entity chunks byte-identical |
-| closure | the `base_prune` closure with each level's converted content: 16,923 kept assets in Python's order, 63 unresolved, 444 set expansions |
-| tuff | 7,014 bodies swapped (3 option sets per level), entity chunks byte-identical, 492 assets by md5, 236 generated materials, sponsor maps; `rollout.tuff` of every build |
-| water | 3 surfaces (Fairview 2, Lincoln 1; 7 option sets: looks `arena` and `untamed`, shore `untamed` and `ground` on the dirt-look ground and on the Untamed ground): water assets, materials, entities byte-identical; the 3 shore colours and their records (`ground_shore`), 6 `wet_ground` colours as exact float64; the no-op on the 10 SX levels; `rollout.ec_water` of every build |
-| dirt look | per level, on the tdf of the track's reference build: the base HF material's samplers and parameters, the 12 layer means (exact float64), the footprint on the client grid, the corridor / lanes / track masks (12,211,702 track texels), the signed distance and the macro ratio (float64 bytes), the track median (exact), std(log v) and the exponent (the same doubles as numpy's on all 12), the three 2048 x 2048 maps (md5 of the pixels = the Python function's = `rollout.dirt_look.maps_md5` of the reference build), their textures (`tex_bc` with straight alpha) and the record; `ExactPow` on the two arenas gives the same maps. Number rules: `ExpExact` / `LogExact` / `PowExact` within one unit in the last place of numpy's on 200,000 inputs each (99.5 % / 99.7 % / 99.9 % the same double) and equal to the correctly rounded values on 50,000 each; `Hypot` = `np.hypot` on 200,000 pairs; `ClientIndex` for 5 sizes; `Composite` on 4,096 texels |
-| screens | 18 still materials and 22 generated textures at 3 gains, byte-identical; the layout data = the pinned plan's fields; `rollout.screens` of every build |
-| ads | 22 panels (keep / model / drop), 93 assets and the entities byte-identical; `rollout.massive_ads` of every build |
-| splitgate | built on all 12 levels (199 assets, entities, material folders); Foothills (the build that uses it): its folder = the one the reference build wrote (10 files), record = `rollout.split_gate` |
-| stages (on request) | textures, collision and materials of the 12 levels: 5,924 output files byte-identical on the constant tables and on the full template databases; 3,033 texture and collis files = the Python reference's |
-
-## What the build test proves (tests/untamed_convert/build, 2026-11-11, Windows, .NET 8)
-
-Every level is built by the C# code alone, from the disc through S1 - S8 and the builder (nothing of the reference is read by the
-build), and compared with the reference release the port mirrors: norton-v7, capitalcity-v5, columbus-v6, denton-v5, harrispark-v6,
-foothills-v6, weststone-v5, jefferson-v5, wilford-v5, bridgeport-v5, fairview-v7, lincoln-v7 (the newest release of every track:
-the dirt-look rounds, and the water-glare round for the two arenas; re-run on 2026-11-12 after that round, with the two arenas
-also built with `ecWaterReflection = "level"` against fairview-v6 / lincoln-v6). `run.sh <scratch> all`: 157 checks from the disc image with the original install, 0 failed, 0 skipped; the
-same builds from the extracted disc with the client's game files (`--same-as`: 132 checks, 12 of them that the seven files are equal).
-
-| Test | Result on the 12 levels |
-|---|---|
-| options | `UxTrackOptions.Table` = the build command of every track (`work/combined/commands.json`); the port's 63 switches = the `options` record of every reference build (norton-v7, capitalcity-v5 and columbus-v6 were started before `--ec-water-shore` existed and record no such option) |
-| `.level`, `.scene` | byte-identical to the reference release (the scene with its stock attr flags: 258 - 690 KB) |
-| `.database` | equal as a document apart from `Heap` offset / size and `Package` offset / heapOffset (the stored form) |
-| `.package` | 16,901 resources: every one decodes to the reference's bytes, in the reference's order (1.69 GB logical); among them the generated TopDown, DetailMasks and ChromLum textures of every track and the arenas' water materials with the ground's shore colour |
-| `mod.ini` | byte-identical (with the reference's date) |
-| `build_info.json` | the records (`assembly`, `rollout` with `dirt_look` and `ec_water.shore`, `assets`, `renames`, `race`, `entities`, `zones` ...) equal as documents apart from 23 named environment fields (paths, tool md5s, seconds, the stored sizes) |
-| LZX | every resource also through the client's resource reader; the C core's `fmt_xmem_resource` on all 16,901 + 616 synthetic blobs (`core_lzx_test.sh`) |
-| disc / library forms | the seven files from the extracted disc + the client's game files = those from the disc image + the original install (`sha256.txt`), and = `expected_sha256.txt` |
-| determinism | Norton, Foothills, Fairview, Lincoln: two runs and a one-thread run give the same seven files |
-| packing `stored`, `raw` | Norton and Lincoln: the same content comparison passes (131 / 125 MB packages) |
-| older option values (`variants`) | `dirtLook = "untamed"`, `ecWaterShore = "untamed"`: all 12 against norton-v6, capitalcity-v4, columbus-v5, denton-v4, harrispark-v5, foothills-v5, weststone-v4, jefferson-v4, wilford-v4, bridgeport-v4, fairview-v5, lincoln-v5, and Fairview / Lincoln also with the old water look and no spray against fairview-v4 / lincoln-v4: 126 checks, 0 failed (the same comparison: `.level` / `.scene` bytes, the database as a document, 16,901 + 2,469 resources decoded, `mod.ini`, the records) |
-| cancel | Norton cancelled after 0, 1.5, 5 and 9 s: `OperationCanceledException` at most 0.3 s later |
-
-The reference's gates on this port's folders (`run_gates.sh`; the four `.dx9` files of every folder are the ones of
-`expected_sha256.txt`), with the reference's tools of after the dirt-look rounds:
-
-| Level | ux_verify --release --no-renders | ux_orcheck | ux_racetest (11 AI, 3 laps, rxcore.dll 1.1.0) | seconds | package MB (reference) |
-|---|---|---|---|---:|---:|
-| Norton | PASS | PASS | PASS: winner 256.0 s, best lap 84.57 s | 14.2 | 49.3 (46.4) |
-| Capital City | PASS | PASS | PASS: winner 312.5 s, best lap 80.82 s | 14.6 | 50.2 (47.2) |
-| Columbus | PASS | PASS | PASS: winner 326.5 s, best lap 112.32 s | 15.1 | 52.1 (49.0) |
-| Denton | PASS | PASS | WARN: winner 279.2 s, best lap 92.30 s; 1 PopDown bale reached before it sank | 14.0 | 50.1 (47.0) |
-| Harris Park | PASS | PASS | PASS: winner 257.6 s, best lap 85.28 s | 15.2 | 53.3 (50.2) |
-| Foothills | PASS | PASS | PASS: winner 364.9 s, best lap 120.67 s | 15.1 | 55.7 (52.5) |
-| West Stone | PASS | PASS | PASS: winner 308.3 s, best lap 94.29 s | 14.7 | 43.1 (40.5) |
-| Jefferson | PASS | PASS | PASS: winner 287.2 s, best lap 94.67 s | 14.0 | 55.2 (51.7) |
-| Wilford | PASS | PASS | PASS: winner 219.1 s, best lap 65.45 s | 14.6 | 55.9 (52.6) |
-| Bridgeport | PASS | PASS | PASS: winner 333.2 s, best lap 104.80 s | 14.8 | 58.5 (55.0) |
-| Fairview | PASS | PASS (R7 WARN) | WARN: winner 227.0 s, best lap 65.76 s; no holeshot trigger in the scene | 13.2 | 42.1 (39.5) |
-| Lincoln | PASS | PASS (R7 WARN) | WARN: winner 211.0 s, best lap 67.10 s; no holeshot trigger in the scene | 12.8 | 43.0 (40.4) |
-
-Each gate result is the one the reference's own release produced. The verifier: 1,757 checks on the 12 folders, the same codes with
-the same statuses, in the same order, as its release verify of norton-v7 ... lincoln-v6 (31 WARN, no FAIL); its new gates pass with
-the reference's numbers: V7.10 (ground look) track luminance 0.213 - 0.239, off-track 0.147 - 0.178, ratio 1.29 - 1.54; W12 (shore)
-Fairview 0.154 against the adjacent ground's 0.251, Lincoln 0.169 against 0.273. The race: every field of the `race` and `sweep`
-records of the 12 runs equals the reference's run of its release (`work/headless-race/runs/dirtlook-<name>.json`) apart from wall
-times, the log path and the arena address; 11/11 AI finished on every track; the three WARNs are the reference's (Untamed's
-EnduroCross has no holeshot line, Denton's start-pack bale). The race tool judges against the stock baselines it measured
-(`work/headless-race/baseline/*.json`, copied into the gate tree: without them the AI's off-track resets, which Untamed's narrower
-off-track window causes, are a WARN instead of a note; seen on Norton and Capital City with the same race numbers). Seconds: the whole build of one level in its own process on an idle machine, 16 threads (one thread: 19 - 24
-s); the dirt look adds about 1 s to a track (its maps take 0.6 - 1.0 s); peak working set 0.75 - 1.4 GB,
-the managed heap at the step boundaries at most 285 MB (315 MB when the 12 are built in one process). The 12 packages: 608 MB
-(reference 572 MB, + 6.4 %; stored or raw 1.69 GB).
-
-Under the client's Mono (the embedding host of `UNTAMED_TRACKS.md`, tr-TR): Norton, Foothills, Fairview and Lincoln imported
-with the dirt-look converter give the tested build (16 of 16 `.dx9` files), so the double-double `exp` / `log` / `pow` and the
-rest of the new code write the same bytes on that runtime; the converter also compiles against .NET Standard 2.1 and against that
-Mono's class library.
+`expected.txt` holds hashes only, no game bytes. It was recorded on 2026-11-12 (Windows, .NET 8), when the output of this port was
+confirmed equal to the releases of the conversion it was ported from (that comparison is not part of the repo), and it holds for
+both disc forms and both library kinds: the disc image with an original install and the extracted disc with the client's game files
+give the same 9,956 files. A change to the converter that changes its output must come with a new list (`run.sh <scratch> all
+--write-expected <file>`, then `variants --write-expected <file>`), and `UntamedImporter`'s tested-build table must follow it
+(`tests/untamed_import/import` checks that table against the list).

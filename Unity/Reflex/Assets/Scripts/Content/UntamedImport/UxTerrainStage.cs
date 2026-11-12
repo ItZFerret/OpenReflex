@@ -8,8 +8,8 @@
 // Not ported: contact_sheet.png (Norton and Fairview: a review sheet built from a research picture that is not on the disc, with
 // FreeType text; terrain.json 'files' therefore has no contact_sheet.png entry), --lift / --check / --selftest (command line
 // reports), the log file. The folder is not emptied first (as in Python): readers take the file list from terrain.json.
-// Arithmetic follows numpy's dtypes operation by operation (core/plan/UNTAMED_CONVERT.md, "numpy rules"); tests/untamed_convert/terrain
-// compares every output with the reference: all files are byte-identical on the 12 levels, terrain.json is equal as a document
+// Arithmetic follows numpy's dtypes operation by operation (core/plan/UNTAMED_CONVERT.md, "numpy rules"); every output was compared
+// with the reference: all files are byte-identical on the 12 levels, terrain.json is equal as a document
 // except for source.tool_md5 / source.uxterrain_md5 (the md5 of Python's own sources) and one in-principle deviation:
 // np.linalg.lstsq goes through LAPACK (dgelsd), whose rounding noise (about 1e-18 where the exact coefficient is 0) cannot be
 // reproduced; it is solved here by a Householder QR + Jacobi SVD least squares. The fits feed the choice of planar maps (2e-5

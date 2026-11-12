@@ -1,5 +1,5 @@
 // MX vs ATV Untamed converter, terrain stage: the numpy / scipy / Pillow / matplotlib pieces ux_terrain.py leans on, bit for bit where
-// the reference's bytes depend on them (checked by tests/untamed_convert/terrain against numpy 2.5.4, scipy 1.18.1, Pillow 13.0.0 with
+// the reference's bytes depend on them (checked against numpy 2.5.4, scipy 1.18.1, Pillow 13.0.0 with
 // zlib-ng 2.3.3, matplotlib 3.11.2):
 //   Npy*            np.save of a float32 / int32 / uint8 array (format 1.0); ReadNpyFloat32 = np.load of hf.npy
 //   PngRgb          Image.save(fp, 'PNG', optimize=False, compress_level=6) of an RGB image: Pillow's row filter choice (ZipEncode.c)

@@ -1,3 +1,0 @@
-# stage S4 materials: the port of ux_materials.py + ux_shaderprog.py (repo-relative paths)
-Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxShaderProg.cs
-Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxMaterials.cs

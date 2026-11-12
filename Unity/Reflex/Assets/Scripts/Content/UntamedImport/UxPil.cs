@@ -1,5 +1,5 @@
 // MX vs ATV Untamed converter, foundation: the two Pillow operations the reference's outputs depend on, bit for bit (checked against
-// Pillow 13.0.0, tests/untamed_convert/foundation):
+// Pillow 13.0.0):
 //   Resize    Image.resize(size, BOX | BILINEAR | LANCZOS) for 8-bit L / RGB / RGBA images: libImaging/Resample.c, two passes (horizontal,
 //             then vertical) with 22-bit fixed-point coefficients; an RGBA image is resized premultiplied (RGBa) and converted back, as
 //             Image.resize does. Only the coefficients go through floating point (sin for LANCZOS).

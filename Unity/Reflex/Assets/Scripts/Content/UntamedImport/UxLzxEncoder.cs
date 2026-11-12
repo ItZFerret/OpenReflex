@@ -9,8 +9,8 @@
 //               three repeated offsets, the frame padded to a 16-bit word
 //   a chunk that does not shrink is STORED ({ u32 n, u32 n, n bytes }; n = 65536 or the last chunk's length): core fmt_lzx.c "a stored
 //   chunk", client RfxData.Lzx the same
-// Readers checked by tests/untamed_convert/build: UxLzx / LzxDecoder (the client's decoder), UxPkg.RfxLzx (the client's resource
-// reader), core/src/fmt_lzx.c (the C core, also inside rxcore.dll in the headless race) and the reference's Microsoft codec helper.
+// Readers checked by tests/untamed_convert/check (and its core_lzx_test.sh): UxLzx / LzxDecoder (the client's decoder), UxPkg.RfxLzx (the client's resource
+// reader), core/src/fmt_lzx.c (the C core, also inside rxcore.dll).
 // The match finder is a hash chain with one-step lazy matching; the output depends on the input bytes only (no threads, no clock).
 // System only, C# 9, .NET Standard 2.1.
 using System;

@@ -2,7 +2,7 @@
 // from the player's disc and a Reflex library into a scratch Mods/Tracks. Nothing is written outside --scratch; the disc and the library
 // are only read (their files' sizes and times are compared at the end).
 //   quick   (default) two stadiums, Norton (supercross) and Lincoln (EnduroCross):
-//             table        UntamedImporter's tested-build hashes = tests/untamed_convert/build/expected_sha256.txt
+//             table        UntamedImporter's tested-build hashes = the .dx9 rows of tests/untamed_convert/check/expected.txt
 //             library      a library without SX_FortDodge, without the EnduroCross water's level, an empty one: the clear error, nothing written
 //             scan cancel  a scan cancelled from its progress callback: the disc image is closed at once
 //             space, path  too little free space; (Windows) a tracks folder too deep: the clear error, nothing written
@@ -25,7 +25,7 @@
 //   all     the 12 stadiums into an empty tracks folder: time, size, every read of the library (UntamedImporter's list of needed
 //           stock files must name them), the longest staged path against UntamedImporter.WorkPathBudget
 // Arguments: [quick|all] --iso <disc image> (or UX_DISC_ISO) --reflex <Reflex install or game files> (or UX_REFLEX / UX_CLIENT_LIB)
-//            --scratch <dir> [--folder <extracted disc>] [--expected <expected_sha256.txt>] [--threads N]
+//            --scratch <dir> [--folder <extracted disc>] [--expected <tests/untamed_convert/check/expected.txt>] [--threads N]
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -166,13 +166,15 @@ static class Program
             {
                 string l = raw.Trim(); if (l.Length == 0 || l[0] == '#') continue;
                 string sha = l.Substring(0, 64), rest = l.Substring(l.IndexOf('*') + 1);
+                // only the default build's track files: '<short>/track/<slot>.dx9.<kind>'
+                if (!rest.Contains("/track/") || !rest.Contains(".dx9.")) continue;
                 string shortName = rest.Substring(0, rest.IndexOf('/')), kind = rest.Substring(rest.LastIndexOf('.') + 1);
                 rows++;
                 if (UntamedImporter.TestedSha256(shortName, kind) != sha) { bad++; UxTest.Log("     differs: " + rest); }
             }
-            UxTest.Report(rows == 48 && bad == 0, "the importer's tested-build table = expected_sha256.txt (" + rows + " rows, " + bad + " differ)");
+            UxTest.Report(rows == 48 && bad == 0, "the importer's tested-build table = the track rows of expected.txt (" + rows + " rows, " + bad + " differ)");
         }
-        else UxTest.Skip("no expected_sha256.txt (--expected)");
+        else UxTest.Skip("no tests/untamed_convert/check/expected.txt (--expected)");
 
         // ---- a cancelled scan holds nothing open
         UxTest.Section("a cancelled scan");

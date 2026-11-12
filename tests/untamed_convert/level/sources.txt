@@ -1,2 +1,0 @@
-# the level stage (ux_level.py): repo-relative paths, one per line
-Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxLevel.cs

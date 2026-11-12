@@ -1,7 +1,7 @@
 #!/bin/sh
 # tests/untamed_import/import/build.sh <scratch dir> -- builds the MX vs ATV Untamed import test outside Unity, against .NET 8, the way
 # tests/untamed_convert/build.sh builds a part of the converter (same compiler, flags and language version 9, no unsafe code):
-#   the converter (tests/untamed_convert/foundation.txt + build/sources.txt) + the importer (sources.txt)
+#   the converter (tests/untamed_convert/foundation.txt + check/sources.txt) + the importer (sources.txt)
 #   + tests/untamed_convert/UxTest.cs + Program.cs  ->  <scratch>/bin/import.dll with its runtimeconfig
 # Prints the dll's path.
 set -eu
@@ -11,7 +11,7 @@ FLAGS="-nologo -nostdlib+ -target:exe -langversion:9 -optimize+ -nowarn:1701,170
 mkdir -p "$S/bin"
 LIST="$S/import.sources"
 : > "$LIST"
-for l in "$CONV/foundation.txt" "$CONV/build/sources.txt" "$HERE/sources.txt"; do
+for l in "$CONV/foundation.txt" "$CONV/check/sources.txt" "$HERE/sources.txt"; do
   tr -d '\r' < "$l" | while IFS= read -r line; do
     case "$line" in ''|'#'*) continue ;; esac
     [ -f "$ROOT/$line" ] || { echo "$l: no such file: $line" >&2; exit 2; }

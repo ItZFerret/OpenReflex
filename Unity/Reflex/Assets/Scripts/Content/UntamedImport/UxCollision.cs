@@ -27,7 +27,7 @@
 //     setting aside the points qhull treats as coplanar (qh.MINoutside). They equal qhull's to about 1e-13, not bit for bit.
 // Not modelled bit for bit, because they feed only thresholds and values rounded to 4 - 5 decimals: np.linalg.inv (LAPACK) of the box
 // rotations, the 3-D hull planes, np.argsort(-A) among faces of equal area (the axis of a prism that is not world-axis aligned).
-// The 12 levels, the synthetic files of the test and three option variants per level give Python's bytes (tests/untamed_convert/collision).
+// The 12 levels, the synthetic files of the test and three option variants per level give Python's bytes; tests/untamed_convert/check holds the result.
 // Unity-free (System only). Not ported: --prims-to-22 (the 'safe' variant no current build uses: primsTo22 = true throws) with
 // prim_triangles' face lists and prim_surface_error, the overlay picture (collision_overlay.png), ux_collis_to_reflex.kind0_to_22 /
 // swap_collis_kind2 as a tool (--keep-kind2), the CLI and --selftest.

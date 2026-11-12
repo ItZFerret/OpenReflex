@@ -1,4 +1,4 @@
-# the track builder (ux_build_track.py + ux_package.py) and everything it runs; repo-relative paths, one per line
+# the converter end to end: the track builder and everything it runs; repo-relative paths, one per line
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxBuildTrack.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxPackage.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxLzxEncoder.cs

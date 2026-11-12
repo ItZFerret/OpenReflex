@@ -22,7 +22,7 @@ namespace Reflex.Port.Content.UntamedImport
 {
     // ====================================================================================================================== numbers
     /// The number rules of the Python reference that decide the race kit's bytes (CPython 3.12, numpy 2.5, OpenBLAS 0.3.34 Haswell
-    /// kernels), each checked bit for bit against the reference by tests/untamed_convert/race.
+    /// kernels), each checked bit for bit against the reference.
     internal static class UxRaceNum
     {
         // ---------------------------------------------------------------------------------------- Python text

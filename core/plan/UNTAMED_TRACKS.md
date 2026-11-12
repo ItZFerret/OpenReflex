@@ -110,8 +110,8 @@ Rules it keeps:
   first with `TrackMods.Release`).
 - The importer removes only its own folders (staging, a replaced track), walking them by hand: a link in one is removed as a link and
   never entered, so nothing outside is deleted or changed.
-- The four `.dx9` files are compared with the tested build's hashes (`tests/untamed_convert/build/expected_sha256.txt`, a table in
-  the importer); a track that differs is still installed and the result says so.
+- The four `.dx9` files are compared with the tested build's hashes (the track rows of `tests/untamed_convert/check/expected.txt`,
+  a table in the importer); a track that differs is still installed and the result says so.
 
 **Test** (headless, .NET 8, Windows): `sh tests/untamed_import/import/run.sh <scratch> [quick|all|both]` with `UX_DISC_ISO` and
 `UX_REFLEX` or `UX_CLIENT_LIB` (and `UX_DISC_FOLDER` for the differing-disc checks). 2026-11-11, from the disc image:
@@ -182,7 +182,7 @@ Untamed's resource layouts are Reflex PC's, byte-swapped (texture v6 vs v4, surf
   by the clean-up (first shell start, FIND TRACKS, import). Windows enforces that lock between processes; Unity's Mono elsewhere may
   only track it inside one process, in which case a second client started on the same folder could remove a running import's staging
   folder (that stadium then fails; nothing half-written is published). Not run on macOS.
-- **macOS.** The converter and the import test have run on Windows only. `expected_sha256.txt` must hold there too (the ground maps
+- **macOS.** The converter and the import test have run on Windows only. `tests/untamed_convert/check/expected.txt` must hold there too (the ground maps
   take `exp`, `log` and `pow` from the converter's own arithmetic, not from the platform's C library, for that reason).
 - **The look of the new ground and shore in the game.** The reference's owner rode norton-v7 ("dirt is much better and water is
   fine"); the other 11 tracks' ground and the arenas' new shore colour have only passed the offline checks, in the reference and here.

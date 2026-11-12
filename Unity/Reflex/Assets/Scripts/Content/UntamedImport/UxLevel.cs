@@ -1663,8 +1663,8 @@ namespace Reflex.Port.Content.UntamedImport
         }
 
         // ------------------------------------------------------------------------------------------- test access
-        /// The numbers behind the sky dome and underworld rules and the free-ride yaw, unrounded (tests/untamed_convert/level compares
-        /// them bit for bit with the reference's sky_dome_facts / placed_top_y / terrain_floor): {floor_y, yaw_deg, entities:
+        /// The numbers behind the sky dome and underworld rules and the free-ride yaw, unrounded (compared
+        /// bit for bit with the reference's sky_dome_facts / placed_top_y / terrain_floor): {floor_y, yaw_deg, entities:
         /// [[id, rad, el95, top, el95 with Math.Atan2]]} for every merged ModelRSData the policy keeps and whose surface is in the level.
         /// The fifth column is el95 with the runtime's Math.Atan2 in place of UxLevel.Atan2 (on the reference's machine that is the C
         /// library Python and numpy call: it shows that only arctan2's last bit can differ).

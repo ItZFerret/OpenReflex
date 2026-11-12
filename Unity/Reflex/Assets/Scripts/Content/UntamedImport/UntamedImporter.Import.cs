@@ -135,7 +135,7 @@ namespace Reflex.Port.Content.UntamedImport
         public const long StagingBytes = 320L << 20;
         const string SlotStem = "Beta_Sx_Track_Slot_1";
 
-        // The four .dx9 files of the tested build (tests/untamed_convert/build/expected_sha256.txt: what the converter writes from the
+        // The four .dx9 files of the tested build (the track rows of tests/untamed_convert/check/expected.txt: what the converter writes from the
         // supported disc and a stock Reflex library, on any machine): short name -> database, package, scene; the level file is the same
         // for every stadium. The test compares this table with that file.
         const string TestedLevelSha256 = "62066933a86159f17112cb2cd8c68be56945974670f4709eec112c80f5d22b94";
