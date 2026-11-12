@@ -43,11 +43,14 @@ namespace Reflex.Port.OpenFrontEnd
         /// MODS/TRACKS (Content/TrackMods.cs): the custom track of the event (Mods/Tracks), null for the original's.
         public TrackMod mod;
         public bool Custom => mod != null;
+        /// A track the MX vs ATV Untamed importer made (Content/UntamedImport: Mods/Tracks/Untamed/<track>): a custom track on disk, listed
+        /// in the browser's own MX vs ATV Untamed section instead of CUSTOM TRACKS.
+        public bool Untamed => mod != null && OpenContent.IsUntamed(mod);
         /// A custom track that cannot be ridden (files missing, an archive to extract): listed with the reason, never started.
         public bool Broken => mod != null && !mod.Ok;
         /// What the cards and pages show after the type and the name: the level ("NAT_CONCORD"), a custom track's kind and author.
         public string Where => mod == null ? ev.location.ToUpperInvariant()
-            : (Broken ? (mod.archive ? ArchiveBadge(mod) : "BROKEN") : "CUSTOM  ·  " + mod.kindLabel) + (string.IsNullOrEmpty(mod.author) ? "" : "  ·  BY " + mod.author.ToUpperInvariant());
+            : (Broken ? (mod.archive ? ArchiveBadge(mod) : "BROKEN") : (Untamed ? "UNTAMED  ·  " : "CUSTOM  ·  ") + mod.kindLabel) + (Untamed || string.IsNullOrEmpty(mod.author) ? "" : "  ·  BY " + mod.author.ToUpperInvariant());
         /// A downloaded archive's state (Content/TrackArchives.cs): INSTALLING while the game extracts it, CANNOT INSTALL (the reason in its
         /// description), ARCHIVE before its install starts.
         public static string ArchiveBadge(TrackMod m) => m.archiveState == "installing" ? "INSTALLING" : m.archiveState == "failed" ? "CANNOT INSTALL" : "ARCHIVE";
@@ -157,19 +160,27 @@ namespace Reflex.Port.OpenFrontEnd
         static OpenEvent CustomEvent(ReflexEvents.Event e, TrackMod m, string desc, int n)
         {
             string activity = e.spec.type;
+            bool untamed = IsUntamed(m);
+            string name = m.name ?? m.level ?? "";
+            if (untamed && name.EndsWith(UntamedSuffix, StringComparison.OrdinalIgnoreCase)) name = name.Substring(0, name.Length - UntamedSuffix.Length);   // (its section says it)
             var oe = new OpenEvent
             {
                 ev = e, key = e.key, activity = activity, typeId = e.spec.typeId, freeRide = activity == "FreeRide", mod = m,
                 typeName = Str("STR_MXACTIVITYTYPE_" + activity.ToUpperInvariant(), (e.typeName ?? activity)).ToUpperInvariant(),
-                locationName = (m.name ?? m.level ?? "").ToUpperInvariant(), description = desc,
-                order = 50000 + n * 10 + (activity == "FreeRide" ? 0 : 1), group = CustomGroup,
+                locationName = name.ToUpperInvariant(), description = desc,
+                order = 50000 + n * 10 + (activity == "FreeRide" ? 0 : 1), group = untamed ? UntamedGroup : CustomGroup,
             };
             if (TypeTexts.TryGetValue(activity, out var tt)) { oe.typeDescription = Str(tt.desc, ""); oe.typeVehicles = Str(tt.vehicles, ""); }
-            oe.haystack = string.Join(" ", oe.typeName, oe.locationName, m.level, m.id, m.author, m.kindLabel, activity, "custom mod mods track", m.Ok ? "" : "broken").ToLowerInvariant();
+            oe.haystack = string.Join(" ", oe.typeName, oe.locationName, m.level, m.id, m.author, m.kindLabel, activity, untamed ? "untamed mx vs atv untamed" : "custom mod mods track", m.Ok ? "" : "broken").ToLowerInvariant();
             return oe;
         }
         /// The browser group of the custom tracks (OpenShell.Browser's CUSTOM TRACKS filter; never an event type of Types).
         public const string CustomGroup = "*custom";
+        /// The browser group of the imported MX vs ATV Untamed tracks (OpenShell.Browser's MX vs ATV Untamed filter).
+        public const string UntamedGroup = "*untamed";
+        const string UntamedSuffix = " (Untamed)";   // the importer's mod.ini name: "<track> (Untamed)" (UxPackage.MenuName)
+        /// A custom track in the importer's folder, Mods/Tracks/Untamed/ (UntamedImporter.TracksSubfolder).
+        public static bool IsUntamed(TrackMod m) => m?.id != null && m.id.StartsWith(Reflex.Port.Content.UntamedImport.UntamedImporter.TracksSubfolder + "/", StringComparison.OrdinalIgnoreCase);
 
         /// The install's events (cached until Reset).
         static List<OpenEvent> BaseEvents()

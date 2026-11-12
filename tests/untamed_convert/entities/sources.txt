@@ -1,0 +1,2 @@
+# the stage "entities" (the port of ux_entities.py): repo-relative paths, one per line
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxEntities.cs

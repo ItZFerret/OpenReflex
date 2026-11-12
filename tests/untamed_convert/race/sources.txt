@@ -1,0 +1,5 @@
+# the "race" stage (S8): ux_race.py + tdf07_to_reflex.py + lappacing_to_reflex.py + ux_startpack.py (repo-relative paths)
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxRace.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTdf07.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxLapPacing.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxStartPack.cs

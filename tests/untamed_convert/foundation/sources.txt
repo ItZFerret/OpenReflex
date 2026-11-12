@@ -1,0 +1,3 @@
+# test-side sources of the foundation part (repo-relative)
+tests/untamed_convert/foundation/Readers.cs
+tests/untamed_convert/foundation/Pil.cs

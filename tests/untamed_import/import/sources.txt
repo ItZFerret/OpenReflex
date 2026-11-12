@@ -1,0 +1,3 @@
+# The in-client importer (the scan and the import); the converter it runs is ../../untamed_convert/foundation.txt and build/sources.txt.
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UntamedImporter.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UntamedImporter.Import.cs

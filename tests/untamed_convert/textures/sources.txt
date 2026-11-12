@@ -1,0 +1,2 @@
+# the "textures" stage (S2, ux_textures.py): repo-relative sources, one per line
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTextures.cs

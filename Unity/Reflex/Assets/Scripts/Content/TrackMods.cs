@@ -128,6 +128,23 @@ namespace Reflex.Port.Content
         }
         static int s_archiveGen;
 
+        /// Closes the package files that the tracks under a folder of Mods/Tracks hold open ("Untamed/": a track ridden since the start
+        /// keeps its .dx9.package open, and on Windows an open file cannot be replaced): an importer calls it before it replaces such a
+        /// track (OpenShell.UntamedImport.cs). The next read of a track opens its files again.
+        public static void Release(string idPrefix)
+        {
+            if (string.IsNullOrEmpty(idPrefix)) return;
+            var mods = new List<TrackMod>();
+            lock (s_lock) { if (s_mods != null) mods.AddRange(s_mods); }
+            var bound = s_bound;
+            if (bound != null && !mods.Contains(bound)) mods.Add(bound);
+            foreach (var m in mods)
+            {
+                if (m.id == null || !m.id.StartsWith(idPrefix, StringComparison.OrdinalIgnoreCase)) continue;
+                lock (m.files) { m.install?.Close(); m.install = null; }
+            }
+        }
+
         /// The archives of a scan: each one's install started (TrackArchives.Ensure; once per file), its note says how it is going.
         static void Install(List<TrackMod> mods, string root)
         {

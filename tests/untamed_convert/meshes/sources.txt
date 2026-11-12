@@ -1,0 +1,2 @@
+# the S3 mesh stage (the port of untamed/tools/ux_meshes.py); repo-relative paths, one per line
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxMeshes.cs

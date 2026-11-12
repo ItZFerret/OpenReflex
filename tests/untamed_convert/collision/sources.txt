@@ -1,0 +1,2 @@
+# the collision stage (ux_collision.py); repo-relative paths, one per line
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxCollision.cs
