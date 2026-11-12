@@ -155,8 +155,7 @@ namespace Reflex.Port.Content.UntamedImport
         /// mod.ini (UTF-8, '\n' line ends). date: 'YYYY-MM-DD' as the reference writes it, or null (no date).
         public static string ModIni(UxLevelRow lv, string author = AUTHOR, string date = null, string kind = "supercross")
         {
-            string desc = lv.display + CONVERTED + (date != null ? "; " + date : "") +
-                ". Unofficial fan conversion.";
+            string desc = lv.display + CONVERTED + (date != null ? "; " + date : "") + ".";
             return "name = " + MenuName(lv) + "\nauthor = " + author + "\ndescription = " + desc + "\nthumbnail = " + PREVIEW + "\nkind = " + kind + "\n";
         }
 

@@ -366,8 +366,9 @@ Deviations from the reference's release folder:
 
 - `.package`: other stored bytes (own LZX), so `.database` differs in `Heap` offset / size and `Package` offset / heapOffset values.
   Everything else of the database, the whole `.scene` and `.level`, and every resource's decoded bytes are equal.
-- `mod.ini`: equal when `date` is the reference's packaging date; without a date the description ends "... Untamed pipeline.
-  Unofficial fan conversion."
+- `mod.ini`: equal when `date` is the reference's packaging date, apart from this port's own author (`UxPackage.AUTHOR`) and
+  description wording (`UxPackage.CONVERTED`, without the reference's closing "Unofficial fan conversion."); the description is
+  "<track> from MX vs ATV Untamed (Xbox 360), converted from the player's own disc by the OPEN REFLEX Untamed import."
 - `preview.png`: the track's top-down ground bake (`terrain/topdown_occ.png`: Untamed's own ground colours, also with `--dirt-look
   stock`) scaled to 512 x 512 with LANCZOS and written as Pillow writes a PNG. The reference scales `verify_oblique.png`, a labelled
   render of its verifier (Pillow's bitmap font), which is not ported.

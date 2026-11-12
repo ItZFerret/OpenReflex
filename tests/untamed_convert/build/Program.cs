@@ -481,9 +481,10 @@ static class Program
             (diff + missing + order > 0 ? "; " + diff + " differ, " + missing + " missing, " + order + " out of order" : "") + "; " + client + " also through the client's reader");
         coreBlobs?.Dispose();
         // ---- mod.ini, sha256.txt, preview
-        // (the author and the words after the track's name in the description are this port's own: UxPackage.AUTHOR / CONVERTED)
+        // (the author and the words after the track's name in the description are this port's own: UxPackage.AUTHOR / CONVERTED, and
+        // no closing "Unofficial fan conversion.")
         string wantIni = Regex.Replace(Utf8.GetString(File.ReadAllBytes(Path.Combine(rel, "mod.ini"))), @"(?m)^author = .*$", "author = " + UxPackage.AUTHOR);
-        wantIni = Regex.Replace(wantIni, @"(?m)^(description = " + Regex.Escape(lv.display) + @") from MX vs ATV Untamed \(Xbox 360\), converted [^;\n]*?(?=(; \d{4}-\d{2}-\d{2})?\. Unofficial)", m => m.Groups[1].Value + UxPackage.CONVERTED);
+        wantIni = Regex.Replace(wantIni, @"(?m)^(description = " + Regex.Escape(lv.display) + @") from MX vs ATV Untamed \(Xbox 360\), converted [^;\n]*?(; \d{4}-\d{2}-\d{2})?\. Unofficial fan conversion\.$", m => m.Groups[1].Value + UxPackage.CONVERTED + m.Groups[2].Value + ".");
         UxTest.SameBytes(lv.disc + " mod.ini = " + name + " (author and description wording apart)", File.ReadAllBytes(Path.Combine(r.folder, "mod.ini")), Utf8.GetBytes(wantIni));
         var list = UxTest.ReadMd5List(Path.Combine(r.folder, "sha256.txt")); bool okList = list.Count == 6;
         foreach (var kv in list) okList &= UxBin.Sha256File(Path.Combine(r.folder, kv.Key)) == kv.Value;
