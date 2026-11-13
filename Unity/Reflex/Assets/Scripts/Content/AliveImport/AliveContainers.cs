@@ -37,9 +37,12 @@ namespace Reflex.Port.Content.AliveImport
     public sealed class FolderVolume : Volume
     {
         readonly string _root;
-        public FolderVolume(string root, int maxDepth = 3)
+        readonly Func<string, bool> _include;
+        /// include: the file names listed (default: the *.xenon.* data files; the Untamed check also lists AI/*.tdf07 and default.xex).
+        public FolderVolume(string root, int maxDepth = 3, Func<string, bool> include = null)
         {
             _root = Path.GetFullPath(root); origin = _root; kind = "folder";
+            _include = include ?? (name => name.IndexOf(".xenon.", StringComparison.OrdinalIgnoreCase) >= 0);
             Walk(_root, "", maxDepth);
         }
         void Walk(string dir, string prefix, int depth)
@@ -51,7 +54,7 @@ namespace Reflex.Port.Content.AliveImport
             foreach (var p in entries.OrderBy(x => x, StringComparer.OrdinalIgnoreCase))
             {
                 var name = Path.GetFileName(p);
-                if (name.IndexOf(".xenon.", StringComparison.OrdinalIgnoreCase) < 0) continue;
+                if (!_include(name)) continue;
                 files.Add(new VolumeFile { path = prefix + name, size = new FileInfo(p).Length });
             }
             foreach (var d in dirs.OrderBy(x => x, StringComparer.OrdinalIgnoreCase))

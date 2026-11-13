@@ -1,0 +1,30 @@
+# the converter end to end: the track builder and everything it runs; repo-relative paths, one per line
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxBuildTrack.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxPackage.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxLzxEncoder.cs
+# the assembly parts
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxBase.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxBuildAssets.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTuff.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxWater.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxDirtLook.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxScreens.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxFreestyle.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxFreestyle.Ramps.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxFreestyle.Fit.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxAds.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxSplitGate.cs
+# the stages S1-S8
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxLevel.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTerrainStage.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxImaging.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxMeshes.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxCollision.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxShaderProg.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxMaterials.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTextures.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxEntities.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxRace.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTdf07.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxLapPacing.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxStartPack.cs

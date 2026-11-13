@@ -107,6 +107,7 @@ namespace Reflex.Port.OpenFrontEnd
         void StartConnected(bool returnToCareer)
         {
             { string root = ReflexInstall.Dir; System.Threading.Tasks.Task.Run(() => RxFiles.Warm(root)); }   // (a packed library's archives opened ahead: Content/RxFiles.cs)
+            CleanUntamedStaging();   // (what an Untamed import that did not end left in Mods/Tracks: OpenShell.UntamedImport.cs)
             Connected();
             if (TestRideReturn()) return;   // back from the garage's TEST RIDE: the garage where it was left (OpenShell.TestRide.cs)
             if (TutorialReturn()) return;   // back from the MotoSkills lessons: the MOTOSKILLS page (OpenShell.Tutorials.cs)
@@ -152,6 +153,7 @@ namespace Reflex.Port.OpenFrontEnd
             ReleaseGarage();
             WorldStop();
             _assetCancel?.Cancel();
+            StopUntamedImport();   // (a running Untamed scan / import: OpenShell.UntamedImport.cs)
             _input?.Dispose();
             if (OuSound.Player == _sounds) OuSound.Player = null;
             _sounds?.music?.Detach();   // (the static music hooks held the destroyed shell, w-gcspikes)

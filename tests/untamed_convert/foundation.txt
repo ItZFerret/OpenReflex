@@ -1,0 +1,23 @@
+# The foundation of the MX vs ATV Untamed converter port (core/plan/UNTAMED_CONVERT.md), repo-relative; every part's build includes these.
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxCore.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxJson.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxCommon.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxZlib.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxBxml.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxScene.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxDisc.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxPcPkg.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxRxar.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxStock.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxMesh.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxRmesh.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTex.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxMat.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTerrain.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxPil.cs
+# the Alive importer's readers the foundation uses (JObj, PyFormat, Volume / DiscVolume / FolderVolume, LzxDecoder) and what those need
+Unity/Reflex/Assets/Scripts/Content/AliveImport/AliveImportCore.cs
+Unity/Reflex/Assets/Scripts/Content/AliveImport/AliveContainers.cs
+Unity/Reflex/Assets/Scripts/Content/LzxDecoder.cs
+Unity/Reflex/Assets/Scripts/Content/ReflexPaths.cs
+Unity/Reflex/Assets/Scripts/Content/ReflexDrives.cs

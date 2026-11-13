@@ -71,3 +71,6 @@ Unity/*/Mods/
 # --- local service credentials never go in the repository ---
 eos_config.json
 **/eos_config.json
+
+# MX vs ATV Untamed: comparisons with the conversion the importer was ported from (local only, not part of the repo)
+/tests/untamed_convert/reference/
