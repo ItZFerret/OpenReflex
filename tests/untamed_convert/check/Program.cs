@@ -38,10 +38,12 @@ static class Program
     static bool CoreBlobs, Writing;
 
     /// The option values the converter keeps besides the defaults, each with the levels it is checked on.
+    /// The stadiums that had builds before the stock dirt look (the Minimoto stadiums and the freestyle arenas came after it).
+    static readonly string[] OldLookLevels = UxCommon.Levels.Where(lv => lv.mode == "sx" || lv.mode == "ec").Select(lv => lv.shortName).ToArray();
     static readonly (string name, string[] levels, Action<UxTrackOptions> set)[] Variants =
     {
         // the ground, shore and water reflection of the builds before the stock dirt look
-        ("oldlook", null, o => { o.dirtLook = "untamed"; o.ecWaterShore = "untamed"; o.ecWaterReflection = "level"; }),
+        ("oldlook", OldLookLevels, o => { o.dirtLook = "untamed"; o.ecWaterShore = "untamed"; o.ecWaterReflection = "level"; }),
         // the arenas' water before the arena look, without the spray
         ("oldwater", new[] { "fairview", "lincoln" }, o => { o.dirtLook = "untamed"; o.ecWaterLook = "untamed"; o.ecWaterSplash = "off"; o.ecWaterReflection = "level"; }),
         // the arenas' water reflecting the level cube itself (the stadium lights not dimmed)

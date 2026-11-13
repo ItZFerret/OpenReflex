@@ -263,6 +263,7 @@ namespace Reflex.Port.Content.UntamedImport
             A("HB_Wedge_Shift.material", "SX_FortDodge", "73639d1048ab6f3721b677e242624447", 1053, true),
             A("HB_Wedge_TroyLeeDesigns.material", "SX_Kingston", "87daa886a9ee0100c54fe2b540bb91a9", 1062, false),
             A("Lambert_Haybale_Test.shader", "SX_FortDodge", "a282dd117d3b8d845461e607912c628c", 6365, true),
+            A("SP_Acerbis.texture", "NAT_Concord", "ce89fc877d66b029132222f8031c132f", 21992, false),     // Freestyle arenas (ux_stocklib.FMX_EXTRA)
             A("SP_AlpineStars.texture", "SX_FortDodgeB", "70d352bb3c0a15f0b7a9806fb6c2c7af", 21992, false),
             A("SP_Answer.texture", "SX_FortDodge", "99e2ed19c3d99d4d36463fb95abc4624", 21992, true),
             A("SP_Bell.texture", "SX_Kingston", "6e07073a63abe6402ddced6f85533188", 21992, false),
@@ -276,8 +277,10 @@ namespace Reflex.Port.Content.UntamedImport
             A("SP_Excel.texture", "Ctrl_AmbientAnimation", "947984b5fbedd83d1c4997589c679802", 21992, false),
             A("SP_FLY.texture", "SX_Kingston", "9b7448cee3894eaea5f7b8e23ad7c990", 21992, false),
             A("SP_FMF.texture", "SX_Kingston", "1822ad3c202d083e795d1a4686a0a307", 21992, false),
+            A("SP_FactoryConnection.texture", "FMX_BuenaVista", "74b53bd6afb2aba8b0191fc191c9d9f2", 21992, false),     // Freestyle arenas (ux_stocklib.FMX_EXTRA)
             A("SP_Fox.texture", "Ctrl_AmbientAnimation", "2105d1165ecdcfec83569cd0ee3ef5fe", 21992, false),
             A("SP_Hiper.texture", "SX_FortDodge", "87f3664f8b968ec634bd90db4327cfa8", 21992, true),
+            A("SP_IMSRoll.texture", "NAT_Bedford", "ab3998001ae4bc18cd9a979380631bd8", 21992, false),     // Freestyle arenas (ux_stocklib.FMX_EXTRA)
             A("SP_KTM.texture", "SX_Kingston", "7ebdb04c3749201798d3f2a63de10620", 21992, false),
             A("SP_Kenda.texture", "SX_Manchester", "54e3da94a4340c2b252ebfc00cfcb286", 21992, false),
             A("SP_Laegers.texture", "FMX_BuenaVistaB", "5097a197206aafff00ee9677c776bac4", 21992, false),
@@ -292,8 +295,10 @@ namespace Reflex.Port.Content.UntamedImport
             A("SP_RaceTech.texture", "SX_FortDodge", "acf58d9f160e074f909832be62c35826", 21992, true),
             A("SP_Renthal.texture", "FMX_BuenaVistaB", "c1c5cda27752622d7cb01ced01d76ae4", 21992, false),
             A("SP_ScaryFast.texture", "SX_FortDodgeB", "265dc682657f10417f02c1e1dfe9c3c6", 21992, false),
+            A("SP_Scott.texture", "FMX_BuenaVistaB", "c92018f1fa2bde9c6f13bc74163bab17", 21992, false),     // Freestyle arenas (ux_stocklib.FMX_EXTRA)
             A("SP_Shift.texture", "SX_FortDodge", "fbaa7373d7bd4818a5ddb6470002d812", 21992, true),
             A("SP_Sidi.texture", "SX_FortDodge", "c9db972d39600c25eb74a42025d35249", 21992, true),
+            A("SP_SixSixOne.texture", "SX_Kingston", "7b2f66a5c7985b19b9824078a917b989", 21992, false),     // Minimoto (ux_stocklib.MM_EXTRA)
             A("SP_SmithOptics.texture", "FMX_Dover", "0adc69bdcdf29c7ffc02929e79a12b4b", 21992, false),
             A("SP_Spy.texture", "SX_SpringfieldB", "0505bcd0139638c842c0e09df442f67a", 21992, false),
             A("SP_TroyLeeDesigns.texture", "SX_Kingston", "d899e09d814e255cd7eb5bb2fcddbf90", 21992, false),

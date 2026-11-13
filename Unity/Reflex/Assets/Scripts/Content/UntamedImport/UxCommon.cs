@@ -96,13 +96,36 @@ namespace Reflex.Port.Content.UntamedImport
                 "Challenge: Boulders, Log Piles, Tire Climbs, Water Crossings"),
             new UxLevelRow("Lincoln_STADIUM", "lincoln", "ec", "Lincoln_STADIUM-ec.tdf07", "Lincoln Memorial Arena, Maxxis EnduroCross", "Lincoln Memorial Arena", "Lincoln Memorial",
                 "Challenge: Boulders, Log Piles, Mud Pit, Water Crossings"),
+            // The two Minimoto stadiums (MM_LEVELS): mode "mm" races with the -mm.tdf07 as its line and behaves as "sx" everywhere except
+            // the championship sub-scene. Names: MX07Tables' Minimoto events.
+            new UxLevelRow("Dyson_STADIUM", "dyson", "mm", "Dyson_STADIUM-mm.tdf07", "Specter Arena Minimoto", "Specter Arena", "Specter Arena", ""),
+            new UxLevelRow("Edgewater_STADIUM", "edgewater", "mm", "Edgewater_STADIUM-mm.tdf07", "Edgewater Arena Minimoto", "Edgewater Arena", "Edgewater", ""),
+            // The four freestyle arenas (FMX_LEVELS): mode "fmx" has no race. Each is built as a free-ride track in a Beta_Fmx_Track_Slot_N
+            // slot on the stock base's free-ride kit (Open Reflex lists it under FREE RIDE only). The tdf column names Untamed's AI freestyle
+            // lines (AI/<Level>-fmx.tdf07): the terrain stage reads them, nothing ships them. Names: MX07Tables' Freestyle / Free Ride events.
+            new UxLevelRow("RBWCenter_STADIUM", "rbwcenter", "fmx", "RBWCenter_STADIUM-fmx.tdf07", "RBW Center Freestyle", "RBW Center Arena", "RBW Center", ""),
+            new UxLevelRow("Southbend_STADIUM", "southbend", "fmx", "Southbend_STADIUM-fmx.tdf07", "Southbend Arena Freestyle", "Southbend Arena", "Southbend Arena", ""),
+            new UxLevelRow("THQSpectrum_STADIUM", "thqspectrum", "fmx", "THQSpectrum_STADIUM-fmx.tdf07", "THQ Spectrum Freestyle", "THQ Spectrum Arena", "THQ Spectrum", ""),
+            new UxLevelRow("WestLake_STADIUM", "westlake", "fmx", "WestLake_STADIUM-fmx.tdf07", "West Lake Arena Freestyle", "West Lake Arena", "West Lake Arena", ""),
         };
-        /// CHAMPIONSHIP_SUBSCENE[mode] (DESIGN 5.2).
+        /// CHAMPIONSHIP_SUBSCENE[mode] (DESIGN 5.2, 25; FREESTYLE.md).
         public static string ChampionshipSubscene(string mode)
         {
-            switch (mode) { case "sx": return "ChampionshipSupercross"; case "ec": return "ChampionshipEndurocross"; }
+            switch (mode)
+            {
+                case "sx": return "ChampionshipSupercross"; case "ec": return "ChampionshipEndurocross"; case "mm": return "ChampionshipMinimoto";
+                case "fmx": return "ChampionshipFreestyle";
+            }
             throw new UxException("unknown race mode " + mode);
         }
+        public const string SLOT_PREFIX_FMX = "Beta_Fmx_Track_Slot_";
+        /// is_fmx(lv): a freestyle arena (mode 'fmx'): a free-ride track with no race kit.
+        public static bool IsFmx(UxLevelRow lv) => lv != null && lv.mode == "fmx";
+        /// is_fmx_slot(stem): a Beta_Fmx_Track_Slot_N stem.
+        public static bool IsFmxSlot(string stem) => stem != null && stem.StartsWith(SLOT_PREFIX_FMX, StringComparison.Ordinal);
+        /// race_slot_name(lv, n) for the levels this port builds: Beta_Fmx_Track_Slot_N for a freestyle arena, else Beta_Sx_Track_Slot_N.
+        public static string RaceSlotName(UxLevelRow lv, int n = DefaultSlot) =>
+            IsFmx(lv) ? SLOT_PREFIX_FMX + n.ToString(System.Globalization.CultureInfo.InvariantCulture) : SlotName("sx", n);
 
         /// level(name): by disc name ('Norton_STADIUM'), short name ('norton') or a path / stem containing the disc name; case-insensitive.
         public static UxLevelRow Level(string name)

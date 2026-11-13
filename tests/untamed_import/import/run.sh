@@ -2,7 +2,7 @@
 # tests/untamed_import/import/run.sh <scratch dir> [quick|all|both] [--threads N]
 # Builds (build.sh) and runs the MX vs ATV Untamed import test (Program.cs) outside Unity: the importer converts stadiums of the player's
 # disc into a scratch Mods/Tracks and the test checks what it wrote, what it left and what it refused. See Program.cs for each check.
-#   quick  (default) Norton and Lincoln: about two minutes       all  the 12 stadiums once: about three minutes, 600 MB
+#   quick  (default) Norton and Lincoln: about two minutes       all  every track (18) once: about five minutes, 850 MB
 # Inputs (environment; a missing one makes the result INCOMPLETE):
 #   UX_DISC_ISO     the MX vs ATV Untamed disc image
 #   UX_REFLEX       an original MX vs ATV Reflex install, or UX_CLIENT_LIB the Open Reflex client's "game files" folder

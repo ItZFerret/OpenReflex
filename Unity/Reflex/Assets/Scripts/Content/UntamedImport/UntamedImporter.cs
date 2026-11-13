@@ -2,7 +2,8 @@
 // folder the disc was extracted into: the one holding Database and AI) and checks each against the supported disc: the four
 // Database/<level>.xenon.{level,database,package,scene} files and the AI/<level>-<mode>.tdf07 race line by size, then the SHA-256 of the
 // files the converter reads whole (database, scene, tdf07: about 18 MB for the 12 tracks; the .package hash is kept for the import).
-// The tracks are the 10 supercross and 2 EnduroCross stadiums the Python Untamed converter (the reference) builds into custom tracks
+// The tracks are the 10 supercross, 2 EnduroCross and 2 Minimoto stadiums and the 4 freestyle arenas (free ride) the Python Untamed
+// converter (the reference) builds into custom tracks
 // (Mods/Tracks/Untamed/<short>-v<n> when installed by hand, <short> when the client imported them; core/plan/UNTAMED_TRACKS.md); a track
 // converted before is found there by its folder name. The disc readers are the Alive importer's (AliveContainers.cs). Reference:
 // tools/formats/untamed_disc.py (prints the table rows of a disc; a level may have one row per disc revision).
@@ -31,8 +32,11 @@ namespace Reflex.Port.Content.UntamedImport
             this.level = level; this.shortName = shortName; this.mode = mode; this.name = name; sizes = new[] { l, d, p, s, tdf };
             this.databaseSha256 = databaseSha256; this.sceneSha256 = sceneSha256; this.tdfSha256 = tdfSha256; this.packageSha256 = packageSha256;
         }
-        /// Supercross, or EnduroCross (which races as supercross: Reflex has no EnduroCross race).
-        public string Kind => mode == "ec" ? "EnduroCross" : "Supercross";
+        /// Supercross, EnduroCross or Minimoto (both race as supercross: Reflex has neither race), or Freestyle (a free-ride track: Reflex
+        /// has no freestyle event for custom tracks).
+        public string Kind => mode == "ec" ? "EnduroCross" : mode == "mm" ? "Minimoto" : mode == "fmx" ? "Freestyle" : "Supercross";
+        /// A freestyle arena: installed as a free-ride track (Beta_Fmx_Track_Slot_1), listed under FREE RIDE only.
+        public bool FreeRideOnly => mode == "fmx";
         public string TdfName => level + "-" + mode + ".tdf07";
     }
 
@@ -115,6 +119,19 @@ namespace Reflex.Port.Content.UntamedImport
                 "74d304227915978a9efd4a0b32560aa5b8d44845c2da97e85aef53c976062478", "3f5459b1ae8b03d003f1fff437f10065d1ab9ae5433060586a26b60da3ec1f9b", "5def8c031d4f5eeb407fd5cd24689d1705d7cffe18264740826d070fa68c3b46", "77b9201a470ef6bb145b8f56898d4d3780e9f5a5f5d4f9250840b12b92f5e5f6"),
             new UntamedKnown("Lincoln_STADIUM", "lincoln", "ec", "Lincoln Memorial Arena", 268, 47866, 35336690, 508875, 339004,
                 "0e9f998c110a8bc2a1db44385df2c412710f50c7f89864c6922eeddb6288c79d", "2b3c449e948cf2c36a110df7fbc1c4b1b0d05c9fd89dac3f868816caa5673545", "e01d03edcf92511a329a436878ed5e980a46e7d28184668b619935a2fbb575bf", "583cf0b53ec09f6d1988d0488c2153ff7c1310eac4828a491327f9f8a2d62283"),
+            new UntamedKnown("Dyson_STADIUM", "dyson", "mm", "Specter Arena", 285, 47650, 33413582, 556279, 178164,
+                "794d9fec855ea7c35483471de5670d9fc80c4235c5ff250424fa2e95984dc91b", "0f455aa6481735adf39269e58868ca32b94cf2462a12d7b82b388ad48901e2a9", "375ca5ac230a3ad7f82eddbf36547d5f0689eee5aecfa16526692b7483c6f221", "17999ef85c3aa6d4369270c786287078ef8389aa765387ac26c8d05ca786e9a0"),
+            new UntamedKnown("Edgewater_STADIUM", "edgewater", "mm", "Edgewater Arena", 286, 47974, 35343697, 647088, 329600,
+                "ff74f53064d03ff55660b214d7bb8c68c57512d34e94116290f2567714974b1e", "34f18ee7df394e8bb335d4330bbbe5c4143e63a9e94376100871250d23149800", "2b15ff707881701c97737978c0bac9e1d03df9fd4034a4823e8b27d23f3799b4", "8a3a767025e231c02a73238c1c84b33eda3dc3a6eb2938eb083848c1c1880a83"),
+            // the four freestyle arenas (free ride; the tdf07 holds Untamed's AI freestyle lines, which the terrain stage reads)
+            new UntamedKnown("RBWCenter_STADIUM", "rbwcenter", "fmx", "RBW Center Arena", 288, 42399, 34528472, 302590, 159300,
+                "47d7e0c871ba5f21e0e396cf55b555cf7a95fe93d752d7e42835e1755a88c588", "c91a5fe350a5e2a66748dea7b87d239b4e46386bb14d2d4ca8a9878b9edfd30f", "28c0c06833e2a154e57b8ad89736d019adbddbcfd0eac66d3a2504f5bd905ca1", "bcb0e7335664c44dfb067dd066ad30176f8f8c950c84042af7a6cc16d1b94af7"),
+            new UntamedKnown("Southbend_STADIUM", "southbend", "fmx", "Southbend Arena", 285, 41834, 30615376, 301142, 199092,
+                "3ae2dc1ade4243a46a6cd2e565c59e6835925b9dd6a6e8554935f41b9c7d662a", "214a9417baf35ee9ab605388dd59d96cedef890831fb7000d9ccdda7fe38f821", "d49f9df4b74e695704c9502c313c6989e82a492ded6516a9afc6346d457c73fa", "0f3801efaf6835c150ebde50efa4a6ea4805a8aa30776a0729a683e48456af80"),
+            new UntamedKnown("THQSpectrum_STADIUM", "thqspectrum", "fmx", "THQ Spectrum Arena", 289, 41493, 29221779, 289214, 236340,
+                "62327858e79a2e235f7f0c58cd89e59ff3caa8faa0f652ad01597ce2b9f53148", "fabf1e67732c45db9de54c47a5323eb8de0048ab6e1ad734bc1b1007aa299492", "65cc529feeb4a25cec0d7eff8a56d824ba23c6bb0bb8c4530fa33f41e8321370", "efe651bcd01938b99ab96a9f3cd0f276fdea7afbd3f69271ab792ac421aec29a"),
+            new UntamedKnown("WestLake_STADIUM", "westlake", "fmx", "West Lake Arena", 288, 41568, 32559128, 252476, 138124,
+                "d8b03eaab53ca811913110ee56160fa9696f0b29c82c481afbff18999a8f6030", "fcdf0ab6c901fc6275e0893efde264b7dd024dfb96092a1e6ea40d68965e789a", "5c969b190649c51377d06c9613b309e1f80eb252d4154f91887fb8315f0ec9ec", "d91d02f90ec388e7cd251c3f3e5382455e17f41800d263d889da726e695f2183"),
         };
 
         /// The number of stadiums the table supports (each level once, whatever its disc revisions).

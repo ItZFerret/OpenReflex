@@ -5,7 +5,8 @@ custom track in stages that talk through files in `work/<Level>/`. The C# port k
 binary files in a work store, each stage compared with the Python output byte for byte. This file is what a stage port builds on (the plan
 is `UNTAMED_TRACKS.md`). Everything below is in `Unity/Reflex/Assets/Scripts/Content/UntamedImport/` (namespace
 `Reflex.Port.Content.UntamedImport`), is Unity-free ("System only", C# 9, .NET Standard 2.1) and is tested headless by
-`tests/untamed_convert/check`: every file it writes for the 12 stadiums against SHA-256 hashes in the repo ("Tests" at the end).
+`tests/untamed_convert/check`: every file it writes for the 14 stadiums and 4 freestyle arenas against SHA-256 hashes in the repo
+("Tests" at the end).
 
 ## Rules for a stage port
 
@@ -163,6 +164,7 @@ them relative to that root (`templates/stock-lib/assets/X`, `work/<Level>/...`, 
 | `ux_screens.build` | `UxScreens.Build(ctx, disc, materialEntries, gain, paths, log)` -> `Result` (`record`; `materials`: asset -> bytes, textures, template; `textures`) |
 | `ux_screens.layout` / `h4` / `still_reference` / `light_reference` / `mip_chain` / `encode` / `light_recipe` | `UxScreens.Layout()`, `H4`, `StillReference`, `LightReference`, `MipChain`, `Encode`, `LightRecipe`, `SourceRgb` |
 | `ux_ads.build` | `UxAds.Build(ctx, mode, matOpts, sources, templateAssets, lift, groupNumber, paths, log)` -> `Result` (`record`, `assets`, `elems`) |
+| `ux_freestyle.ramps` / `widen_carriers` / `ramp_materials` / `carried_world` | `UxFreestyle.Ramps(items, ctx, sources, lift, log, cancel)` -> `(record, assets)` / `WidenCarriers(entities, record, readModel, readCollis, log)` -> assets / `RampMaterials(ctx)` / `CarriedWorld(ctx)` |
 | `ux_splitgate.build` | `UxSplitGate.Build(ctx, matOpts, sources, templateAssets, lift, groupNumber, paths, log)` -> `Result` (`record`, `assets` = `_assets` + `_sources`, `dropgate_props`, `elems`); `UxSplitGate.UntamedGateRecords`, `OutDir(matOpts)` |
 
 What the builder must know:
@@ -224,8 +226,8 @@ What the builder must know:
 ## The track builder (`UxBuildTrack.cs`, `UxPackage.cs`, `UxLzxEncoder.cs`)
 
 The port of `ux_build_track.py` (the Builder of the current stock-base sx builds) joined with `ux_package.py`. One call converts one
-stadium into the release-form folder OPEN REFLEX loads from `Mods/Tracks`: `Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}`,
-`mod.ini`, `preview.png`, `sha256.txt`.
+stadium into the release-form folder OPEN REFLEX loads from `Mods/Tracks`: `Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}`
+(a freestyle arena: `Beta_Fmx_Track_Slot_1`), `mod.ini`, `preview.png`, `sha256.txt`.
 
 **Which reference.** Since the reference's water-glare round (2026-11-12, DESIGN 23.12, worklog `work/combined/water-glare.md`) the
 port mirrors `ux_build_track.py` md5 15fa7970 (`UxBuildTrack.REFERENCE_TOOL_MD5`) with `ux_water.py` 1fc7f0da: fairview-v7 and
@@ -247,8 +249,9 @@ two rounds after the water look (DESIGN 23.10 "dirt look" and 23.11 "dirt-look r
 The older values are options and are still compared: `dirtLook = "untamed"` with `ecWaterShore = "untamed"` (`dirtTint` / `hfParams`
 follow the look: `const` / `today`) writes norton-v6, capitalcity-v4, columbus-v5, denton-v4, harrispark-v5, foothills-v5,
 weststone-v4, jefferson-v4, wilford-v4, bridgeport-v4, fairview-v5, lincoln-v5 (`run.sh <scratch> variants`). The per-track
-arguments did not change (`work/combined/commands.json` lists all 12 under the new versions). `UxBuildTrack.PORT` is
-`UxBuildTrack/2` since (the stage stamps and the import manifest carry it).
+arguments did not change (`work/combined/commands.json` lists all 12 under the new versions). `UxBuildTrack.PORT` (the stage stamps
+and the import manifest carry it) became `UxBuildTrack/2` then, `/3` with the water-glare round and `/4` with the freestyle round,
+whose merged reference builder is md5 1ef081f1 (`REFERENCE_TOOL_MD5`; see "Freestyle arenas" below).
 
 ```csharp
 using (var disc = UxDisc.Open(discImageOrFolder))
@@ -297,6 +300,32 @@ the test compares the two and the `options` record of every reference build). Ev
 | Bridgeport | anchor moves `Anchor_LoseWalk_PlayerFinished8`, `_PlayerFinished9`, `Anchor_Intro` +49.5, `Anchor_StartLine` +7.25, `Anchor_WinFinish` +20.0 |
 | Fairview | 11 anchor moves (`Anchor_30SecGirl_CameraHound07`, six `Anchor_LoseWalk_Player*`, `Anchor_StartLine_CardGirl`, `Anchor_StartLine` +7.75, `Anchor_LoseWalk` +7.0, `Anchor_WinFinish` +17.0) |
 | Lincoln | anchor moves `Anchor_30SecGirl_CameraHound05`, `_CameraHound09`, `Anchor_StartLine` +3.75, `Anchor_LoseWalk` +1.75, `Anchor_WinFinish` +20.5 |
+| Dyson | anchor moves `Anchor_Intro` +6.5, `Anchor_StartLine` +7.5, `Anchor_LoseWalk` +6.75, `Anchor_WinFinish` +19.25 |
+| Edgewater | anchor moves `Anchor_LoseWalk_PlayerCC10`, `Anchor_StartLine` +7.25, `Anchor_LoseWalk` +11.25, `Anchor_WinFinish` +19.75 |
+| RBW Center, Southbend, THQ Spectrum, West Lake | none (no anchors in the free-ride kit) |
+
+**Freestyle arenas** (mode `fmx`, 2026-11-12). The port mirrors the reference's final arena round, the releases westlake-v3,
+southbend-v3, thqspectrum-v3 and rbwcenter-v3 (built by its merged tools `tools-fmx2`, which also built norton-v7 and dyson-v2 byte for
+byte). A level of mode `fmx` switches everything (`UxCommon.IsFmx`); there is no option of its own:
+
+- the slot is `Beta_Fmx_Track_Slot_1` (`UxCommon.RaceSlotName`): OPEN REFLEX lists it under FREE RIDE only, and `mod.ini` says
+  `kind = freeride`, its description "free ride: the arena's ramps and dirt jumps, no race";
+- the stock base is reduced to its free-ride kit (`UxBase.Resolve(level, "sx", "freeride")`: Base 16 entities, the 12 free-ride
+  starts, no SectionRace), and S8 (`UxRace`) does not run: no tdf, gate, 30 s board, lap pacing, scenario scripts or engine animation
+  sets; the dirt look has no race corridor (Untamed's painted lanes only);
+- the terrain stage leaves Untamed's collision-only ramp faces out of the heightfield (`terrain/carried_tris.npy`) and takes the
+  `-fmx.tdf07` freestyle lines as the lap of its ruts test; `UxFreestyle.Ramps` gives each carried face to the smallest ramp
+  collision box holding it (a new kind-22 collis `UXR_<short>_<Untamed id>`, DriveOn 1, MXBike, MetalFrame, no soft collision) and
+  moves a ramp whose drawn deck sits off its riding faces onto them (THQ Spectrum: four ramps; the fit is scipy's Powell, ported step
+  for step); `UxFreestyle.WidenCarriers` writes bounds-only model copies where the riding faces stick out of the steel;
+- the materials stage draws the ramps' perforated grating (generated `tiled_alpha` texture), the side panels' navy and red (`tint`,
+  from `UxShaderProg.DiffuseAlbedo`) and RBW Center's funbox frame (`diffuse_albedo` literal);
+- a dynamic prop standing more than 100 ft over the arena is left out (Southbend's three signs parked above the roof); the jumbotron
+  shows the Untamed logo still (overlay `screens-fmx/screens_layout_fmx.json`); the tuff blocks may wear four more stock wraps
+  (`SP_Scott`, `SP_FactoryConnection`, `SP_Acerbis`, `SP_IMSRoll`).
+
+Two changes of the reference's merged tools apply to every level and change no stadium's output: exact duplicate collision triangles
+are dropped (`UxCollision`), and the terrain-part check accepts a split collision triangle that lies on a source triangle.
 
 The other fields are the reference's defaults of the current builds (base stock SX_FortDodge, bales tuff, EC water on / arena look /
 shore ground / splash on / cap 1.25 ft, screens stills at 0.9, MassiveAd panels keep, zones fill 2,0,0,0, dirt look stock with dirt
@@ -380,7 +409,10 @@ the 17 'sx' names that matter, 5 are not SX_FortDodge assets (`Water.shader`, th
 databases that an asset of the 12 supported levels, or a fixed name the stages ask for, meets (all stock Reflex names). With them
 every lookup the stages and parts can make on the 12 levels gives the full tables' answer (61,748 lookups, 157 hits, 0 differ), and
 the three stages write byte-identical folders on either table set (`assembly_parts/run.sh <scratch> stages`: 5,924 files). `level.json`
-still records the template folder text (`template.dir`, an option of `UxLevel`). A level outside the 12 needs its own check.
+still records the template folder text (`template.dir`, an option of `UxLevel`). A level outside the 12 needs its own check: the two
+Minimoto stadiums (Dyson, Edgewater; 2026-11-12) were built on the pinned tables and match the reference's releases dyson-v1 /
+edgewater-v1 (scene byte for byte, database as a document, every package resource decoded), and so were the four freestyle arenas,
+which match westlake-v3, southbend-v3, thqspectrum-v3 and rbwcenter-v3 the same way.
 
 ## numpy rules that decide bytes
 
@@ -453,7 +485,7 @@ still records the template folder text (`template.dir`, an option of `UxLevel`).
 
 - `build` (in `all`): every stadium from the disc through S1 - S8 and the builder; each file it writes is hashed and compared with
   `check/expected.txt`: the seven files of the track folder (`<short>/track/<file>`) and every file of its work store, the stage
-  outputs and the builder's records (`<short>/work/<path>`; `build_info.json` without its step times). 84 + 9,872 hashes. The build's
+  outputs and the builder's records (`<short>/work/<path>`; `build_info.json` without its step times). 126 + 13,133 hashes. The build's
   progress must rise to 1.
 - `variants`: the option values kept besides the defaults (the older ground, shore, water and reflection looks; packing `stored` and
   `raw`, whose resources must also decode to the `lzx` build's bytes): 21 builds, their four `.dx9` files against the list.
@@ -466,6 +498,6 @@ still records the template folder text (`template.dir`, an option of `UxLevel`).
 `expected.txt` holds hashes only, no game bytes. It was recorded on 2026-11-12 (Windows, .NET 8), when the output of this port was
 confirmed equal to the releases of the conversion it was ported from (that comparison is not part of the repo), and it holds for
 both disc forms and both library kinds: the disc image with an original install and the extracted disc with the client's game files
-give the same 9,956 files. A change to the converter that changes its output must come with a new list (`run.sh <scratch> all
+give the same 13,259 files. A change to the converter that changes its output must come with a new list (`run.sh <scratch> all
 --write-expected <file>`, then `variants --write-expected <file>`), and `UntamedImporter`'s tested-build table must follow it
 (`tests/untamed_import/import` checks that table against the list).

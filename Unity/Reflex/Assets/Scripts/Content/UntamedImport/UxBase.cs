@@ -50,6 +50,8 @@ namespace Reflex.Port.Content.UntamedImport
             public string[] single_types, all_of_type, bump_models, freeride_types, sectionrace_types, implicit_sounds, script_kinds;
             public List<KeyValuePair<string, string[]>> named = new List<KeyValuePair<string, string[]>>();
             public (string suffix, int count)[] expect; public (string name, string type)[] implicit_roots;
+            /// 'race', or 'freeride' for a policy made by FreeridePolicy.
+            public string kit = "race";
             public string[] Named(string type) { foreach (var kv in named) if (kv.Key == type) return kv.Value; return null; }
         }
         static readonly string[] SINGLE_TYPES = { "HFTerrainRSData", "ShadowMapRSData", "TDFEntityRSData", "AmbientDirectionalLightRSData", "SkyRSData",
@@ -102,6 +104,30 @@ namespace Reflex.Port.Content.UntamedImport
         };
         /// STOCK_POLICY.get(level).
         public static Policy StockPolicy(string level) => level == "SX_FortDodge" ? FORTDODGE : null;
+
+        // Free-ride kit (FREESTYLE.md): a stock base reduced for a track with no race (the freestyle arenas, slot Beta_Fmx_Track_Slot_N, FREE RIDE
+        // only). Same environment / audio / terrain singletons and bump model as the race kit, without the race and cut-scene kit (TDFEntity,
+        // the gate kit, the 30 s board, crew chiefs, anchors, scenario actors, camera paths, anim storages) and without the SectionRace
+        // sub-scene: the shape of the in-game-proven DE HuCkiT free-ride template. Open Reflex's free ride reads only <L>FreeRide's
+        // StartEntityFreeRideRSData; its intro scenario FR_<5 letters>_Intro is absent, which the core treats as no script.
+        public static readonly string[] KIT_CHOICES = { "race", "freeride" };
+        static readonly string[] FREERIDE_DROP_TYPES = { "TDFEntityRSData", "DropGateRSData", "ThirtySecondBoardRSData" };
+        public static readonly string[] FREERIDE_SUBS = { "Base", "FreeRide" };
+        /// FREERIDE_EXPECT[stem].
+        static (string suffix, int count)[] FreerideExpect(string stem) => stem == "SX_FortDodge" ? new[] { ("Base", 16), ("FreeRide", 12) } : null;
+        /// freeride_policy(stem, pol): the race-kit policy of a stock base reduced to the free-ride kit.
+        public static Policy FreeridePolicy(string stem, Policy pol)
+        {
+            var expect = FreerideExpect(stem) ?? throw new UxException("no free-ride kit count for stock base " + stem + " (known: ['SX_FortDodge'])");
+            var single = new List<string>(); foreach (string t in pol.single_types) if (!In(FREERIDE_DROP_TYPES, t)) single.Add(t);
+            return new Policy
+            {
+                roles = pol.roles, intro_track = pol.intro_track, hf_heightmap = pol.hf_heightmap, single_types = single.ToArray(),
+                named = new List<KeyValuePair<string, string[]>>(), all_of_type = new string[0], bump_models = pol.bump_models,
+                freeride_types = pol.freeride_types, sectionrace_types = new string[0], expect = expect, script_kinds = new string[0],
+                implicit_sounds = new string[0], implicit_roots = new (string, string)[0], kit = "freeride",
+            };
+        }
 
         /// ENGINE_ANIM_SETS: (set name, the RSData type that needs it or null = always).
         public static readonly (string set, string type)[] ENGINE_ANIM_SETS = { ("30SecondGirlShowBoard", "ThirtySecondBoardRSData"), ("HiResCrewChiefLoseWalk_PushBike", null) };
@@ -221,24 +247,31 @@ namespace Reflex.Port.Content.UntamedImport
         /// ux_base.Base of kind 'stock'.
         public sealed class Descriptor
         {
-            public readonly string kind = "stock", stem, level; public readonly Policy policy; public readonly Roles roles;
-            internal Descriptor(string level)
+            public readonly string kind = "stock", stem, level, kit; public readonly Policy policy; public readonly Roles roles;
+            internal Descriptor(string level, string kit = "race")
             {
-                stem = level; this.level = level;
+                if (!In(KIT_CHOICES, kit)) throw new UxException("kit '" + kit + "' not in ('race', 'freeride')");
+                stem = level; this.level = level; this.kit = kit;
                 policy = StockPolicy(level) ?? throw new UxException("no stock base policy for " + level + " (known: ['SX_FortDodge'])");
                 roles = policy.roles;
+                if (kit == "freeride") policy = FreeridePolicy(stem, policy);
             }
             /// Base.folder as Python writes it (templates/stock-<level>).
             public string Folder(UxPaths paths = null) => (paths ?? new UxPaths()).Templates("stock-" + stem);
             /// Base.record().
-            public JObj Record(UxPaths paths = null) => new JObj().Set("kind", kind).Set("folder", Folder(paths)).Set("stem", stem).Set("level", level).Set("roles", roles.Record());
+            public JObj Record(UxPaths paths = null)
+            {
+                var r = new JObj().Set("kind", kind).Set("folder", Folder(paths)).Set("stem", stem).Set("level", level).Set("roles", roles.Record());
+                if (kit != "race") r.Set("kit", kit);
+                return r;
+            }
         }
-        /// resolve('stock', base_level, None, 'sx'): the stock base of an sx build.
-        public static Descriptor Resolve(string baseLevel = DEFAULT_STOCK_LEVEL, string kind = "sx")
+        /// resolve('stock', base_level, None, 'sx', kit=kit): the stock base of an sx build; kit 'freeride' = FREESTYLE.md.
+        public static Descriptor Resolve(string baseLevel = DEFAULT_STOCK_LEVEL, string kind = "sx", string kit = "race")
         {
             if (kind != "sx") throw new UxException("--base stock is for sx builds only");
             if (UxStock.StockPin(baseLevel, "database") == null) throw new UxException("no md5 pins for stock level " + baseLevel);
-            return new Descriptor(baseLevel);
+            return new Descriptor(baseLevel, kit);
         }
 
         // ================================================================================================ scene helpers
@@ -303,12 +336,14 @@ namespace Reflex.Port.Content.UntamedImport
         public static (List<UxSubScene> subs, UxBxml level, JObj record) Prepare(Descriptor b, List<UxSubScene> subs, UxBxml levelBxml, UxStock stock, Action<string> log = null)
         {
             var pol = b.policy; string stem = b.stem;
-            var rec = new JObj().Set("policy", "mirror (the DE sketch kit roles)").Set("subscenes_before", Names(subs));
+            string[] keepSubs = b.kit == "freeride" ? FREERIDE_SUBS : KEEP_SUBS;
+            var rec = new JObj().Set("policy", b.kit == "race" ? "mirror (the DE sketch kit roles)"
+                : "free-ride kit (FREESTYLE.md: the HuCkiT free-ride template shape, no race / cut-scene kit)").Set("subscenes_before", Names(subs));
             var keptSubs = new List<UxSubScene>(); var droppedSubs = new List<UxSubScene>();
             foreach (var s in subs)
             {
                 string suf = s.name.StartsWith(stem, StringComparison.Ordinal) ? s.name.Substring(stem.Length) : null;
-                (In(KEEP_SUBS, suf) ? keptSubs : droppedSubs).Add(s);
+                (In(keepSubs, suf) ? keptSubs : droppedSubs).Add(s);
             }
             rec.Set("subscenes_dropped", Names(droppedSubs));
             var stripped = new SortedDictionary<string, long>(StringComparer.Ordinal); var kept = new SortedDictionary<string, long>(StringComparer.Ordinal);
@@ -340,7 +375,7 @@ namespace Reflex.Port.Content.UntamedImport
             }
             // counts against the policy expectation
             var got = new JObj(); bool same = true; var want = new JObj();
-            foreach (string suf in KEEP_SUBS)
+            foreach (string suf in keepSubs)
             {
                 long n = 0; foreach (var kv in kept) if (kv.Key.Substring(0, kv.Key.IndexOf('/')) == suf) n += kv.Value;
                 got.Set(suf, n);
@@ -494,7 +529,7 @@ namespace Reflex.Port.Content.UntamedImport
         /// script_kinds(base, which): 'stock' = the policy's script_kinds, 'all' = INTRO_KINDS, 'none' = ().
         public static string[] ScriptKinds(Descriptor b, string which = "stock")
         {
-            if (which == "none") return new string[0];
+            if (which == "none" || b.kit == "freeride") return new string[0];     // (FREESTYLE.md: the free-ride kit ships no intro / race scripts)
             if (which == "all") return INTRO_KINDS;
             return b.policy.script_kinds != null && b.policy.script_kinds.Length > 0 ? b.policy.script_kinds : INTRO_KINDS;
         }

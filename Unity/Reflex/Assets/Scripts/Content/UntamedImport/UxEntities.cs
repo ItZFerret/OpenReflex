@@ -105,6 +105,7 @@ namespace Reflex.Port.Content.UntamedImport
         public const int CHUNK_MAX = UxCommon.Limits.MaxEntitiesPerChunk;
         public const string PFX = UxCommon.NS_PREFIX;
         public const double BURIED_MIN_FT = 0.05;
+        public const double PARKED_MIN_FT = 100.0;          // FREESTYLE.md: a freestyle dynamic body this far over the Untamed terrain top is left out
         public const double FR_POINT_CLEAR_FT = 3.0;
 
         static readonly string[] PHYSICS_FAMILY = { "PhysicsRSData", "PopUpBaleRSData", "PopDownBaleRSData" };
@@ -1922,6 +1923,24 @@ namespace Reflex.Port.Content.UntamedImport
                             " ft below the trncol surface); in Reflex it would be a sleeping body inside the HF");
                         rollout_removed.Add(new JObj().Set("untamed_id", e.id).Set("id", e.id + ID_OFFSET).Set("name", e.name).Set("type", typ).Set("option", "buried drop")
                             .Set("subscene", "Base").Set("buried", bur));
+                        return;
+                    }
+                }
+                if (UxCommon.IsFmx(lv) && In(PHYSICS_FAMILY, target) && e.matrix != null)
+                {
+                    // FREESTYLE.md: Untamed parks props far above the arena (Southbend: 3 TO_Sign PhysicsRSData 544 ft up, over the roof); in Reflex
+                    // they would be live bodies dropping into the arena. Left out like --buried drop.
+                    double x = e.matrix[12], y = e.matrix[13], z = e.matrix[14];
+                    var top = tq.Top(x, z, false);
+                    double gap = y - (top != null ? top.Value.y : 0.0);
+                    if (gap > PARKED_MIN_FT)
+                    {
+                        removed.Add("parked drop: " + target + " " + e.name);
+                        rollout.Add("parked drop: " + target + " " + e.name + " (" + Py.D(e.id) + ") left out");
+                        rollout_notes.Add(typ + " " + e.name + " (" + Py.D(e.id) + ") left out (freestyle parked rule): it stands " + Py.F(gap, 1) +
+                            " ft over the Untamed terrain (a staging prop above the roof); in Reflex it would fall into the arena");
+                        rollout_removed.Add(new JObj().Set("untamed_id", e.id).Set("id", e.id + ID_OFFSET).Set("name", e.name).Set("type", typ).Set("option", "parked drop")
+                            .Set("subscene", "Base").Set("parked", new JObj().Set("gap_ft", Py.Round(gap, 2))));
                         return;
                     }
                 }

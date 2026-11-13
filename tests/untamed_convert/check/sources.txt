@@ -9,6 +9,9 @@ Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxTuff.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxWater.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxDirtLook.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxScreens.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxFreestyle.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxFreestyle.Ramps.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxFreestyle.Fit.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxAds.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UxSplitGate.cs
 # the stages S1-S8

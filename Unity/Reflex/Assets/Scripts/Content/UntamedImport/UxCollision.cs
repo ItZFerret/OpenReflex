@@ -283,11 +283,19 @@ namespace Reflex.Port.Content.UntamedImport
         }
 
         // ====================================================================================== triangle meshes
-        /// clean_tris(tris): the finite triangles whose |cross| is above 1e-9; nonfinite and degenerate are the dropped counts.
+        /// The 9 values of a triangle as a key (== equality: -0.0 and 0.0 are the same value, as np.unique compares them).
+        static string Row(double[] t, int p)
+        {
+            var sb = new System.Text.StringBuilder(9 * 17);
+            for (int k = 0; k < 9; k++) { double v = t[p + k]; if (v == 0) v = 0.0; sb.Append(BitConverter.DoubleToInt64Bits(v).ToString("x16")); }
+            return sb.ToString();
+        }
+        /// clean_tris(tris): the finite triangles whose |cross| is above 1e-9 and that repeat no earlier triangle; nonfinite and degenerate
+        /// (incl. the duplicates) are the dropped counts.
         public static double[] CleanTris(double[] tris, out int nonfinite, out int degenerate)
         {
             int n = tris.Length / 9; nonfinite = 0; degenerate = 0;
-            var keep = new List<int>(n);
+            var keep = new List<int>(n); var seen = new HashSet<string>(StringComparer.Ordinal);
             for (int i = 0; i < n; i++)
             {
                 int p = 9 * i; bool fin = true;
@@ -296,7 +304,9 @@ namespace Reflex.Port.Content.UntamedImport
                 double ax = tris[p + 3] - tris[p], ay = tris[p + 4] - tris[p + 1], az = tris[p + 5] - tris[p + 2];
                 double bx = tris[p + 6] - tris[p], by = tris[p + 7] - tris[p + 1], bz = tris[p + 8] - tris[p + 2];
                 double c0 = ay * bz - az * by, c1 = az * bx - ax * bz, c2 = ax * by - ay * bx;
-                if (Math.Sqrt((c0 * c0 + c1 * c1) + c2 * c2) > 1e-9) keep.Add(i); else degenerate++;
+                if (Math.Sqrt((c0 * c0 + c1 * c1) + c2 * c2) > 1e-9 && seen.Add(Row(tris, p))) keep.Add(i); else degenerate++;
+                // (Clearwater round) an exact duplicate of an earlier finite triangle (same 9 values, same order; np.unique(axis=0) keeps the
+                // first) is dropped too and counted with the degenerate ones. A duplicate of a degenerate triangle is degenerate itself.
             }
             var o = new double[keep.Count * 9];
             for (int i = 0; i < keep.Count; i++) Array.Copy(tris, 9 * keep[i], o, 9 * i, 9);

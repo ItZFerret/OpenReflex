@@ -1,9 +1,9 @@
-// GAME LIBRARY  ·  MX vs ATV UNTAMED: the stadiums of the player's own Untamed disc (Xbox 360) imported as custom tracks by the in-client
+// GAME LIBRARY  ·  MX vs ATV UNTAMED: the stadiums and arenas of the player's own Untamed disc (Xbox 360) imported as custom tracks by the in-client
 // converter (Content/UntamedImport: no Python, no native code; plan: core/plan/UNTAMED_TRACKS.md).
 //   sources   the folder / file browser of the Alive import (a gamepad works): the disc image (.iso) or the folder the disc was extracted
 //             into (the one holding Database and AI); a file adds it, ADD THIS FOLDER a folder
 //   tracks    FIND TRACKS reads them on a worker thread (UntamedImporter.Scan: each stadium's files against the supported disc; then what
-//             the converter needs of the Reflex game files) and lists the 12 stadiums: choose them, IMPORT n TRACKS. Ready ones are
+//             the converter needs of the Reflex game files) and lists the 18 tracks: choose them, IMPORT n TRACKS. Ready ones are
 //             chosen; one installed already (imported before: Mods/Tracks/Untamed/<short>; or by hand: <short>-v<n>) is marked and
 //             not chosen: choosing it imports it again (a hand-installed copy is never changed)
 //   import    the chosen stadiums converted and installed one after another on a worker thread (UntamedImporter.Import: the current
@@ -41,7 +41,10 @@ namespace Reflex.Port.OpenFrontEnd
         bool _untamedImporting; UntamedImportResult _untamedResult;
         /// Why the Reflex game files can't give the converter what it needs (null: they can): for every stadium, and for the EnduroCross
         /// arenas besides (UntamedImporter.LibraryProblem, asked by the scan's worker).
-        string _untamedLibraryProblem, _untamedArenaProblem;
+        string _untamedLibraryProblem;
+        /// What the Reflex game files lack for the tracks of one mode only (the EnduroCross arenas' water, a freestyle arena's wrap): mode -> why.
+        readonly Dictionary<string, string> _untamedModeProblem = new Dictionary<string, string>(StringComparer.Ordinal);
+        static readonly string[] UntamedOwnModes = { "ec", "fmx" };
         bool UntamedBusy => _untamedTask != null && !_untamedTask.IsCompleted;
         public bool UntamedScanRunning => UntamedBusy && !_untamedImporting;
         public bool UntamedImportRunning => UntamedBusy && _untamedImporting;
@@ -59,8 +62,8 @@ namespace Reflex.Port.OpenFrontEnd
             copy.style.flexGrow = 1; copy.style.flexShrink = 1; copy.style.minWidth = 240;
             OuUi.Text("OPTIONAL  ·  XBOX 360 DISC", "mxa-library-platform", copy);
             OuUi.Text("MX vs ATV UNTAMED", "mxa-track-title", copy);
-            OuUi.Text("Import the 10 supercross and 2 EnduroCross stadiums of your own MX vs ATV Untamed disc (the disc image, .iso, or the extracted disc " +
-                      "folder) as custom tracks. Your files are only read.",
+            OuUi.Text("Import the 10 supercross, 2 EnduroCross and 2 Minimoto stadiums and the 4 freestyle arenas of your own MX vs ATV Untamed disc (the disc image, .iso, " +
+                      "or the extracted disc folder) as custom tracks. Your files are only read.",
                       "mxa-library-description", copy).style.whiteSpace = WhiteSpace.Normal;
             var installed = new List<UntamedKnown>();
             try { installed = UntamedImporter.Installed(TrackMods.Folder); } catch (Exception) { }
@@ -234,7 +237,7 @@ namespace Reflex.Port.OpenFrontEnd
         {
             if (UntamedBusy || _untamedSourcePaths.Count == 0) return;
             _untamedFound?.Dispose(); _untamedFound = null; _untamedError = null; _untamedImporting = false;
-            _untamedLibraryProblem = null; _untamedArenaProblem = null;
+            _untamedLibraryProblem = null; _untamedModeProblem.Clear();
             _untamedCancel = new CancellationTokenSource();
             var paths = _untamedSourcePaths.ToList(); var token = _untamedCancel.Token;
             string tracks = TrackMods.Folder, library = ReflexInstall.Dir;   // (main thread: the client root and the game folder come from Unity's paths and settings)
@@ -249,8 +252,14 @@ namespace Reflex.Port.OpenFrontEnd
                 _untamedStatus = "Checking your Reflex game files";
                 try
                 {
-                    _untamedLibraryProblem = UntamedImporter.LibraryProblem(library, found.tracks.Where(t => t.known.mode != "ec").Select(t => t.known).ToList());
-                    if (_untamedLibraryProblem == null) _untamedArenaProblem = UntamedImporter.LibraryProblem(library, found.tracks.Select(t => t.known).ToList());
+                    _untamedLibraryProblem = UntamedImporter.LibraryProblem(library, found.tracks.Where(t => Array.IndexOf(UntamedOwnModes, t.known.mode) < 0).Select(t => t.known).ToList());
+                    if (_untamedLibraryProblem == null)
+                        foreach (string mode in UntamedOwnModes)
+                        {
+                            var ofMode = found.tracks.Where(t => t.known.mode == mode).Select(t => t.known).ToList();
+                            string p = ofMode.Count > 0 ? UntamedImporter.LibraryProblem(library, ofMode) : null;
+                            if (p != null) lock (_untamedModeProblem) _untamedModeProblem[mode] = p;
+                        }
                 }
                 catch (OperationCanceledException) { found.Dispose(); throw; }
                 catch (Exception ex) { _untamedLibraryProblem = "Your MX vs ATV Reflex game files can't be read: " + ex.Message; }
@@ -264,7 +273,7 @@ namespace Reflex.Port.OpenFrontEnd
         {
             if (!t.Ok) return t.problem;
             if (_untamedLibraryProblem != null) return "Needs your MX vs ATV Reflex game files (see above)";
-            if (t.known.mode == "ec" && _untamedArenaProblem != null) return _untamedArenaProblem;
+            lock (_untamedModeProblem) if (_untamedModeProblem.TryGetValue(t.known.mode, out string own)) return own;
             // something of the player's own where the track goes (Untamed/<short> without the importer's manifest, whatever it holds and
             // whatever copies are next to it; a file; a link): never replaced. The import's own test (UntamedImporter.DestinationProblem)
             return t.inTheWay;
@@ -379,7 +388,7 @@ namespace Reflex.Port.OpenFrontEnd
             }
             foreach (var tr in _untamedFound.tracks) Debug.Log("[OpenReflex] Untamed " + tr.known.level + ": " + (tr.Ok ? "ready" : tr.problem) + (tr.installed != null ? " (installed: " + tr.installed + ")" : ""));
             if (_untamedLibraryProblem != null) Debug.Log("[OpenReflex] Untamed import not possible: " + _untamedLibraryProblem);
-            else if (_untamedArenaProblem != null) Debug.Log("[OpenReflex] Untamed EnduroCross arenas not possible: " + _untamedArenaProblem);
+            else lock (_untamedModeProblem) foreach (var kv in _untamedModeProblem) Debug.Log("[OpenReflex] Untamed " + (kv.Key == "ec" ? "EnduroCross" : "freestyle") + " arenas not possible: " + kv.Value);
             // chosen: every stadium that can be imported and is not installed yet (one installed is chosen by the player: a re-import)
             _untamedChosen.Clear();
             // ... and one imported by an older converter whose files this one writes differently (an update: Fairview and Lincoln after the water-glare round)
@@ -407,7 +416,8 @@ namespace Reflex.Port.OpenFrontEnd
 
         // --------------------------------------------------------------------------------------------- tracks / results
 
-        static string UntamedKindLabel(UntamedKnown k) => k.mode == "ec" ? "ENDUROCROSS (RACES AS SUPERCROSS)" : "SUPERCROSS";
+        static string UntamedKindLabel(UntamedKnown k) => k.mode == "ec" ? "ENDUROCROSS (RACES AS SUPERCROSS)" : k.mode == "mm" ? "MINIMOTO (RACES AS SUPERCROSS)"
+            : k.mode == "fmx" ? "FREESTYLE (FREE RIDE)" : "SUPERCROSS";
 
         void ShowUntamedTracks()
         {
@@ -420,7 +430,7 @@ namespace Reflex.Port.OpenFrontEnd
             string into = tracksFolder != null ? Path.Combine(tracksFolder, UntamedImporter.TracksSubfolder) : "Mods/Tracks/" + UntamedImporter.TracksSubfolder;
             int ready = found.Ready.Count();
             OuUi.Text(found.tracks.Count == 0 ? "No MX vs ATV Untamed stadium was found in these sources."
-                      : $"{ready} of {UntamedImporter.StadiumCount} stadiums found on your disc are ready. Choose the ones to import; each is converted on this computer and installed as a custom supercross track (about 50 MB each).",
+                      : $"{ready} of {UntamedImporter.StadiumCount} tracks found on your disc are ready. Choose the ones to import; each is converted on this computer and installed as a custom track (about 50 MB each): the stadiums race as supercross, the freestyle arenas are free-ride tracks.",
                       found.tracks.Count == 0 ? "mxa-error" : "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
             OuUi.Text("Converted from your own disc and your Reflex game files, as new files in " + into + ".", "mxa-note", box).style.whiteSpace = WhiteSpace.Normal;
             if (_untamedLibraryProblem != null && found.tracks.Count > 0) OuUi.Text(_untamedLibraryProblem, "mxa-error", box).style.whiteSpace = WhiteSpace.Normal;

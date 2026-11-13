@@ -50,7 +50,10 @@ namespace Reflex.Port.Content.UntamedImport
         const double X0 = -HF_SIZE * HF_RES / 2, Z1 = HF_SIZE * HF_RES / 2;
         const double CELL_FT = 128.0;
         const string COLLISION_ONLY = "collision-only";
+        /// FREESTYLE.md: the collision-only ramp faces the ramp entities carry (UxFreestyle reads terrain/carried_tris.npy).
+        public const string CARRIED_FILE = "carried_tris.npy";
         const double EDGE_NEAR_FT = 12.0, EDGE_ERR_FT = 0.45; const int EDGE_ROUNDS = 6;
+        const double FMX_EDGE_CENTROID_FT = 0.6;              // FREESTYLE.md: = check_coverage's centroid limit
         const double EDGE_BORDER_FT = 3.0, HOLE_MARGIN_FT = 0.10, FILL_BORDER_FT = 8.0, FILL_DROP_FT = 1.0, CLAMP_MARGIN_FT = 0.25, CLAMP_SAFETY_FT = 0.07;
         const int FOOT_RING = 1;
         const double UNCLAMP_DARK = 0.08, CLAMP_REACH_FT = 0.1, RUTS_NEAR_FT = 15.0, RUTS_MIN_ENRICH = 1.2, MACRO_K = 0.35;
@@ -66,6 +69,7 @@ namespace Reflex.Port.Content.UntamedImport
             { "BridgePort_STADIUM", new[] { "Bridgeport_Track_Over" } },
             { "Jefferson_STADIUM", new[] { "Jefferson_SXOver" } },
             { "Wilford_STADIUM", new[] { "Wilford_Track_InOVER" } },
+            { "Dyson_STADIUM", new[] { "DysonMM_Tover" } },          // DESIGN 25: Minimoto overpass deck (DysonMM_Under stays HF)
             { "Fairview_STADIUM", new[] { "Fairview_Rocks", "Fairview_Logs", "endurocross_Log_Ends", COLLISION_ONLY } },
             { "Lincoln_STADIUM", new[] { "Lincoln_Rocks", "Lincoln_Logs", "endurocross_Log_Ends", COLLISION_ONLY } },
         };
@@ -478,6 +482,7 @@ namespace Reflex.Port.Content.UntamedImport
                 double[] dEx = UxNd.DistanceTransformEdtDistances(noEx, S, S);
                 for (int i = 0; i < N; i++) near[i] |= dEx[i] * HF_RES <= EDGE_NEAR_FT;
             }
+            bool fmxWide = UxCommon.IsFmx(src.lv);
             Drawn dr = DrawnLow(src, jobs);
             log("  drawn geometry: " + dr.entities + " entities, " + dr.triangles + " triangles over the HF extent");
             var cap = new double[N]; for (int i = 0; i < N; i++) cap[i] = dr.low_c[i] - CLAMP_MARGIN_FT - CLAMP_SAFETY_FT;
@@ -518,6 +523,9 @@ namespace Reflex.Port.Content.UntamedImport
                 }
                 if (it == EDGE_ROUNDS) break;
                 var cand = new List<int>();
+                // FREESTYLE.md: on a freestyle arena a kept up-facing triangle anywhere in the footprint (away from 'near') whose CENTROID
+                // the final HF misses by more than FMX_EDGE_CENTROID_FT also becomes mesh ('wide'); moved after the EDGE_ERR_FT ones
+                var wide = new List<int>();
                 for (int t = 0; t < nt; t++)
                 {
                     if (excl[t] || !(src.ny[t] > UP_NY)) continue;
@@ -526,16 +534,22 @@ namespace Reflex.Port.Content.UntamedImport
                     double fcc = Math.Floor((cx - X0) / HF_RES), frr = Math.Floor((Z1 - cz) / HF_RES);
                     int cc = fcc < 0 ? 0 : fcc > S - 1 ? S - 1 : (int)fcc, rr = frr < 0 ? 0 : frr > S - 1 ? S - 1 : (int)frr;
                     if (near[rr * S + cc]) cand.Add(t);
+                    else if (fmxWide)
+                    {
+                        double cy = ((P[a + 1] + P[b + 1]) + P[c + 1]) / 3;
+                        if (Math.Abs(Bilinear(hFinal, S, X0, Z1, HF_RES, cx, cz) - cy) > FMX_EDGE_CENTROID_FT) wide.Add(t);
+                    }
                 }
-                if (cand.Count == 0) break;
+                if (cand.Count == 0 && wide.Count == 0) break;
                 var err = new double[cand.Count];
                 double[] hfin = hFinal;
                 Parallel.For(0, cand.Count, new ParallelOptions { MaxDegreeOfParallelism = jobs }, i => err[i] = TriMaxError(hfin, P, I, cand[i]));
-                double maxErr = double.NegativeInfinity; int moved = 0;
+                double maxErr = double.NegativeInfinity; int moved = wide.Count;
                 for (int i = 0; i < err.Length; i++) { if (err[i] > maxErr) maxErr = err[i]; if (err[i] > EDGE_ERR_FT) moved++; }
-                rounds.Add(new JObj().Set("round", (long)it).Set("candidates", (long)cand.Count).Set("moved", (long)moved).Set("max_err", UxNp.PyRound(maxErr, 3)));
+                rounds.Add(new JObj().Set("round", (long)it).Set("candidates", (long)cand.Count).Set("moved", (long)moved).Set("max_err", err.Length > 0 ? UxNp.PyRound(maxErr, 3) : 0.0));
                 if (moved == 0) break;
                 for (int i = 0; i < err.Length; i++) if (err[i] > EDGE_ERR_FT) { edge[cand[i]] = true; excl[cand[i]] = true; }
+                foreach (int t in wide) { edge[t] = true; excl[t] = true; }
             }
             long nExMat = Count(exclMat), nEdge = Count(edge);
             log("  exclusions: " + nExMat + " material triangles, " + nEdge + " edge triangles (" + rounds.Count + " rounds)");
@@ -1122,30 +1136,7 @@ namespace Reflex.Port.Content.UntamedImport
         /// lap_polyline: the lap's node positions (tdf07_to_reflex split / structure / lap_walk), closed?, global 5 (the lap length).
         static double[] LapPolyline(Source src, out bool closed, out double g5)
         {
-            byte[] data = src.disc.ReadTdf(src.cancel);
-            int bas;
-            if (data.Length >= 0x20 && UxBin.U32LE(data, 0) == (uint)(data.Length - 4) && UxBin.U32BE(data, 0x18) == 260) bas = 4;
-            else if (data.Length >= 0x1c && UxBin.U32BE(data, 0x14) == 260) bas = 0;
-            else throw new UxException("not a TDF: no 260-byte path field at 0x14 (tdf07) or 0x18 (Reflex)");
-            int p = bas + 24 + (int)UxBin.U32BE(data, bas + 20);
-            // structure(items): globals, then sections (item 11) of fields and nodes (item 20)
-            var glob = new List<(uint id, int at, int n)>();
-            var secFields = new List<List<(uint id, int at, int n)>>(); var secNodes = new List<List<List<(uint id, int at, int n)>>>();
-            List<(uint id, int at, int n)> curNode = null; int curSec = -1;
-            while (p + 8 <= data.Length)
-            {
-                uint id = UxBin.U32BE(data, p), s = UxBin.U32BE(data, p + 4);
-                int n = s == 0x10 ? 12 : (int)s;
-                if (n < 0 || p + 8 + (long)n > data.Length) throw new UxException("truncated item " + id + " at 0x" + p.ToString("x"));
-                var it = (id, p + 8, n);
-                if (id == 11) { secFields.Add(new List<(uint, int, int)>()); secNodes.Add(new List<List<(uint, int, int)>>()); curSec = secFields.Count - 1; curNode = null; }
-                else if (id == 20) { UxBin.Require(curSec >= 0, "tdf: a node before any section"); curNode = new List<(uint, int, int)> { it }; secNodes[curSec].Add(curNode); }
-                else if (curNode != null) curNode.Add(it);
-                else if (curSec >= 0) secFields[curSec].Add(it);
-                else glob.Add(it);
-                p += 8 + n;
-            }
-            if (p != data.Length) throw new UxException("stream does not end on an item (" + (data.Length - p) + " trailing bytes)");
+            var (data, glob, secFields, secNodes) = ParseTdf(src);
             int First(List<(uint id, int at, int n)> items, uint id) { foreach (var it in items) if (it.id == id) return it.at; return -1; }
             int g9 = First(glob, 9); UxBin.Require(g9 >= 0, "tdf: no finish line (global 9)");
             int a = (int)UxBin.U32BE(data, g9 + 40), b = (int)UxBin.U32BE(data, g9 + 44);
@@ -1176,11 +1167,75 @@ namespace Reflex.Port.Content.UntamedImport
             return pts;
         }
 
-        /// lap_distance: the distance (ft) from every grid pixel centre to the closed lap polyline.
-        static double[] LapDistance(double[] pts, int size, double res)
+        /// fmx_lines (FREESTYLE.md): the Untamed AI freestyle lines (every section of AI/<Level>-fmx.tdf07 with at least 2 node positions) as
+        /// open polylines, and their total length (per line the pairwise sum of the x / z segment lengths, the lines added in order).
+        static List<double[]> FmxLines(Source src, out double total)
         {
-            int np = pts.Length / 3; var m = new bool[size * size];
-            for (int i = 0; i < np; i++)
+            var (data, _, _, secNodes) = ParseTdf(src);
+            var lines = new List<double[]>(); total = 0.0;
+            foreach (var sec in secNodes)
+            {
+                var p = new List<double>();
+                foreach (var node in sec)
+                {
+                    int at = -1; foreach (var it in node) if (it.id == 21) at = it.at;        // node_dict: the last one
+                    if (at < 0) continue;
+                    for (int c = 0; c < 3; c++) p.Add(UxBin.F32BE(data, at + 4 * c));
+                }
+                if (p.Count >= 6) lines.Add(p.ToArray());
+            }
+            foreach (var p in lines)
+            {
+                int n = p.Length / 3; var L = new double[n - 1];
+                for (int i = 0; i < n - 1; i++)
+                {
+                    double dx = p[3 * (i + 1)] - p[3 * i], dz = p[3 * (i + 1) + 2] - p[3 * i + 2];
+                    L[i] = Math.Sqrt(dx * dx + dz * dz);
+                }
+                total += UxNp.Sum(L, 0, L.Length);
+            }
+            return lines;
+        }
+
+        /// tdf07_to_reflex split + structure: the stream, the global items, and per section its fields and its nodes (each node = its
+        /// items, item 20 first).
+        static (byte[] data, List<(uint id, int at, int n)> glob, List<List<(uint id, int at, int n)>> secFields, List<List<List<(uint id, int at, int n)>>> secNodes) ParseTdf(Source src)
+        {
+            byte[] data = src.disc.ReadTdf(src.cancel);
+            int bas;
+            if (data.Length >= 0x20 && UxBin.U32LE(data, 0) == (uint)(data.Length - 4) && UxBin.U32BE(data, 0x18) == 260) bas = 4;
+            else if (data.Length >= 0x1c && UxBin.U32BE(data, 0x14) == 260) bas = 0;
+            else throw new UxException("not a TDF: no 260-byte path field at 0x14 (tdf07) or 0x18 (Reflex)");
+            int p = bas + 24 + (int)UxBin.U32BE(data, bas + 20);
+            // structure(items): globals, then sections (item 11) of fields and nodes (item 20)
+            var glob = new List<(uint id, int at, int n)>();
+            var secFields = new List<List<(uint id, int at, int n)>>(); var secNodes = new List<List<List<(uint id, int at, int n)>>>();
+            List<(uint id, int at, int n)> curNode = null; int curSec = -1;
+            while (p + 8 <= data.Length)
+            {
+                uint id = UxBin.U32BE(data, p), s = UxBin.U32BE(data, p + 4);
+                int n = s == 0x10 ? 12 : (int)s;
+                if (n < 0 || p + 8 + (long)n > data.Length) throw new UxException("truncated item " + id + " at 0x" + p.ToString("x"));
+                var it = (id, p + 8, n);
+                if (id == 11) { secFields.Add(new List<(uint, int, int)>()); secNodes.Add(new List<List<(uint, int, int)>>()); curSec = secFields.Count - 1; curNode = null; }
+                else if (id == 20) { UxBin.Require(curSec >= 0, "tdf: a node before any section"); curNode = new List<(uint, int, int)> { it }; secNodes[curSec].Add(curNode); }
+                else if (curNode != null) curNode.Add(it);
+                else if (curSec >= 0) secFields[curSec].Add(it);
+                else glob.Add(it);
+                p += 8 + n;
+            }
+            if (p != data.Length) throw new UxException("stream does not end on an item (" + (data.Length - p) + " trailing bytes)");
+            return (data, glob, secFields, secNodes);
+        }
+
+        /// lap_distance: the distance (ft) from every grid pixel centre to the closed lap polyline.
+        static double[] LapDistance(double[] pts, int size, double res) => LapDistance(new List<double[]> { pts }, true, size, res);
+        /// lap_distance over polylines: one closed lap, or (FREESTYLE.md) several open polylines.
+        static double[] LapDistance(List<double[]> lines, bool closed, int size, double res)
+        {
+            var m = new bool[size * size];
+            foreach (double[] pts in lines)
+            for (int i = 0, np = pts.Length / 3, nseg = closed ? pts.Length / 3 : pts.Length / 3 - 1; i < nseg; i++)
             {
                 int j = (i + 1) % np;
                 double px = pts[3 * i], pz = pts[3 * i + 2], qx = pts[3 * j], qz = pts[3 * j + 2];
@@ -1549,8 +1604,19 @@ namespace Reflex.Port.Content.UntamedImport
             }
             int[] tint = DirtTint(src, rutsK, opt.dirt_tint, out string tintSrc);
             // lap distance + ruts test
-            double[] pts = LapPolyline(src, out bool closed, out double g5);
-            double[] dist = LapDistance(pts, TS, TD_RES);
+            double[] pts, dist; bool closed; double g5;
+            if (UxCommon.IsFmx(src.lv))
+            {   // FREESTYLE.md: no lap; the AI freestyle lines stand in for it
+                var lines = FmxLines(src, out g5); closed = false;
+                int tot = 0; foreach (var l in lines) tot += l.Length;
+                pts = new double[tot]; int at = 0; foreach (var l in lines) { Array.Copy(l, 0, pts, at, l.Length); at += l.Length; }
+                dist = LapDistance(lines, false, TS, TD_RES);
+            }
+            else
+            {
+                pts = LapPolyline(src, out closed, out g5);
+                dist = LapDistance(pts, TS, TD_RES);
+            }
             var nearLap = new bool[TN]; long nNear = 0;
             for (int i = 0; i < TN; i++) { nearLap[i] = foot2[i] && dist[i] <= RUTS_NEAR_FT; if (nearLap[i]) nNear++; }
             dist = null;
@@ -1827,7 +1893,7 @@ namespace Reflex.Port.Content.UntamedImport
             return Math.Sqrt(x * x + y * y + z * z);
         }
         /// cluster_mesh: kind-22 clusters (edges over 64 ft split, then the median split: <= 48 triangles, <= 32 ft half size).
-        static List<UxRmesh.Cluster> ClusterMesh(double[] tris, out int nTris)
+        internal static List<UxRmesh.Cluster> ClusterMesh(double[] tris, out int nTris)
         {
             double[] T = SplitLongEdges(tris, KIND22_SPLIT_EDGE);
             var keep = new List<double>(T.Length);
@@ -2134,13 +2200,42 @@ namespace Reflex.Port.Content.UntamedImport
             bool splitNeeded = CTa.Length / 9 != ne - nDegen;
             if (splitNeeded)
             {
-                var grid = new UxImaging.PointGrid(srcC);
+                // (Clearwater round) a split triangle's new vertices are edge midpoints, never source vertices: each collision triangle must
+                // lie ON a source triangle (its 3 vertices within 2e-3 ft of the plane and inside the triangle) of one of the 16 source
+                // triangles whose centroids are nearest its centroid
+                Centroids(srcC, out double[] cs); Centroids(CTa, out double[] cct);
+                var grid = new UxImaging.PointGrid(cs);
                 int nct = CTa.Length / 9; var far = new bool[nct];
-                Parallel.For(0, nct, () => (new int[1], new double[1]), (i, _, buf) =>
+                int kk = Math.Min(16, ne);
+                Parallel.For(0, nct, () => (new int[kk], new double[kk]), (i, _, buf) =>
                 {
-                    double mx = 0;
-                    for (int v = 0; v < 3; v++) { grid.Query(CTa[9 * i + 3 * v], CTa[9 * i + 3 * v + 1], CTa[9 * i + 3 * v + 2], 1, buf.Item1, buf.Item2); double d = Math.Sqrt(buf.Item2[0]); if (d > mx) mx = d; }
-                    far[i] = mx > 2e-3;
+                    int found = grid.Query(cct[3 * i], cct[3 * i + 1], cct[3 * i + 2], kk, buf.Item1, buf.Item2);
+                    double best = double.PositiveInfinity;
+                    for (int c = 0; c < found; c++)
+                    {
+                        int j = 9 * buf.Item1[c];
+                        double ax = srcC[j], ay = srcC[j + 1], az = srcC[j + 2], bx = srcC[j + 3], by = srcC[j + 4], bz = srcC[j + 5], cx = srcC[j + 6], cy = srcC[j + 7], cz = srcC[j + 8];
+                        double ux = bx - ax, uy = by - ay, uz = bz - az, vx = cx - ax, vy = cy - ay, vz = cz - az;
+                        double nx = uy * vz - uz * vy, ny_ = uz * vx - ux * vz, nz = ux * vy - uy * vx;          // np.cross
+                        double nn = Math.Sqrt((nx * nx + ny_ * ny_) + nz * nz), nm = Math.Max(nn, 1e-12);
+                        double n1x = nx / nm, n1y = ny_ / nm, n1z = nz / nm;
+                        double worst = 0;
+                        for (int v = 0; v < 3; v++)
+                        {
+                            double px = CTa[9 * i + 3 * v], py = CTa[9 * i + 3 * v + 1], pz = CTa[9 * i + 3 * v + 2];
+                            double dpl = Math.Abs(EinsumDot(px - ax, py - ay, pz - az, n1x, n1y, n1z));
+                            // cross(c3 - b, p - b) . n1 / nn and cross(a - c3, p - c3) . n1 / nn
+                            double e0x = cx - bx, e0y = cy - by, e0z = cz - bz, q0x = px - bx, q0y = py - by, q0z = pz - bz;
+                            double w0 = EinsumDot(e0y * q0z - e0z * q0y, e0z * q0x - e0x * q0z, e0x * q0y - e0y * q0x, n1x, n1y, n1z) / nm;
+                            double e1x = ax - cx, e1y = ay - cy, e1z = az - cz, q1x = px - cx, q1y = py - cy, q1z = pz - cz;
+                            double w1 = EinsumDot(e1y * q1z - e1z * q1y, e1z * q1x - e1x * q1z, e1x * q1y - e1y * q1x, n1x, n1y, n1z) / nm;
+                            double w2 = 1.0 - w0 - w1;
+                            double outv = Math.Max(0.0, -Math.Min(Math.Min(w0, w1), w2)) * Math.Sqrt(Math.Max(nn, 0));
+                            worst = Math.Max(worst, Math.Max(dpl, outv));
+                        }
+                        best = Math.Min(best, worst);
+                    }
+                    far[i] = best > 2e-3;
                     return buf;
                 }, _ => { });
                 strayC = Count(far);
@@ -2287,8 +2382,24 @@ namespace Reflex.Port.Content.UntamedImport
             lg(lv.disc + ": " + src.nt + " trncol tris, " + src.rF.Length / 3 + " render tris, " + src.mats.Count + " materials " + PyList(src.mats));
             var problems = new List<object>(); var warnings = new List<object>();
             List<int> exMat = ExclusionMaterials(src, problems);
+            bool fmx = UxCommon.IsFmx(lv);
+            if (fmx && !exMat.Contains(-1))
+            {   // FREESTYLE.md: the freestyle ramps' riding faces are collision-only trncol triangles (the steel ramp model draws them). They
+                // leave the HF and are carried by their ramp CollisionRSData (UxFreestyle), not built as terrain parts.
+                exMat.Add(-1); exMat = SortedSet(exMat);
+            }
             Step("terrain: heightfield", 0.05);
             Hf hfr = BuildHeightfield(src, exMat, lg, jobs);
+            var carried = new bool[src.nt]; long nCarried = 0;
+            if (fmx) for (int i = 0; i < src.nt; i++) if (hfr.excl_mat[i] && src.cm[i] < 0) { carried[i] = true; nCarried++; }
+            // hfp: the parts' triangle set (= hfr when nothing is carried)
+            Hf hfp = hfr;
+            if (nCarried > 0)
+            {
+                hfp = new Hf { h = hfr.h, foot = hfr.foot, foot_ext = hfr.foot_ext, cov = hfr.cov, excl = new bool[src.nt], excl_mat = hfr.excl_mat, edge = hfr.edge,
+                    unclampable = hfr.unclampable, lift = hfr.lift, low = hfr.low, low_c = hfr.low_c, stats = hfr.stats };
+                for (int i = 0; i < src.nt; i++) hfp.excl[i] = hfr.excl[i] && !carried[i];
+            }
             JObj st = hfr.stats;
             if (UxJson.Int(st.Get("unclampable_px")) != 0)
                 problems.Add(Inv(UxJson.Int(st.Get("unclampable_px"))) + " outside pixels need the HF below 0 ft (lifted) to clear drawn geometry at the " + G(src.lift) + " ft lift; caused by " +
@@ -2299,7 +2410,7 @@ namespace Reflex.Port.Content.UntamedImport
             Step("terrain: fidelity", 0.35);
             JObj fid = Fidelity(src, hfr.h, hfr.excl);
             lg("  fidelity: rms " + UxImaging.PyFixed(UxJson.Num(fid.Get("rms")), 4) + " max " + UxImaging.PyFixed(UxJson.Num(fid.Get("max")), 3) + " (>0.6: " + fid.Get("over_0_6ft") + ")");
-            JObj reqs = MaterialRequests(src, hfr, out var gen);
+            JObj reqs = MaterialRequests(src, hfp, out var gen);
             float hmin = float.PositiveInfinity, hmax = float.NegativeInfinity; foreach (float v in hfr.h) { if (v < hmin) hmin = v; if (v > hmax) hmax = v; }
             var perMat = new JObj(); long collisionOnly = 0;
             { var counts = new long[src.mats.Count]; foreach (int c in src.cm) { if (c < 0) collisionOnly++; else counts[c]++; } for (int k = 0; k < src.mats.Count; k++) perMat.Set(src.MatKey(k), counts[k]); }
@@ -2333,14 +2444,24 @@ namespace Reflex.Port.Content.UntamedImport
                     .Set("rule", "EXCLUDE table (DESIGN 5.7) + edge triangles: kept up-facing triangles within " + G(EDGE_NEAR_FT) + " ft of an excluded triangle or " + G(EDGE_BORDER_FT) +
                         " ft of the footprint border whose surface the final HF misses by > " + G(EDGE_ERR_FT) + " ft (16 sample points)"))
                 .Set("heightfield", hfJson).Set("fidelity", fid).Set("problems", problems).Set("warnings", warnings);
+            if (nCarried > 0)
+                result.Set("carried", new JObj().Set("material", COLLISION_ONLY).Set("tris", nCarried).Set("file", CARRIED_FILE)
+                    .Set("rule", "FREESTYLE.md: freestyle ramp riding faces (collision-only trncol triangles) are not in the HF and not terrain parts; each ramp " +
+                        "CollisionRSData carries the ones inside its placed collision box (ux_freestyle); excluded_tris.npy = the parts only"));
             if (!opt.write) return result;
 
             var filesOut = new JObj();
             byte[] npy = UxImaging.NpyFloat32(hfr.h, HF_SIZE, HF_SIZE);
             outdir.WriteBytes("hf.npy", npy); filesOut.Set("hf.npy", UxBin.Md5(npy));
-            var exList = new List<int>(); for (int i = 0; i < src.nt; i++) if (hfr.excl[i]) exList.Add(i);
+            var exList = new List<int>(); for (int i = 0; i < src.nt; i++) if (hfp.excl[i]) exList.Add(i);
             npy = UxImaging.NpyInt32(exList.ToArray());
             outdir.WriteBytes("excluded_tris.npy", npy); filesOut.Set("excluded_tris.npy", UxBin.Md5(npy));
+            if (nCarried > 0)
+            {   // FREESTYLE.md: the ramp faces the ramp entities carry
+                var cList = new List<int>(); for (int i = 0; i < src.nt; i++) if (carried[i]) cList.Add(i);
+                npy = UxImaging.NpyInt32(cList.ToArray());
+                outdir.WriteBytes(CARRIED_FILE, npy); filesOut.Set(CARRIED_FILE, UxBin.Md5(npy));
+            }
             var code = new byte[hfr.h.Length]; for (int i = 0; i < code.Length; i++) code[i] = (byte)(hfr.foot_ext[i] ? 1 : hfr.unclampable[i] ? 2 : 0);
             npy = UxImaging.NpyUint8(code, HF_SIZE, HF_SIZE);
             outdir.WriteBytes("footprint.npy", npy); filesOut.Set("footprint.npy", UxBin.Md5(npy));
@@ -2389,7 +2510,7 @@ namespace Reflex.Port.Content.UntamedImport
                 filesOut.Set(rel, UxBin.Md5(tex));
             }
             Step("terrain: mesh parts", 0.85);
-            List<object> parts = BuildParts(src, hfr, outdir, reqs, lg, out JObj pstats);
+            List<object> parts = BuildParts(src, hfp, outdir, reqs, lg, out JObj pstats);
             foreach (object po in parts)
                 foreach (var kv in ((JObj)((JObj)po).Get("files")).items) filesOut.Set((string)((JObj)kv.Value).Get("file"), ((JObj)kv.Value).Get("md5"));
             var mreq = new JObj().Set("schema", "ux_terrain_material_requests/1").Set("level", lv.disc).Set("requests", reqs).Set("generated_textures", gfiles)
@@ -2411,7 +2532,7 @@ namespace Reflex.Port.Content.UntamedImport
             result.Set("parts_summary", summary);
             result.Set("material_requests", "material_requests.json");
             Step("terrain: checks", 0.92);
-            result.Set("checks", new JObj().Set("parts", CheckParts(src, hfr, parts, outdir)).Set("coverage", CheckCoverage(src, hfr)).Set("outside", CheckOutside(hfr))
+            result.Set("checks", new JObj().Set("parts", CheckParts(src, hfp, parts, outdir)).Set("coverage", CheckCoverage(src, hfr)).Set("outside", CheckOutside(hfr))
                 .Set("heights", new JObj().Set("min", (double)hmin).Set("max", (double)hmax).Set("ok", hmin >= 0 && hmax <= 2047)));
             result.Set("files", filesOut);
             outdir.WriteJson("terrain.json", result);

@@ -234,8 +234,10 @@ namespace Reflex.Port.Content.UntamedImport
         }
         /// corridor_mask(tdf_bytes, S, n): the race corridor (every race section at 41 lateral fractions of the outer edges, 0.5 ft
         /// steps) on the n-grid, closed (ndimage.binary_closing, 3 iterations of the 4-connected structure, border 0).
+        /// tdf null (FREESTYLE.md: a free-ride build has no race line): an empty corridor.
         public static bool[] CorridorMask(byte[] tdf, double S, int n = G)
         {
+            if (tdf == null) return new bool[n * n];
             var sp = UxTdf07.Split(tdf);
             UxTdf07.Structure(sp.items, out _, out var secs);
             int ns = secs.Count;

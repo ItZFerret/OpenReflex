@@ -22,7 +22,7 @@
 //             crash        a staging folder left by a crashed import (with a replaced track in it, and a link to a folder outside):
 //                          removed, the track put back, the folder outside as it was; one whose lock is held: left
 //             disc         (with --folder) a copy of Lincoln's files with one package byte changed: refused; without Fairview: refused
-//   all     the 12 stadiums into an empty tracks folder: time, size, every read of the library (UntamedImporter's list of needed
+//   all     every stadium (14) into an empty tracks folder: time, size, every read of the library (UntamedImporter's list of needed
 //           stock files must name them), the longest staged path against UntamedImporter.WorkPathBudget
 // Arguments: [quick|all] --iso <disc image> (or UX_DISC_ISO) --reflex <Reflex install or game files> (or UX_REFLEX / UX_CLIENT_LIB)
 //            --scratch <dir> [--folder <extracted disc>] [--expected <tests/untamed_convert/check/expected.txt>] [--threads N]
@@ -58,6 +58,7 @@ static class Program
     static string F(double s) => s.ToString("0.0", CultureInfo.InvariantCulture);
     static string Mb(long b) => F(b / 1048576.0);
     static int Threads;
+    static int N => UntamedImporter.StadiumCount;            // the tracks of the supported disc (14 stadiums, 4 freestyle arenas)
 
     /// Every file under a folder (or the file itself): relative path -> size, write time and (hash: true) sha256.
     static SortedDictionary<string, string> Snapshot(string path, bool hash = false)
@@ -172,7 +173,7 @@ static class Program
                 rows++;
                 if (UntamedImporter.TestedSha256(shortName, kind) != sha) { bad++; UxTest.Log("     differs: " + rest); }
             }
-            UxTest.Report(rows == 48 && bad == 0, "the importer's tested-build table = the track rows of expected.txt (" + rows + " rows, " + bad + " differ)");
+            UxTest.Report(rows == 4 * N && bad == 0, "the importer's tested-build table = the track rows of expected.txt (" + rows + " rows, " + bad + " differ)");
         }
         else UxTest.Skip("no tests/untamed_convert/check/expected.txt (--expected)");
 
@@ -193,7 +194,7 @@ static class Program
         using (var found = UntamedImporter.Scan(new[] { iso }, tracks, null, none))
         {
             UxTest.Section("scan");
-            UxTest.Report(found.Ready.Count() == 12 && found.tracks.All(t => t.imported == null && t.handInstalled.Count == 0 && t.inTheWay == null), "12 stadiums ready, none imported, nothing in the way (" + F(scanClock.Elapsed.TotalSeconds) + " s)");
+            UxTest.Report(found.Ready.Count() == N && found.tracks.All(t => t.imported == null && t.handInstalled.Count == 0 && t.inTheWay == null), N + " stadiums ready, none imported, nothing in the way (" + F(scanClock.Elapsed.TotalSeconds) + " s)");
 
             // ---- preconditions: nothing may be written
             UxTest.Section("library, space, path");
@@ -203,8 +204,12 @@ static class Program
             UxTest.Report(m != null && m.Contains("SX_FortDodge") && m.Contains("stock supercross stadium"), "a library without SX_FortDodge: \"" + m + "\"");
             probe.hidden.Clear(); probe.hidden.Add("SX_DLC01_FreightYard");
             m = Throws(() => Run(found, new[] { "norton", "lincoln" }, tracks, probe, Options(), none));
-            UxTest.Report(m != null && m.Contains("SX_DLC01_FreightYard") && m.Contains("Lincoln Memorial Arena") && m.Contains("supercross stadiums can be imported without it"), "without the EnduroCross water's level: \"" + m + "\"");
+            UxTest.Report(m != null && m.Contains("SX_DLC01_FreightYard") && m.Contains("Lincoln Memorial Arena") && m.Contains("other tracks can be imported without it"), "without the EnduroCross water's level: \"" + m + "\"");
             UxTest.Check(UntamedImporter.LibraryProblem(probe, found.tracks.Where(t => t.known.mode == "sx").Select(t => t.known)) == null, "the supercross stadiums need no SX_DLC01_FreightYard");
+            probe.hidden.Clear(); probe.hidden.Add("NAT_Concord");
+            m = Throws(() => Run(found, new[] { "norton", "rbwcenter" }, tracks, probe, Options(), none));
+            UxTest.Report(m != null && m.Contains("NAT_Concord") && m.Contains("RBW Center Arena") && m.Contains("other tracks can be imported without it"), "without the freestyle wrap's level: \"" + m + "\"");
+            UxTest.Check(UntamedImporter.LibraryProblem(probe, found.tracks.Where(t => t.known.mode != "fmx").Select(t => t.known)) == null, "the stadiums need no NAT_Concord");
             probe.hidden.Clear(); probe.hidden.Add("AnimationSets.bxml");
             m = Throws(() => Run(found, new[] { "norton" }, tracks, probe, Options(), none));
             UxTest.Report(m != null && m.Contains("AnimationSets.bxml"), "without AnimationSets.bxml: \"" + m + "\"");
@@ -241,7 +246,7 @@ static class Program
                 UxTest.Report(m != null && m.Contains("Mods/Tracks/Untamed is a file") && clock.Elapsed.TotalSeconds < 5, "Mods/Tracks/Untamed is a file, in " + F(clock.Elapsed.TotalSeconds) + " s: \"" + m + "\"");
                 Unchanged("nothing written there, the file as it was", wayBefore, tracksF, true);
                 using (var scan = UntamedImporter.Scan(new[] { iso }, tracksF, null, none))
-                    UxTest.Check(scan.tracks.Count == 12 && scan.tracks.All(t => t.inTheWay != null && t.inTheWay.Contains("Mods/Tracks/Untamed is a file")), "the scan flags every stadium with it");
+                    UxTest.Check(scan.tracks.Count == N && scan.tracks.All(t => t.inTheWay != null && t.inTheWay.Contains("Mods/Tracks/Untamed is a file")), "the scan flags every stadium with it");
 
                 string tracksW = Path.Combine(UxTest.FreshFolder(scratch, "quick-way"), "Mods", "Tracks");
                 Directory.CreateDirectory(Path.Combine(tracksW, "Untamed", "norton"));                      // no level file in it, no manifest
@@ -259,7 +264,7 @@ static class Program
                                   && T("lincoln").handInstalled.SequenceEqual(new[] { "Untamed/lincoln-v2" }), "the scan: a folder next to a hand-installed copy is in the way: \"" + T("lincoln").inTheWay + "\"");
                     UxTest.Report(T("denton").inTheWay != null && T("denton").inTheWay.Contains("Mods/Tracks/Untamed/denton is a file"), "the scan: a file is in the way: \"" + T("denton").inTheWay + "\"");
                     UxTest.Check(T("wilford").inTheWay == null && T("wilford").handInstalled.SequenceEqual(new[] { "Untamed/wilford-v3" }) && scan.tracks.Count(t => t.inTheWay != null) == 3,
-                                 "the scan: a hand-installed copy alone is not in the way; 3 of 12 stadiums flagged");
+                                 "the scan: a hand-installed copy alone is not in the way; 3 of " + N + " stadiums flagged");
                     clock.Restart();
                     var r = Run(scan, new[] { "norton", "lincoln", "denton" }, tracksW, dir, Options(true), none);
                     UxTest.Report(r.tracks.All(t => t.state == UntamedImportState.Failed && t.error == T(t.shortName).inTheWay) && clock.Elapsed.TotalSeconds < 5,
@@ -481,17 +486,18 @@ static class Program
     {
         string dir = Path.Combine(tracks, "Untamed", t.shortName);
         var names = Directory.GetFiles(dir).Select(Path.GetFileName).OrderBy(n => n, StringComparer.Ordinal).ToList();
-        var want = new[] { "Beta_Sx_Track_Slot_1.dx9.database", "Beta_Sx_Track_Slot_1.dx9.level", "Beta_Sx_Track_Slot_1.dx9.package", "Beta_Sx_Track_Slot_1.dx9.scene", "mod.ini", "preview.png", "sha256.txt", "untamed-import.json" };
+        var k = src.known;
+        string stem = UntamedImporter.SlotStemOf(k), iniKind = k.FreeRideOnly ? "freeride" : "supercross";
+        var want = new[] { stem + ".dx9.database", stem + ".dx9.level", stem + ".dx9.package", stem + ".dx9.scene", "mod.ini", "preview.png", "sha256.txt", "untamed-import.json" };
         UxTest.Check(names.SequenceEqual(want) && Directory.GetDirectories(dir).Length == 0, t.shortName + ": the folder holds the four files, mod.ini, preview.png, sha256.txt and the manifest (" + string.Join(", ", names) + ")");
-        var probs = UntamedImporter.CheckTrack(dir);
+        var probs = UntamedImporter.CheckTrack(dir, null, k.FreeRideOnly);
         UxTest.Check(probs.Count == 0, t.shortName + ": passes the track checks" + (probs.Count > 0 ? ": " + string.Join("; ", probs) : ""));
         var ini = File.ReadAllText(Path.Combine(dir, "mod.ini"));
-        UxTest.Check(ini.Contains("name = " + UxCommon.Level(t.level).display + " (Untamed)\n") && ini.Contains("\nkind = supercross\n") && ini.Contains("\nthumbnail = preview.png\n"), t.shortName + ": mod.ini names it, kind supercross");
+        UxTest.Check(ini.Contains("name = " + UxCommon.Level(t.level).display + " (Untamed)\n") && ini.Contains("\nkind = " + iniKind + "\n") && ini.Contains("\nthumbnail = preview.png\n"), t.shortName + ": mod.ini names it, kind " + iniKind);
         var m = UntamedImporter.ReadManifest(dir);
         if (!UxTest.Check(m != null, t.shortName + ": the manifest reads")) return;
-        var k = src.known;
         bool head = (string)m.Get("importer") == UntamedImporter.ImporterVersion && (string)m.Get("converter") == UxBuildTrack.PORT && (string)m.Get("level") == k.level && (string)m.Get("short") == k.shortName
-                    && (string)m.Get("slot") == "Beta_Sx_Track_Slot_1" && m.Get("tested_build") is bool tb && tb && m.Get("imported_utc") is string && m.Get("options") is JObj;
+                    && (string)m.Get("slot") == stem && m.Get("tested_build") is bool tb && tb && m.Get("imported_utc") is string && m.Get("options") is JObj;
         UxTest.Check(head, t.shortName + ": the manifest names the importer, the converter, the level, the options and the tested build");
         var s = UxJson.Get(m, "source", "sha256") as JObj;
         bool source = s != null && (string)s.Get("database") == k.databaseSha256 && (string)s.Get("scene") == k.sceneSha256 && (string)s.Get("tdf07") == k.tdfSha256 && (string)s.Get("package") == k.packageSha256
@@ -512,7 +518,7 @@ static class Program
         }
         UxTest.Check(all, t.shortName + ": the manifest lists the 7 files with their sizes and sha256");
         foreach (string kind in UxCommon.SlotFileKinds)
-            UxTest.Check(UxBin.Sha256File(Path.Combine(dir, "Beta_Sx_Track_Slot_1.dx9." + kind)) == UntamedImporter.TestedSha256(t.shortName, kind), t.shortName + ": ." + kind + " = the tested build");
+            UxTest.Check(UxBin.Sha256File(Path.Combine(dir, stem + ".dx9." + kind)) == UntamedImporter.TestedSha256(t.shortName, kind), t.shortName + ": ." + kind + " = the tested build");
     }
 
     // ------------------------------------------------------------------------------------------------------- a library without some levels
@@ -534,10 +540,10 @@ static class Program
         }
     }
 
-    // ------------------------------------------------------------------------------------------------------- all 12
+    // ------------------------------------------------------------------------------------------------------- all
     static void All(string iso, UxDirectoryLibrary dir, string scratch)
     {
-        UxTest.Section("import all 12 stadiums");
+        UxTest.Section("import all " + N + " tracks");
         string tracks = Path.Combine(UxTest.FreshFolder(scratch, "all"), "Mods", "Tracks");
         var lib = new ProbeLibrary(dir);
         int longest = 0; string longestPath = ""; long peakStage = 0;
@@ -565,8 +571,8 @@ static class Program
                 UxTest.Log("         " + string.Join("  ", t.steps.Select(st => st.Key + " " + F(st.Value))));
             }
             proc.Refresh();
-            UxTest.Report(res.tracks.Count == 12 && res.tracks.All(t => t.Ok), "12 of 12 imported in " + F(res.seconds) + " s, " + Mb(total) + " MB installed; peak working set " + Mb(proc.PeakWorkingSet64) + " MB");
-            UxTest.Check(res.tracks.All(t => t.testedBuild), "all 12 are the tested build");
+            UxTest.Report(res.tracks.Count == N && res.tracks.All(t => t.Ok), N + " of " + N + " imported in " + F(res.seconds) + " s, " + Mb(total) + " MB installed; peak working set " + Mb(proc.PeakWorkingSet64) + " MB");
+            UxTest.Check(res.tracks.All(t => t.testedBuild), "all " + N + " are the tested build");
             UxTest.Check(res.tracks.All(t => t.bytes <= UntamedImporter.EstimatedBytes(t.known)), "every track is within its disk space estimate");
             UxTest.Report(total + peakStage <= need, "the space check asks for " + Mb(need) + " MB; used: " + Mb(total) + " MB installed + at most " + Mb(peakStage) + " MB staged");
             UxTest.Check(Staging(tracks).Count == 0, "no staging folder left");
@@ -574,7 +580,7 @@ static class Program
             foreach (var t in res.tracks)
             {
                 string d = Path.Combine(tracks, "Untamed", t.shortName);
-                var probs = Directory.Exists(d) ? UntamedImporter.CheckTrack(d) : new List<string> { "not there" };
+                var probs = Directory.Exists(d) ? UntamedImporter.CheckTrack(d, null, t.known != null && t.known.FreeRideOnly) : new List<string> { "not there" };
                 UxTest.Check(probs.Count == 0 && UntamedImporter.ReadManifest(d) != null, t.shortName + ": installed, passes the track checks" + (probs.Count > 0 ? ": " + string.Join("; ", probs) : ""));
             }
             UxTest.Log("     library reads: " + string.Join(", ", lib.levels) + "; " + string.Join(", ", lib.roots));

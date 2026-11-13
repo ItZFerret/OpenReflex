@@ -1,7 +1,8 @@
 // MX vs ATV Untamed (Xbox 360): the import. Each chosen stadium of the player's own disc (UntamedImporter.Scan) is converted by the track
 // builder (UxBuildTrack: the disc's level + the stock level SX_FortDodge and a few more stock files of the player's Reflex library) into
-// a custom track of the client: <Mods/Tracks>/Untamed/<short>/ = Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}, mod.ini,
-// preview.png, sha256.txt and the import manifest untamed-import.json (TrackMods lists it; core/plan/UNTAMED_TRACKS.md).
+// a custom track of the client: <Mods/Tracks>/Untamed/<short>/ = Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene} (a freestyle
+// arena: Beta_Fmx_Track_Slot_1, a free-ride track), mod.ini, preview.png, sha256.txt and the import manifest untamed-import.json (TrackMods
+// lists it; core/plan/UNTAMED_TRACKS.md).
 //   sources    only read: the disc (the scan's open volumes) and the Reflex library (an IUxLibrary; UxDirectoryLibrary reads an original
 //              install or the client's game files, loose or packed, without Unity). Each stadium's five disc files are checked against
 //              the supported disc again, the package included (the scan leaves that one out)
@@ -134,11 +135,16 @@ namespace Reflex.Port.Content.UntamedImport
         /// What a running import needs free besides the tracks themselves: one stadium's work store and its staged folder.
         public const long StagingBytes = 320L << 20;
         const string SlotStem = "Beta_Sx_Track_Slot_1";
+        /// The freestyle arenas' slot (free ride only: Open Reflex's KindOf maps the 'Fmx' token to FREE RIDE).
+        const string FreeRideSlotStem = "Beta_Fmx_Track_Slot_1";
+        /// The slot file stem a track is installed under.
+        public static string SlotStemOf(UntamedKnown k) => k.FreeRideOnly ? FreeRideSlotStem : SlotStem;
 
         // The four .dx9 files of the tested build (the track rows of tests/untamed_convert/check/expected.txt: what the converter writes from the
         // supported disc and a stock Reflex library, on any machine): short name -> database, package, scene; the level file is the same
-        // for every stadium. The test compares this table with that file.
+        // for every stadium, and another one (Base + FreeRide only) for every freestyle arena. The test compares this table with that file.
         const string TestedLevelSha256 = "62066933a86159f17112cb2cd8c68be56945974670f4709eec112c80f5d22b94";
+        const string TestedFreeRideLevelSha256 = "5b3ef66e15ec0e8d7c3ffcfa98da4aff974fd5b478d773cf9264d861cec010ef";
         static readonly Dictionary<string, string[]> TestedBuild = new Dictionary<string, string[]>(StringComparer.Ordinal)
         {
             { "norton", new[] { "46e5e572c4831aa939a7758103c46b5af62f2ea6b6f202f769c3b7ace3f7a8ef", "f780311aeaf3c82bd170d3fab6fc4e10cb3699d4c939cf6449ee87c8ffac3488", "599f929bd23d254a89b94abf82e8b3ecdf23c0db81334cabc3dbb204003d4d4c" } },
@@ -153,15 +159,23 @@ namespace Reflex.Port.Content.UntamedImport
             { "bridgeport", new[] { "98b74e73408776ec414dab6dca657486721c21e24d9d5ca74497a3f806d72494", "829dc57f24a52abb0fd9dddbbfc9a08aae9d52a097d3bb040b59c58c8d43ad52", "f4bd9c759550864ce262e7f7ebb9292725537c9218138bec4f92cfb65000af72" } },
             { "fairview", new[] { "4590d8756e03b14194bfc2a1fa1f4ec5c2a0e8528a98f17d0cd32789f367c10c", "4f5802d4ac4ada83a0bc7f0a0a1b4d63c81b3557d707a61a7fb58cadc9799801", "ab8dd8c900e41fc895fd1c6e74e6fbffee74bc51cbbd9eb29f95ac162c07606c" } },
             { "lincoln", new[] { "bce986cfe4054da20710812d6c80f57438149cb137535f6d076716257469e551", "c03df2e8036544ad94f40cba0d4a62e98042748db889025008d491a425a96da7", "6779df7a5776493f56cbaa574a9d36d516100bf08ddbdd5ada63dbe1bbbdf176" } },
+            { "dyson", new[] { "4e6184a34d87f51c9b12ee7e547a9f798c657bdf85400b493288e865bc0a83c5", "a4c19add353c317921dfd0e3f47abcc9410ed9ac947762b275e2353ef85a47b7", "203d43083965af19ddbfedcfd71f68123d710b42e75562de2511178ef9310c90" } },
+            { "edgewater", new[] { "07d898a9800fe646c43aceefa57ca85c3facb110ce47292dd3676434dab99731", "e5bfea92d109f663a8a94cee48de355d6ffbc5d8f429c74432b0441beeffeca0", "767079933a6b3132aac71fb436e6c7895bb0635e20db7dc405914eb28a5d2036" } },
+            { "rbwcenter", new[] { "8e1ffdb09ac044fa1e5e4da3a66842f201da149abf800095f9a0c9262b555788", "eb52ebb4b4eaa2e257ba759306a3b86ac1f9e34e1c08a86bbdcdb2664576a674", "28e32aca9a6108ea7009492198e05b9ff06d9b80d7e9f52c2955def4471d0e3b" } },
+            { "southbend", new[] { "b054b4117d6082844187c1e43093884888ed07df6ed193f843fb67897e751fb4", "f18e80a9a1ed2dfce6c04d16cc40d5d2ef37e1413ee4b685d6af01e5f7a623b5", "42ec54e6300c5d7cb237157d78c3ea841e2606bc21e8e459e0331dc1eb59c6c5" } },
+            { "thqspectrum", new[] { "7c91132edd03c1d1e70c5be84926ccd4778e214e2b568b9ec9e8761f79870b7c", "4e9281755ac2a11835c53294c994f269d05a4730d5fdc6310b12c239d13efd7f", "2383c0d494b0886fb8e3a152daa350dd967d16c85e4c09b187568dd6243fc4c7" } },
+            { "westlake", new[] { "814f60a4651b25da3f657a3875d8a767cd23743a1dd302c77ad3dd33a02d8872", "897029c5a706dab1029a1a6dcb035883e89f1831e01ce25ce919a20544591bd1", "47c0791ba5523684b9a182eb2f4b51c93ad0c90a3706801f07ba300fc6a19dd9" } },
         };
 
         /// The sha256 of a file of the tested build ("database", "level", "package", "scene"), null for a stadium outside the table.
         public static string TestedSha256(string shortName, string kind)
         {
             if (!TestedBuild.TryGetValue(shortName, out var row)) return null;
-            switch (kind) { case "database": return row[0]; case "package": return row[1]; case "scene": return row[2]; case "level": return TestedLevelSha256; }
+            switch (kind) { case "database": return row[0]; case "package": return row[1]; case "scene": return row[2]; case "level": return IsFreeRideShort(shortName) ? TestedFreeRideLevelSha256 : TestedLevelSha256; }
             return null;
         }
+
+        static bool IsFreeRideShort(string shortName) => KnownTracks.Any(k => k.shortName == shortName && k.FreeRideOnly);
 
         /// A track imported before that this converter would write differently: its manifest names another converter version
         /// (UxBuildTrack.PORT) and one of its four .dx9 files is not the tested build's. False for a track of this version (whatever
@@ -184,21 +198,25 @@ namespace Reflex.Port.Content.UntamedImport
 
         // ------------------------------------------------------------------------------------------------ the Reflex library
 
-        // What the converter reads of the player's Reflex library for the 12 stadiums (the test records every read of an import of all
-        // 12 and asks LibraryProblem about a library without each): the base, the levels its stock parts come from (UxStock's tables:
-        // material templates, entity prototypes, the Tuff Blox wraps and bale parts, GL_Hay), and the water's two for the EnduroCross
-        // arenas. (level, what it is to the import, EnduroCross arenas only)
+        // What the converter reads of the player's Reflex library (the test records every read of an import of every track and asks
+        // LibraryProblem about a library without each): the base, the levels its stock parts come from (UxStock's tables: material
+        // templates, entity prototypes, the Tuff Blox wraps and bale parts, GL_Hay), the water's two for the EnduroCross arenas and one
+        // more wrap's level for the freestyle arenas. (level, what it is to the import, the only mode that needs it or null = every track)
         const string StockParts = "a stock level the Untamed tracks take parts from";
-        static readonly (string level, string what, bool ecOnly)[] StockLevels =
+        static readonly (string level, string what, string onlyMode)[] StockLevels =
         {
-            ("SX_FortDodge", "the stock supercross stadium every Untamed track is built on", false),
-            ("SX_FortDodgeB", StockParts, false), ("SX_Kingston", StockParts, false), ("SX_KingstonB", StockParts, false), ("SX_Manchester", StockParts, false),
-            ("SX_ManchesterB", StockParts, false), ("SX_Springfield", StockParts, false), ("SX_SpringfieldB", StockParts, false), ("FR_Gibson", StockParts, false),
-            ("Ctrl_AmbientAnimation", StockParts, false), ("FMX_BuenaVista", StockParts, false), ("FMX_BuenaVistaB", StockParts, false), ("FMX_Dover", StockParts, false),
-            ("FMX_Springfield", StockParts, false), ("NAT_Bedford", StockParts, false), ("NAT_RenneB", StockParts, false),
-            ("FR_Alpine", "the stock water", true),
-            ("SX_DLC01_FreightYard", "the stock water system; it comes with the game's downloadable Freight Yard supercross track", true),
+            ("SX_FortDodge", "the stock supercross stadium every Untamed track is built on", null),
+            ("SX_FortDodgeB", StockParts, null), ("SX_Kingston", StockParts, null), ("SX_KingstonB", StockParts, null), ("SX_Manchester", StockParts, null),
+            ("SX_ManchesterB", StockParts, null), ("SX_Springfield", StockParts, null), ("SX_SpringfieldB", StockParts, null), ("FR_Gibson", StockParts, null),
+            ("Ctrl_AmbientAnimation", StockParts, null), ("FMX_BuenaVista", StockParts, null), ("FMX_BuenaVistaB", StockParts, null), ("FMX_Dover", StockParts, null),
+            ("FMX_Springfield", StockParts, null), ("NAT_Bedford", StockParts, null), ("NAT_RenneB", StockParts, null),
+            ("FR_Alpine", "the stock water", "ec"),
+            ("SX_DLC01_FreightYard", "the stock water system; it comes with the game's downloadable Freight Yard supercross track", "ec"),
+            ("NAT_Concord", "a stock national whose sponsor wrap a freestyle arena's tuff blocks use", "fmx"),
         };
+        /// The tracks of a mode, for a message ("the EnduroCross arenas (Fairview Arena, Lincoln Memorial Arena)").
+        static string ModeTracks(List<UntamedKnown> list, string mode) =>
+            (mode == "ec" ? "the EnduroCross arenas (" : "the freestyle arenas (") + string.Join(", ", list.Where(k => k.mode == mode).Select(k => k.name)) + ")";
         /// The always-loaded game databases the converter prunes the stock base against, and the game's animation set table.
         static readonly string[] StockTables = { "AudioDependencies", "EngineDependencies", "Animations", "RiderPhysics", "AIData", "SnakeDatabase", "StuntDatabase" };
         const string AnimationSets = "AnimationSets.bxml";
@@ -209,17 +227,16 @@ namespace Reflex.Port.Content.UntamedImport
         {
             if (library == null) return "Your MX vs ATV Reflex game files were not found. Import (or connect) the Reflex game first: GAME LIBRARY.";
             var list = (tracks ?? new UntamedKnown[0]).ToList();
-            bool ec = list.Any(k => k.mode == "ec");
             string lead = "Your MX vs ATV Reflex game files (" + library.Describe + ") ";
             try
             {
-                foreach (var (level, what, ecOnly) in StockLevels)
+                foreach (var (level, what, onlyMode) in StockLevels)
                 {
-                    if (ecOnly && !ec || library.HasLevel(level)) continue;
+                    if (onlyMode != null && !list.Any(k => k.mode == onlyMode) || library.HasLevel(level)) continue;
                     if (level == UxStock.DEFAULT_STOCK_LEVEL)
                         return lead + "have no " + level + " (Database/" + level + ".dx9.database): " + what + ". Import the complete MX vs ATV Reflex game files (GAME LIBRARY) and try again.";
                     return lead + "have no " + level + " (" + what + ")" +
-                           (ecOnly ? ", which the EnduroCross arenas (" + string.Join(", ", list.Where(k => k.mode == "ec").Select(k => k.name)) + ") need. The supercross stadiums can be imported without it."
+                           (onlyMode != null ? ", which " + ModeTracks(list, onlyMode) + " need. The other tracks can be imported without it."
                                    : ", which the Untamed tracks need. Import the complete MX vs ATV Reflex game files (GAME LIBRARY) and try again.");
                 }
                 foreach (string table in StockTables)
@@ -409,7 +426,8 @@ namespace Reflex.Port.Content.UntamedImport
             // ---- the disc files, against the supported disc (the scan checked all but the package)
             var hashes = VerifySource(src, verified, cancel);
             Report("Checking the disc files", 0.02f);
-            // the jumbotron still is made from a texture of another stadium of the same disc (UxScreens)
+            // the jumbotron still is made from a texture of another stadium of the same disc (UxScreens; the Minimoto and freestyle arenas
+            // show the supercross stadiums' Untamed logo)
             string stillLevel = k.mode == "ec" ? "Fairview_STADIUM" : "WestStone_STADIUM";
             if (!string.Equals(stillLevel, k.level, StringComparison.OrdinalIgnoreCase))
             {
@@ -434,7 +452,7 @@ namespace Reflex.Port.Content.UntamedImport
 
             // ---- the result: what TrackMods lists a track by, and the files as they are on the disk
             Report("Checking the track", 0.95f);
-            var problems = CheckTrack(outDir, built);
+            var problems = CheckTrack(outDir, built, k.FreeRideOnly);
             if (problems.Count > 0) throw new UxException("the converted track does not pass its checks: " + string.Join("; ", problems));
             bool tested = true;
             foreach (string kind in UxCommon.SlotFileKinds)
@@ -542,16 +560,17 @@ namespace Reflex.Port.Content.UntamedImport
 
         /// What is wrong with a converted track's folder (empty: nothing): the rules the client lists a custom track by (TrackMods.Check
         /// and KindOf: one complete <stem>.dx9.* set, a level name the core takes, a database that lists a package and covers the package
-        /// file, a scene with a Base section; UxPackage.Rules re-reads the files), a mod.ini the client reads as a supercross track with
-        /// its picture, and every file as sha256.txt and the builder's result say.
-        public static List<string> CheckTrack(string folder, UxBuildResult built = null)
+        /// file, a scene with a Base section; UxPackage.Rules re-reads the files), a mod.ini the client reads as a supercross track (a
+        /// freestyle arena: a free-ride track in a Beta_Fmx slot) with its picture, and every file as sha256.txt and the builder's result say.
+        public static List<string> CheckTrack(string folder, UxBuildResult built = null, bool freeRide = false)
         {
+            string token = freeRide ? "fmx" : "sx", iniKind = freeRide ? "freeride" : "supercross";
             var probs = new List<string>();
             if (!Directory.Exists(folder)) { probs.Add("no folder was written"); return probs; }
             try
             {
                 probs.AddRange(UxPackage.Rules(folder));
-                string stem = SlotStem;
+                string stem = freeRide ? FreeRideSlotStem : SlotStem;
                 foreach (string kind in UxCommon.SlotFileKinds)
                 {
                     string p = Path.Combine(folder, UxCommon.SlotFileName(stem, kind));
@@ -559,7 +578,7 @@ namespace Reflex.Port.Content.UntamedImport
                     else if (new FileInfo(p).Length <= 0) probs.Add(Path.GetFileName(p) + " is empty");
                 }
                 var kind2 = KindRx.Match(stem);
-                if (!kind2.Success || !string.Equals(kind2.Groups[1].Value, "sx", StringComparison.OrdinalIgnoreCase)) probs.Add(stem + " is not a supercross slot name");
+                if (!kind2.Success || !string.Equals(kind2.Groups[1].Value, token, StringComparison.OrdinalIgnoreCase)) probs.Add(stem + " is not a " + (freeRide ? "freestyle" : "supercross") + " slot name");
                 if (built != null && built.slot != stem) probs.Add("the track was built as " + built.slot + ", not " + stem);
                 // mod.ini
                 string ini = Path.Combine(folder, UxPackage.MOD_INI);
@@ -568,7 +587,7 @@ namespace Reflex.Port.Content.UntamedImport
                 {
                     var kv = ParseIni(File.ReadAllText(ini, Encoding.UTF8));
                     if (!kv.TryGetValue("name", out string name) || string.IsNullOrWhiteSpace(name)) probs.Add("mod.ini has no name");
-                    if (!kv.TryGetValue("kind", out string kind) || kind.Trim().ToLowerInvariant() != "supercross") probs.Add("mod.ini does not say kind = supercross");
+                    if (!kv.TryGetValue("kind", out string kind) || kind.Trim().ToLowerInvariant() != iniKind) probs.Add("mod.ini does not say kind = " + iniKind);
                     if (!kv.TryGetValue("thumbnail", out string thumb) || string.IsNullOrWhiteSpace(thumb) || thumb.IndexOfAny(new[] { '/', '\\' }) >= 0 || !File.Exists(Path.Combine(folder, thumb.Trim())))
                         probs.Add("mod.ini's thumbnail is missing");
                 }
@@ -895,8 +914,9 @@ namespace Reflex.Port.Content.UntamedImport
             if (Path.DirectorySeparatorChar != '\\') return;
             int longestShort = KnownTracks.Max(k => k.shortName.Length);
             int staged = Path.Combine(stage, WorkName).Length + 1 + WorkPathBudget;
-            int published = Path.Combine(tracksFolder, TracksSubfolder).Length + 1 + longestShort + 1 + (SlotStem + ".dx9.database.tmp").Length;
-            int aside = Path.Combine(stage, PreviousName).Length + 1 + longestShort + 1 + (SlotStem + ".dx9.database").Length;
+            int longestStem = Math.Max(SlotStem.Length, FreeRideSlotStem.Length);
+            int published = Path.Combine(tracksFolder, TracksSubfolder).Length + 1 + longestShort + 1 + longestStem + ".dx9.database.tmp".Length;
+            int aside = Path.Combine(stage, PreviousName).Length + 1 + longestShort + 1 + longestStem + ".dx9.database".Length;
             if (Math.Max(staged, Math.Max(published, aside)) >= 260)
                 throw new UntamedImportException("The client folder is too deeply nested for the tracks' files (" + tracksFolder + "); move the client to a shorter path, such as " + ReflexPaths.ShortFolderExample(tracksFolder));
         }

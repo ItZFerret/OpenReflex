@@ -3,7 +3,8 @@
 //   UxScreens.Build(ctx, disc, materialEntries, gain, paths, log)   (record, {material asset: (bytes, [textures], template)},
 //                                                                   {(texture, 'texture'): (bytes, source, origin)})
 //   UxScreens.Layout()            the layout plan as data: the fields of the reference's pinned templates/screens/screens_layout.json
-//                                 (md5 LAYOUT_MD5) that ux_screens reads, for the 19 screen materials of 11 levels (Lincoln has none)
+//                                 (md5 LAYOUT_MD5) that ux_screens reads, for the 19 screen materials of 11 levels (Lincoln has none),
+//                                 and of its Minimoto overlay screens_layout_mm.json (OVERLAY_MD5; Dyson, Edgewater: MrJumbo)
 //   UxScreens.H4 / StillReference / LightReference / MipChain / Encode / LightRecipe
 // Where the pictures come from: nothing is stored. A still is generated from a texture of the player's Untamed disc: the MX vs ATV
 // Untamed logo 'Weststone_AD04' of WestStone_STADIUM (the SX screens) or 'endurocrosslogo' of Fairview_STADIUM (the EC arena), read
@@ -23,6 +24,12 @@ namespace Reflex.Port.Content.UntamedImport
     {
         public const string SCHEMA = "ux_screens/1";
         public const string LAYOUT_FILE = "screens/screens_layout.json", LAYOUT_MD5 = "6bd8b44f0e6efdcb6e2751ce4eafead2";
+        /// The overlay plan of the Minimoto round (OVERLAY / OVERLAY_MD5): levels the pinned plan does not have (Dyson, Edgewater). A
+        /// level's record names the file its layout came from (layout_source), so the levels of the pinned plan keep their record.
+        public const string OVERLAY_FILE = "screens/screens_layout_mm.json", OVERLAY_MD5 = "1cd5dbb8b46dc3805b2a278672422e60";
+        /// The overlay plan of the freestyle round (FMX_OVERLAY / FMX_OVERLAY_MD5): the four freestyle arenas share the Minimoto arena shell
+        /// (Arena_jumbo MrJumbo, 4 faces 76.97 x 42.10 ft, full UV0 rectangle, upright), so they get the same still.
+        public const string FMX_OVERLAY_FILE = "screens-fmx/screens_layout_fmx.json", FMX_OVERLAY_MD5 = "e8246e24ef8154228d5fd67d8829e0a4";
         public const double DEFAULT_LIGHT = 0.9;
         public const double STILL_TOL = 12.0, STILL_TOL_SMALL = 40.0; public const int SMALL_PX = 128;
 
@@ -64,7 +71,20 @@ namespace Reflex.Port.Content.UntamedImport
             Still("BridgePort_STADIUM", "Bridgeport_09_screen", "UXS_Weststone_AD04_04FA", new[] { 10, 25, 502, 231 }, false),
             new Row { level = "Fairview_STADIUM", material = "MrJumbo", still = "UXS_endurocrosslogo_18BA", source = "endurocrosslogo", sourceLevel = "Fairview_STADIUM",
                 dst = new[] { 0, 11, 512, 245 }, generated = true },
+            // the overlay (screens_layout_mm.json): the Minimoto arenas' Arena_jumbo screen, 4 faces, the Untamed logo as on the stadiums
+            Still("Dyson_STADIUM", "MrJumbo", "UXS_Weststone_AD04_E45D", new[] { 0, 11, 512, 245 }, true),
+            Still("Edgewater_STADIUM", "MrJumbo", "UXS_Weststone_AD04_E45D", new[] { 0, 11, 512, 245 }, true),
+            // the freestyle overlay (screens_layout_fmx.json): the same arena shell and still
+            Still("WestLake_STADIUM", "MrJumbo", "UXS_Weststone_AD04_E45D", new[] { 0, 11, 512, 245 }, true),
+            Still("Southbend_STADIUM", "MrJumbo", "UXS_Weststone_AD04_E45D", new[] { 0, 11, 512, 245 }, true),
+            Still("THQSpectrum_STADIUM", "MrJumbo", "UXS_Weststone_AD04_E45D", new[] { 0, 11, 512, 245 }, true),
+            Still("RBWCenter_STADIUM", "MrJumbo", "UXS_Weststone_AD04_E45D", new[] { 0, 11, 512, 245 }, true),
         };
+        static readonly HashSet<string> OVERLAY_LEVELS = new HashSet<string>(StringComparer.Ordinal) { "Dyson_STADIUM", "Edgewater_STADIUM" };
+        static readonly HashSet<string> FMX_OVERLAY_LEVELS = new HashSet<string>(StringComparer.Ordinal) { "WestLake_STADIUM", "Southbend_STADIUM", "THQSpectrum_STADIUM", "RBWCenter_STADIUM" };
+        /// layout_source(disc): (file, md5) of the plan that holds a level (the pinned plan unless an overlay lists it).
+        public static (string file, string md5) LayoutSource(string disc) =>
+            OVERLAY_LEVELS.Contains(disc) ? (OVERLAY_FILE, OVERLAY_MD5) : FMX_OVERLAY_LEVELS.Contains(disc) ? (FMX_OVERLAY_FILE, FMX_OVERLAY_MD5) : (LAYOUT_FILE, LAYOUT_MD5);
         static List<object> Ints(params int[] v) { var l = new List<object>(); foreach (int x in v) l.Add((long)x); return l; }
         static JObj Address(int u) => new JObj().Set("ADDRESSU", (long)u).Set("ADDRESSV", 3L).Set("MIPFILTER", 2L);
 
@@ -281,7 +301,7 @@ namespace Reflex.Port.Content.UntamedImport
             var lv = ctx.lv; var plan = Layout();
             var res = new Result();
             var mrecs = new List<object>();
-            var rec = new JObj().Set("schema", SCHEMA).Set("option", "stills").Set("layout", paths.Templates(LAYOUT_FILE)).Set("layout_md5", LAYOUT_MD5).Set("light_gain", gain)
+            var rec = new JObj().Set("schema", SCHEMA).Set("option", "stills").Set("layout", paths.Templates(LayoutSource(lv.disc).file)).Set("layout_md5", LayoutSource(lv.disc).md5).Set("light_gain", gain)
                 .Set("materials", mrecs);
             res.record = rec;
             var overridden = new HashSet<string>(StringComparer.Ordinal);

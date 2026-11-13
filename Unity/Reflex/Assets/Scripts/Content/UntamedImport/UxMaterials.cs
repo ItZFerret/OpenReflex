@@ -54,14 +54,14 @@ namespace Reflex.Port.Content.UntamedImport
         public int jobs;
 
         // The reference tools' identity as materials.json records it (tool_md5, source_files.readers / sm3dis_md5 / lib_index_md5).
-        // A port cannot compute the md5 of Python files: these are the md5s of the reference this port mirrors (2026-11-11).
-        public string tool_md5 = "6dbdbf62975002496745974186896aaf";
+        // A port cannot compute the md5 of Python files: these are the md5s of the reference this port mirrors (tools-fmx2, 2026-11-12).
+        public string tool_md5 = "019bed15d01ca827d8f03014fda571fd";
         public string lib_index_md5 = "7a769d78fccae4fd9b6e94827122aab6", sm3dis_md5 = "e3f7c1f1ce9f8e12305dc3ebb964509c";
         public KeyValuePair<string, string>[] readers =
         {
             new KeyValuePair<string, string>("uxmat.py", "5db0bfcc1c7b6eb597f353d1385fd8a5"), new KeyValuePair<string, string>("uxmesh.py", "146690511db2f48584732c12c5be876e"),
             new KeyValuePair<string, string>("uxtex.py", "77b39dabdbc113f0ba5e53d518bc1a36"), new KeyValuePair<string, string>("d3d9sh.py", "d15b82b65e25dd2983294d92bc000433"),
-            new KeyValuePair<string, string>("ux_shaderprog.py", "b068db9ed5640727a5a81bae4a6af9b4"), new KeyValuePair<string, string>("ux_textures.py", "7bf36a07fe35fb003f5926ad3e6a35f9"),
+            new KeyValuePair<string, string>("ux_shaderprog.py", "c204248ffb114881fd070cfe05182412"), new KeyValuePair<string, string>("ux_textures.py", "502a142691401e33fd7a1763b1b5f8bd"),
         };
 
         static void In(string v, string what, params string[] choices)
@@ -1046,7 +1046,7 @@ namespace Reflex.Port.Content.UntamedImport
         static List<GLevel> GenReference(byte[] srcBytes, JObj recipe, out int fromSource)
         {
             string kind = recipe.Get("kind") as string;
-            if (kind != "composite" && kind != "literal" && kind != "const_alpha" && kind != "channel_alpha") throw new GenValueError("unknown generated kind " + Repr(kind));
+            if (kind != "composite" && kind != "literal" && kind != "const_alpha" && kind != "channel_alpha" && kind != "tiled_alpha" && kind != "tint") throw new GenValueError("unknown generated kind " + Repr(kind));
             var refs = new List<GLevel>();
             if (kind == "literal" || kind == "const_alpha")
             {
@@ -1071,9 +1071,55 @@ namespace Reflex.Port.Content.UntamedImport
             var s = t.surfaces[0];
             int w = s.w, h = s.h;
             if (!(Pot(w) && Pot(h))) throw new GenValueError("non-power-of-two source " + w + "x" + h);
+            if (kind == "tiled_alpha")
+            {
+                // FREESTYLE.md 11: level 0 texel (i, j) = the source mip 0 `channel`, bilinear with wrap, at u = frac(tu (j + 0.5) / size),
+                // v = frac(tv (i + 0.5) / size); rgb = a; lower levels = 2 x 2 box filters of the level above (from_source 1)
+                object so = recipe.Get("size");
+                long size = so is long sl ? sl : (long)UxJson.Num(so);
+                var tl = recipe.Get("tiles") as List<object>;
+                if (tl == null || tl.Count != 2 || !(tl[0] is long tu) || !(tl[1] is long tv) || !Pot((int)size) || tu < 1 || tv < 1)
+                    throw new GenValueError("tiled_alpha: size " + so + " / tiles " + UxJson.Dumps(recipe.Get("tiles"), -1));
+                int tch = "xyzw".IndexOf(UxJson.Str(recipe.Get("channel")), StringComparison.Ordinal);
+                if (tch < 0) throw new GenValueError("substring not found");
+                var img0 = t.Rgba(0, 0, 0, nm_preview: false);
+                int S = (int)size;
+                double Px(int y, int x) => img0.data[(y * img0.w + x) * 4 + tch] / 255.0;
+                void Axis(int nsrc, long tiles, out int[] k0, out int[] k1, out double[] f)
+                {
+                    k0 = new int[S]; k1 = new int[S]; f = new double[S];
+                    for (int j = 0; j < S; j++)
+                    {
+                        double x = tiles * (j + 0.5) / size;
+                        double md = x % 1.0;                                    // np.mod(x, 1.0), x >= 0
+                        if (md < 0) md += 1.0;
+                        double p = md * nsrc - 0.5;
+                        double fl = Math.Floor(p);
+                        f[j] = p - fl;
+                        long ki = (long)fl;
+                        k0[j] = (int)(((ki % nsrc) + nsrc) % nsrc); k1[j] = (int)((((ki + 1) % nsrc) + nsrc) % nsrc);
+                    }
+                }
+                Axis(w, tu, out int[] x0, out int[] x1, out double[] fx);
+                Axis(h, tv, out int[] y0, out int[] y1, out double[] fy);
+                var o0 = new double[S * S * 4];
+                for (int i = 0; i < S; i++)
+                    for (int j = 0; j < S; j++)
+                    {
+                        double top = Px(y0[i], x0[j]) * (1 - fx[j]) + Px(y0[i], x1[j]) * fx[j];
+                        double bot = Px(y1[i], x0[j]) * (1 - fx[j]) + Px(y1[i], x1[j]) * fx[j];
+                        double a = (top * (1 - fy[i]) + bot * fy[i]) * 255.0;
+                        int q = 4 * (i * S + j); o0[q] = a; o0[q + 1] = a; o0[q + 2] = a; o0[q + 3] = a;
+                    }
+                refs.Add(new GLevel { h = S, w = S, d = o0 });
+                while (refs[refs.Count - 1].h > 1 || refs[refs.Count - 1].w > 1) refs.Add(BoxHalf(refs[refs.Count - 1]));
+                fromSource = 1;
+                return refs;
+            }
             int nlev = UxTex.Log2Ceil(Math.Max(w, h)) + 1;
-            double[] bg = null, kk = null; int ch = 0; double scale = 0, offset = 0;
+            double[] bg = null, kk = null, tsc = null, tof = null; int ch = 0; double scale = 0, offset = 0;
             if (kind == "composite") { bg = Floats(recipe.Get("bg")); kk = Floats(recipe.Get("k")); }
+            else if (kind == "tint") { tsc = Floats(recipe.Get("scale")); tof = Floats(recipe.Get("offset")); }
             else
             {
                 ch = "xyzw".IndexOf(UxJson.Str(recipe.Get("channel")), StringComparison.Ordinal);
@@ -1094,6 +1140,11 @@ namespace Reflex.Port.Content.UntamedImport
                         {
                             double al = img.data[p + 3] / 255.0;
                             for (int c = 0; c < 3; c++) o[q + c] = UxNp.Clip((img.data[p + c] / 255.0 + kk[c]) * al + bg[c], 0, 1) * 255.0;
+                            o[q + 3] = 255.0;
+                        }
+                        else if (kind == "tint")
+                        {
+                            for (int c = 0; c < 3; c++) o[q + c] = UxNp.Clip(img.data[p + c] / 255.0 * tsc[c] + tof[c], 0, 1) * 255.0;
                             o[q + 3] = 255.0;
                         }
                         else
@@ -1260,8 +1311,9 @@ namespace Reflex.Port.Content.UntamedImport
         {
             var refs = GenReference(srcBytes, recipe, out int nsrc);
             string kind = recipe.Get("kind") as string;
-            byte[] fmt = kind == "composite" ? UxTex.PC_DXT1 : kind == "channel_alpha" ? UxTex.PC_DXT5 : UxTex.PC_A8R8G8B8;
-            string fn = kind == "composite" ? "DXT1" : kind == "channel_alpha" ? "DXT5" : "A8R8G8B8";
+            bool dxt1 = kind == "composite" || kind == "tint", dxt5 = kind == "channel_alpha" || kind == "tiled_alpha";
+            byte[] fmt = dxt1 ? UxTex.PC_DXT1 : dxt5 ? UxTex.PC_DXT5 : UxTex.PC_A8R8G8B8;
+            string fn = dxt1 ? "DXT1" : dxt5 ? "DXT5" : "A8R8G8B8";
             int h = refs[0].h, w = refs[0].w;
             var payload = new List<byte[]>(); var errs = new List<object>(); var encs = new List<object>(); var tols = new List<object>();
             double over = double.NegativeInfinity;
@@ -1333,6 +1385,18 @@ namespace Reflex.Port.Content.UntamedImport
             public Dictionary<string, bool> grey = new Dictionary<string, bool>(StringComparer.Ordinal);
             public Dictionary<string, JObj> uv;            // material -> evidence
             public Dictionary<string, Tpl> lib;
+            HashSet<string> _ramp_mats;
+            readonly object _ramp_lock = new object();
+            /// ramp_materials(): Untamed material names of the freestyle ramp carriers (UxFreestyle.RampMaterials; empty off fmx).
+            public HashSet<string> RampMaterials()
+            {
+                lock (_ramp_lock)
+                {
+                    if (_ramp_mats == null)
+                        _ramp_mats = UxCommon.IsFmx(lv) ? new HashSet<string>(UxFreestyle.RampMaterials(ux), StringComparer.Ordinal) : new HashSet<string>(StringComparer.Ordinal);
+                    return _ramp_mats;
+                }
+            }
 
             public Ctx(UxContext c, int jobs)
             {
@@ -1634,7 +1698,8 @@ namespace Reflex.Port.Content.UntamedImport
         {
             string k = recipe.Get("kind") as string;
             if (k == "composite") return "UXC_" + recipe.Get("source") + "_" + H4(recipe);
-            if (k == "channel_alpha") return "UXM_" + recipe.Get("source") + "_" + H4(recipe);
+            if (k == "channel_alpha" || k == "tiled_alpha") return "UXM_" + recipe.Get("source") + "_" + H4(recipe);
+            if (k == "tint") return "UXP_" + recipe.Get("source") + "_" + H4(recipe);
             if (k == "literal") { var rgb = Floats(recipe.Get("rgb")); return "UXL_" + Hex2(rgb[0]) + Hex2(rgb[1]) + Hex2(rgb[2]); }
             return "UXA_" + Hex2(UxJson.Num(recipe.Get("alpha")));
         }
@@ -1703,7 +1768,17 @@ namespace Reflex.Port.Content.UntamedImport
                 if (k >= texl.Count || string.IsNullOrEmpty(texl[k].canon) || texl[k].rec == null || IsRenderTarget(texl[k].rec)) return null;
                 string kc = texl[k].canon;
                 var fa = UxShaderProg.FetchUv(info, k);
-                if (fa.kind != "identity") return null;
+                if (fa.kind != "identity")
+                {
+                    var ta = ProgramTiledAlpha(ctx, info, texl, d, ao, k, fa, sidx);
+                    if (ta == null) return null;
+                    string n = GenName(ta.Value.r); alt.recipes.Set(n, ta.Value.r);
+                    alt.tex = new List<Slot> { Slot.Plain(ta.Value.d), Slot.Gen(n) };
+                    if ((afunc == D3DCMP_GREATER || afunc == 7) && ta.Value.hi < aref + (afunc == D3DCMP_GREATER ? 1 : 0)) return null;
+                    alt.reason = ta.Value.why.Replace("<GEN>", n); alt.line = ao.raw;
+                    alt.output = new JObj().Set("kind", "texture").Set("sampler", (long)ao.sampler).Set("channel", "" + ao.channel).Set("scale", ao.scale).Set("offset", ao.offset).Set("sat", ao.sat);
+                    return alt;
+                }
                 UxSpFetchUv fd = null;
                 if (d != null && sidx.TryGetValue(d, out int dk)) fd = UxShaderProg.FetchUv(info, dk);
                 string uvd = fd?.kind;
@@ -1745,6 +1820,52 @@ namespace Reflex.Port.Content.UntamedImport
                 : new JObj().Set("kind", "texture").Set("sampler", (long)ao.sampler).Set("channel", "" + ao.channel).Set("scale", ao.scale).Set("offset", ao.offset).Set("sat", ao.sat);
             return alt;
         }
+
+        const int TILED_ALPHA_SIZE = 1024;     // rampfix: size of a baked tiled cut-out (RampGrate x25: 41 px per hole tile)
+
+        /// program_tiled_alpha (rampfix, FREESTYLE.md 11), freestyle arenas only: a plain alpha texture (oC0.w = sat(T.w), unscaled) fetched
+        /// at the mesh UV times an integer on each axis (Untamed WRAP), over a different, opaque diffuse fetched at that same mesh UV
+        /// (RampGrate). The repeat is baked into one TILED_ALPHA_SIZE texture in mesh-UV space (ux_textures 'tiled_alpha'):
+        /// Template_Diffuse_Alpha [diffuse, UXM_<alpha texture>_<h>]. Returns (diffuse, recipe, alpha max, reason with <GEN>) or null.
+        static (string d, JObj r, long hi, string why)? ProgramTiledAlpha(Ctx ctx, UxShaderInfo info, List<TexL> texl, string d, UxSpAlpha ao, int k, UxSpFetchUv fa,
+            Dictionary<string, int> sidx)
+        {
+            if (!UxCommon.IsFmx(ctx.lv) || fa.kind != "scaled" || fa.terms == null || fa.terms.Count != 2) return null;
+            if (ao.channel != 'w' || Math.Abs(ao.scale - 1) > 1e-6 || Math.Abs(ao.offset) > 1e-6) return null;
+            string kc = texl[k].canon;
+            if (d == null || d == kc || IsTemplateDefault(d) || !sidx.ContainsKey(d)) return null;
+            var tiles = new List<object>();
+            foreach (var t in fa.terms)
+            {
+                double ra = Math.Round(t.a, MidpointRounding.ToEven);
+                if (Math.Abs(t.b) > 1e-6 || Math.Abs(t.a - ra) > 1e-6 || ra < 2) return null;
+                tiles.Add((long)ra);
+            }
+            var fd = UxShaderProg.FetchUv(info, sidx[d]);
+            if (fd.kind != "identity" || fd.terms == null || fd.terms.Count != fa.terms.Count) return null;
+            for (int i = 0; i < fd.terms.Count; i++) if (fd.terms[i].v != fa.terms[i].v) return null;
+            var dr = ctx.Texture(d).rec;
+            if (dr == null || IsRenderTarget(dr)) return null;
+            var rng = AlphaRange(ctx, UxJson.Str(texl[k].rec.Get("file")));
+            if (rng == null || rng.Value.min >= OPAQUE_ALPHA_MIN) return null;
+            var r = new JObj().Set("kind", "tiled_alpha").Set("source", kc).Set("channel", "w").Set("tiles", tiles).Set("size", (long)TILED_ALPHA_SIZE);
+            var ts = new List<string>(); foreach (object x in tiles) ts.Add(I((long)x));
+            string why = "Untamed alpha = " + kc + ".a fetched at the mesh UV x " + string.Join("/", ts) + " (" + ao.raw + ", WRAP) over the diffuse " + d + " at the mesh UV: the repeat " +
+                "baked into <GEN> (generated " + I(TILED_ALPHA_SIZE) + " px, freestyle arenas, FREESTYLE.md 11) -> Template_Diffuse_Alpha [" + d + ", <GEN>]";
+            return (d, r, rng.Value.max, why);
+        }
+
+        /// program_colour (Arena v3, FREESTYLE.md 12): ux_shaderprog.diffuse_albedo of a freestyle ramp material, or null off a freestyle
+        /// level / off the ramp materials / when the program has no such form.
+        static UxSpDiffuseAlbedo ProgramColour(Ctx ctx, UxShaderInfo info, List<TexL> texl, string canon)
+        {
+            if (!UxCommon.IsFmx(ctx.lv) || !ctx.RampMaterials().Contains(canon)) return null;
+            var ao = new List<int>(); for (int k = 0; k < texl.Count; k++) if (texl[k].role == "ao") ao.Add(k);
+            var r = UxShaderProg.DiffuseAlbedo(info, ao);
+            return r.kind == "affine" || r.kind == "literal" ? r : null;
+        }
+        static List<object> DList(double[] v) { var o = new List<object>(); foreach (double x in v) o.Add(x); return o; }
+        static List<object> SList(List<string> v) { var o = new List<object>(); foreach (string x in v) o.Add(x); return o; }
 
         /// program_albedo: the albedo a 'no usable diffuse' Untamed program computes. Returns (asset or generated name, recipe or null,
         /// note); `found` false keeps the default: fog-only programs -> Editor_Default_Black; a literal albedo that differs from the
@@ -2054,6 +2175,25 @@ namespace Reflex.Port.Content.UntamedImport
                     }
                 }
             }
+            if (sinfo != null && Has(OPAQUE_TEMPLATES, T) && bale_nm == null)          // Arena v3 program colour (tint)
+            {
+                int di = DiffuseSlot(T);
+                Slot cs = di < tex.Count ? tex[di] : null;
+                var pc_ = cs != null && cs.IsStr && cs.name != null && sidx.ContainsKey(cs.name) ? ProgramColour(ctx, sinfo, texl, canon) : null;
+                if (pc_ != null && pc_.kind == "affine" && texl[pc_.sampler].canon == cs.name
+                    && (Math.Abs(pc_.offset[0]) > 1e-6 || Math.Abs(pc_.offset[1]) > 1e-6 || Math.Abs(pc_.offset[2]) > 1e-6))
+                {
+                    string c = cs.name;
+                    var rc = new JObj().Set("kind", "tint").Set("source", c).Set("scale", DList(pc_.scale)).Set("offset", DList(pc_.offset));
+                    string n = GenName(rc);
+                    ctx.gen_recipes.Set(n, rc);
+                    tex = new List<Slot>(tex); tex[di] = Slot.Gen(n); gen_src[di] = c;
+                    e.extra.Set("program_colour", new JObj().Set("kind", "tint").Set("source", c).Set("scale", DList(pc_.scale)).Set("offset", DList(pc_.offset))
+                        .Set("light_left_out", SList(pc_.light)).Set("how", pc_.how));
+                    prog_notes.Add("Untamed diffuse albedo " + pc_.how + " with scale " + UxPyFmt.ReprList(pc_.scale) + ", offset " + UxPyFmt.ReprList(pc_.offset) +
+                        " (light factor " + UxShaderProg.PyStrListRepr(pc_.light) + " left out): baked into " + n + " (Arena v3 program colour, freestyle ramp material)");
+                }
+            }
             if (e.extra.Has("alpha_program"))
                 for (int si = 0; si < tex.Count; si++)
                 {
@@ -2069,6 +2209,18 @@ namespace Reflex.Port.Content.UntamedImport
                 {
                     bool found = false; string a_ = null, note_ = null; JObj rec_ = null;
                     if (opts.literal_albedo == "program" && sinfo != null && Has(OPAQUE_TEMPLATES, T)) found = ProgramAlbedo(sinfo, texl, dflt, out a_, out rec_, out note_);
+                    if (!found && sinfo != null && Has(OPAQUE_TEMPLATES, T))           // Arena v3 program colour (literal)
+                    {
+                        var pc_ = ProgramColour(ctx, sinfo, texl, canon);
+                        if (pc_ != null && pc_.kind == "literal" && Math.Max(Math.Max(pc_.rgb[0], pc_.rgb[1]), pc_.rgb[2]) <= 1.0)
+                        {
+                            rec_ = new JObj().Set("kind", "literal").Set("rgb", DList(pc_.rgb)).Set("rule", "diffuse_albedo");
+                            a_ = GenName(rec_);
+                            note_ = "Arena v3 program colour (freestyle ramp material): " + pc_.how + ", light factor " + UxShaderProg.PyStrListRepr(pc_.light) + " left out";
+                            found = true;
+                            e.extra.Set("program_colour", new JObj().Set("kind", "literal").Set("rgb", DList(pc_.rgb)).Set("light_left_out", SList(pc_.light)).Set("how", pc_.how));
+                        }
+                    }
                     if (!found)
                     {
                         src_tex.Add(null); assets.Add(dflt);

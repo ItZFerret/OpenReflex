@@ -97,7 +97,7 @@ namespace Reflex.Port.Content.UntamedImport
         /// The 'tool' of the manifest, and the versions of the reference modules this file reproduces (tool_md5, uxtex_md5): constants,
         /// not measurements (checked against the reference's files).
         public const string TOOL = "ux_textures.py";
-        public const string REFERENCE_TOOL_MD5 = "7bf36a07fe35fb003f5926ad3e6a35f9";
+        public const string REFERENCE_TOOL_MD5 = "502a142691401e33fd7a1763b1b5f8bd";
         public const string REFERENCE_UXTEX_MD5 = "77b39dabdbc113f0ba5e53d518bc1a36";
         public const double F16_BOUND = 1.0 / 4096;                // float16 half-ULP in [0.5, 1)
         public const string JUMBO_REPLACEMENT = "Editor_Default_Black";
@@ -675,7 +675,8 @@ namespace Reflex.Port.Content.UntamedImport
         public static List<UxFImage> GenReference(byte[] src, JObj recipe, out int fromSource)
         {
             string kind = recipe.Get("kind") as string;
-            if (kind != "composite" && kind != "literal" && kind != "const_alpha" && kind != "channel_alpha") throw new UxException("unknown generated kind '" + kind + "'");
+            if (kind != "composite" && kind != "literal" && kind != "const_alpha" && kind != "channel_alpha" && kind != "tiled_alpha" && kind != "tint")
+                throw new UxException("unknown generated kind '" + kind + "'");
             var refs = new List<UxFImage>();
             if (kind == "literal" || kind == "const_alpha")
             {
@@ -698,16 +699,62 @@ namespace Reflex.Port.Content.UntamedImport
             if (t.nsurf < 1 || t.faces != 1) throw new UxException("source is not a 2D texture");
             var sf = t.surfaces[0]; int w = sf.w, h = sf.h;
             if (!(Pot(w) && Pot(h))) throw new UxException("non-power-of-two source " + w + "x" + h);
+            var unit = new double[256]; for (int i = 0; i < 256; i++) unit[i] = i / 255.0;
+            if (kind == "tiled_alpha")
+            {
+                // FREESTYLE.md 11: the source mip 0 `channel`, bilinear with wrap, at u = frac(tu (j + 0.5) / size), v = frac(tv (i + 0.5) / size)
+                long size = (long)UxJson.Num(recipe.Get("size"));
+                var tl = recipe.Get("tiles") as List<object>;
+                if (tl == null || tl.Count != 2 || !(tl[0] is long tu) || !(tl[1] is long tv) || size < 1 || (size & (size - 1)) != 0 || tu < 1 || tv < 1)
+                    throw new UxException("tiled_alpha: size " + recipe.Get("size") + " / tiles " + UxJson.Dumps(recipe.Get("tiles"), -1));
+                int tch = "xyzw".IndexOf(recipe.Get("channel") as string ?? "?", StringComparison.Ordinal);
+                var src0 = t.Rgba(0, 0, 0, false).Crop(h, w);
+                int S = (int)size;
+                void Axis(int nsrc, long tiles, out int[] k0, out int[] k1, out double[] f)
+                {
+                    k0 = new int[S]; k1 = new int[S]; f = new double[S];
+                    for (int j = 0; j < S; j++)
+                    {
+                        double x = tiles * (j + 0.5) / size;
+                        double md = x % 1.0;                                    // np.mod for x >= 0
+                        if (md != 0 && md < 0) md += 1.0;
+                        double p = md * nsrc - 0.5;
+                        double fl = Math.Floor(p);
+                        f[j] = p - fl;
+                        long ki = (long)fl;
+                        long m0 = ((ki % nsrc) + nsrc) % nsrc, m1 = (((ki + 1) % nsrc) + nsrc) % nsrc;
+                        k0[j] = (int)m0; k1[j] = (int)m1;
+                    }
+                }
+                Axis(w, tu, out int[] x0, out int[] x1, out double[] fx);
+                Axis(h, tv, out int[] y0, out int[] y1, out double[] fy);
+                var o = new double[S * S * 4];
+                for (int i = 0; i < S; i++)
+                    for (int j = 0; j < S; j++)
+                    {
+                        double s00 = unit[src0.data[4 * (y0[i] * w + x0[j]) + tch]], s01 = unit[src0.data[4 * (y0[i] * w + x1[j]) + tch]];
+                        double s10 = unit[src0.data[4 * (y1[i] * w + x0[j]) + tch]], s11 = unit[src0.data[4 * (y1[i] * w + x1[j]) + tch]];
+                        double top = s00 * (1 - fx[j]) + s01 * fx[j];
+                        double bot = s10 * (1 - fx[j]) + s11 * fx[j];
+                        double a = top * (1 - fy[i]) + bot * fy[i];
+                        a = a * 255.0;
+                        int q = 4 * (i * S + j); o[q] = a; o[q + 1] = a; o[q + 2] = a; o[q + 3] = a;
+                    }
+                refs.Add(new UxFImage(o, S, S, 4));
+                while (refs[refs.Count - 1].h > 1 || refs[refs.Count - 1].w > 1) refs.Add(BoxHalf(refs[refs.Count - 1]));
+                fromSource = 1;
+                return refs;
+            }
             int levels = BitLength(Math.Max(w, h));                // int(np.log2(max(w, h))) + 1 of a power of two
-            double[] bg = null, kk = null; int ch = 0; double scale = 0, offset = 0;
+            double[] bg = null, kk = null, tsc = null, tof = null; int ch = 0; double scale = 0, offset = 0;
             if (kind == "composite") { bg = Vec(recipe.Get("bg"), 3, "bg"); kk = Vec(recipe.Get("k"), 3, "k"); }
+            else if (kind == "tint") { tsc = Vec(recipe.Get("scale"), 3, "scale"); tof = Vec(recipe.Get("offset"), 3, "offset"); }
             else
             {
                 ch = "xyzw".IndexOf(recipe.Get("channel") as string ?? "?", StringComparison.Ordinal);
                 if (ch < 0 || (recipe.Get("channel") as string).Length != 1) throw new UxException("generated texture: channel " + recipe.Get("channel"));
                 scale = UxJson.Num(recipe.Get("scale")); offset = UxJson.Num(recipe.Get("offset"));
             }
-            var unit = new double[256]; for (int i = 0; i < 256; i++) unit[i] = i / 255.0;
             for (int m = 0; m < levels; m++)
             {
                 if (m >= sf.mips) { refs.Add(BoxHalf(refs[refs.Count - 1])); continue; }
@@ -721,6 +768,15 @@ namespace Reflex.Port.Content.UntamedImport
                         for (int c = 0; c < 3; c++)
                         {
                             double v = unit[img.data[4 * i + c]] + kk[c]; v = v * a; v = v + bg[c];
+                            o[4 * i + c] = UxNp.Clip(v, 0, 1) * 255.0;
+                        }
+                        o[4 * i + 3] = 255.0;
+                    }
+                    else if (kind == "tint")
+                    {
+                        for (int c = 0; c < 3; c++)
+                        {
+                            double v = unit[img.data[4 * i + c]] * tsc[c]; v = v + tof[c];
                             o[4 * i + c] = UxNp.Clip(v, 0, 1) * 255.0;
                         }
                         o[4 * i + 3] = 255.0;
@@ -746,7 +802,7 @@ namespace Reflex.Port.Content.UntamedImport
         {
             var refs = GenReference(src, recipe, out int nsrc);
             string kind = recipe.Get("kind") as string;
-            byte[] fmt = kind == "composite" ? UxTex.PC_DXT1 : kind == "channel_alpha" ? UxTex.PC_DXT5 : UxTex.PC_A8R8G8B8;
+            byte[] fmt = kind == "composite" || kind == "tint" ? UxTex.PC_DXT1 : kind == "channel_alpha" || kind == "tiled_alpha" ? UxTex.PC_DXT5 : UxTex.PC_A8R8G8B8;
             string fn = PcFmtName(fmt);
             int h = refs[0].h, w = refs[0].w;
             var payload = new List<byte[]>(); var errs = new List<object>(); var encs = new List<object>(); var tols = new List<object>();

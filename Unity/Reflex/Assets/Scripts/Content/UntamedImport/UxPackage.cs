@@ -153,9 +153,10 @@ namespace Reflex.Port.Content.UntamedImport
         /// The menu name: '<display name> (Untamed)'.
         public static string MenuName(UxLevelRow lv) => lv.display + " (Untamed)";
         /// mod.ini (UTF-8, '\n' line ends). date: 'YYYY-MM-DD' as the reference writes it, or null (no date).
+        /// A freestyle arena (kind 'freeride', Beta_Fmx slot) adds the reference's free-ride note to the description.
         public static string ModIni(UxLevelRow lv, string author = AUTHOR, string date = null, string kind = "supercross")
         {
-            string desc = lv.display + CONVERTED + (date != null ? "; " + date : "") + ".";
+            string desc = lv.display + CONVERTED + (UxCommon.IsFmx(lv) ? "; free ride: the arena's ramps and dirt jumps, no race" : "") + (date != null ? "; " + date : "") + ".";
             return "name = " + MenuName(lv) + "\nauthor = " + author + "\ndescription = " + desc + "\nthumbnail = " + PREVIEW + "\nkind = " + kind + "\n";
         }
 
@@ -188,7 +189,7 @@ namespace Reflex.Port.Content.UntamedImport
         /// nature); database and scene get the stock flags, the level is written as given. picture: an 8-bit RGB PNG for preview.png.
         /// Returns (name, bytes, sha256) of every file listed in sha256.txt.
         public static List<(string name, long bytes, string sha256)> Write(string folder, string slot, UxLevelRow lv, byte[] database, byte[] level, byte[] scene, byte[] picture,
-            string author = AUTHOR, string date = null, bool check = true)
+            string author = AUTHOR, string date = null, bool check = true, string kind = "supercross")
         {
             // ---- stock attr flags
             if (!UxBin.Same(PatchDoc(database, out _, false), database) || !UxBin.Same(SceneRebuild(scene, out _, false), scene))
@@ -216,7 +217,7 @@ namespace Reflex.Port.Content.UntamedImport
             }
             // ---- preview.png, mod.ini, sha256.txt
             Put(PREVIEW, Preview(picture));
-            Put(MOD_INI, new UTF8Encoding(false).GetBytes(ModIni(lv, author, date)));
+            Put(MOD_INI, new UTF8Encoding(false).GetBytes(ModIni(lv, author, date, kind)));
             string list = Sha256List(folder, out var files);
             Put(SHA256, new UTF8Encoding(false).GetBytes(list));
             return files;

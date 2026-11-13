@@ -1,11 +1,12 @@
 // MX vs ATV Untamed converter, the track builder: the port of the Python reference converter's ux_build_track.py (the Builder of the current
 // stock-base sx builds, DESIGN 23) joined with ux_package.py (UxPackage.cs). One call converts one Untamed stadium into an OPEN REFLEX
-// custom track folder: Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}, mod.ini, preview.png and sha256.txt.
+// custom track folder: Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}, mod.ini, preview.png and sha256.txt (a freestyle arena:
+// Beta_Fmx_Track_Slot_1, a free-ride track on the base's free-ride kit, without S8 and the race kit; its ramps: UxFreestyle).
 //   1. stages S1-S6 (UxLevel, UxTerrainStage, UxMeshes, UxCollision, UxMaterials, UxTextures) into the work store (the staging folder),
 //      S7 UxEntities and S8 UxRace in memory, each with the build's options
 //   2. the stock level SX_FortDodge from the player's Reflex library, reduced by UxBase.Prepare to the race / free-ride kit
 //   3. the combined-round parts: tuff blocks (UxTuff), EnduroCross water and its spray (UxWater), MassiveAd panels (UxAds), the
-//      jumbotron stills (UxScreens), the split gate (UxSplitGate)
+//      jumbotron stills (UxScreens), the split gate (UxSplitGate), the freestyle ramp carriers (UxFreestyle)
 //   4. the scene (GridResolution, DistanceFog values, the race kit moves, anchor moves, the 12 free-ride starts, the dropped-material
 //      filter, the template y offset), the assets (clashes with the base, UX_ renames, terrain textures, the HF material, FrictionZones,
 //      CameraFlash, the tdf), the prune of the base package (UxBase.Closure), the slot rename and the four files
@@ -132,6 +133,13 @@ namespace Reflex.Port.Content.UntamedImport
                 "--anchor-move", "Anchor_StartLine=0.0,7.75,0.0", "--anchor-move", "Anchor_LoseWalk=0.0,7.0,0.0", "--anchor-move", "Anchor_WinFinish=0.0,17.0,0.0"),
             Row("Lincoln_STADIUM", "--anchor-move", "Anchor_30SecGirl_CameraHound05=3.289,-0.559,-1.197", "--anchor-move", "Anchor_30SecGirl_CameraHound09=-0.732,-0.006,0.162",
                 "--anchor-move", "Anchor_StartLine=0.0,3.75,0.0", "--anchor-move", "Anchor_LoseWalk=0.0,1.75,0.0", "--anchor-move", "Anchor_WinFinish=0.0,20.5,0.0"),
+            // the Minimoto stadiums (work/minimoto/commands.json 2026-11-12)
+            Row("Dyson_STADIUM", "--anchor-move", "Anchor_Intro=0.0,6.5,0.0", "--anchor-move", "Anchor_StartLine=0.0,7.5,0.0", "--anchor-move", "Anchor_LoseWalk=0.0,6.75,0.0",
+                "--anchor-move", "Anchor_WinFinish=0.0,19.25,0.0"),
+            Row("Edgewater_STADIUM", "--anchor-move", "Anchor_LoseWalk_PlayerCC10=2.182,0.0,1.674", "--anchor-move", "Anchor_StartLine=0.0,7.25,0.0",
+                "--anchor-move", "Anchor_LoseWalk=0.0,11.25,0.0", "--anchor-move", "Anchor_WinFinish=0.0,19.75,0.0"),
+            // the freestyle arenas (work/freestyle/commands-v3.json): the defaults only (no anchors in the free-ride kit)
+            Row("RBWCenter_STADIUM"), Row("Southbend_STADIUM"), Row("THQSpectrum_STADIUM"), Row("WestLake_STADIUM"),
         };
         static KeyValuePair<string, string[]> Row(string level, params string[] args) => new KeyValuePair<string, string[]>(level, args);
 
@@ -139,7 +147,7 @@ namespace Reflex.Port.Content.UntamedImport
         public static UxTrackOptions ForLevel(UxLevelRow lv)
         {
             foreach (var kv in Table) if (kv.Key == lv.disc) return Parse(kv.Value);
-            throw new UxException("no build options for " + lv.disc + " (the 12 supported stadiums have a row in UxTrackOptions.Table)");
+            throw new UxException("no build options for " + lv.disc + " (every supported track has a row in UxTrackOptions.Table)");
         }
         public static UxTrackOptions ForLevel(string level) => ForLevel(UxCommon.Level(level));
 
@@ -280,10 +288,13 @@ namespace Reflex.Port.Content.UntamedImport
         /// Since the water-glare round (2026-11-12) the reference is 15fa7970 with ux_water.py 1fc7f0da: fairview-v7 and lincoln-v7 (the
         /// water reflects a copy of the level cube with the stadium lights dimmed); ecWaterReflection = "level" writes fairview-v6 /
         /// lincoln-v6. The ten stadiums without water are unchanged.
-        public const string REFERENCE_TOOL_MD5 = "15fa797042b5fd4847dd794d2b0ffe53";
+        /// Since the freestyle round (2026-11-12) the reference is the merged tools' 1ef081f1 (tools-fmx2): the four freestyle arenas
+        /// (westlake-v3 ... rbwcenter-v3, free-ride builds in a Beta_Fmx slot) and, unchanged, every stadium and the Minimoto arenas.
+        public const string REFERENCE_TOOL_MD5 = "1ef081f19405e97c17b69da30f201ec0";
         /// The version of this port's outputs: part of the stage stamp (a change here makes every staged stage output stale).
-        /// 2 = the dirt-look rounds (the default ground and shore colour changed); 3 = the water-glare round (the arenas' reflection cube).
-        public const string PORT = "UxBuildTrack/3";
+        /// 2 = the dirt-look rounds (the default ground and shore colour changed); 3 = the water-glare round (the arenas' reflection cube);
+        /// 4 = the freestyle round (the free-ride arenas; duplicate collision triangles dropped on every level).
+        public const string PORT = "UxBuildTrack/4";
         public static readonly string[] SUFFIXES = { "", "Base", "FreeRide", "SectionRace", "-sx" };
         static readonly string[] STRIP = { "CollisionRSData", "ModelRSData" };
         static readonly string[] KEEP_NAMES = { "TO_StartingGate" };
@@ -619,6 +630,9 @@ namespace Reflex.Port.Content.UntamedImport
             readonly UxContext ctx; readonly UxDisc disc; readonly UxTrackOptions o; readonly UxBuildShared sh; readonly Action<float, string> progress; readonly CancellationToken cancel;
             readonly UxLevelRow lv; readonly UxPaths paths; readonly Action<string> log;
             readonly string slot, tslot; readonly UxBase.Descriptor @base;
+            /// FREESTYLE.md: a freestyle arena is a free-ride track (Beta_Fmx_Track_Slot_N) on the stock base's free-ride kit: no tdf, gate, board,
+            /// scenario kit or SectionRace; S8 (ux_race) is not run.
+            readonly bool fmx; JObj freestyle;
             readonly UxOrdered<string, string> rename = new UxOrdered<string, string>(StringComparer.Ordinal);
             readonly List<object> problems = new List<object>(), warnings = new List<object>();
             readonly JObj info = new JObj();
@@ -641,8 +655,9 @@ namespace Reflex.Port.Content.UntamedImport
             {
                 this.ctx = ctx; this.disc = disc; this.o = o; this.sh = sh; this.progress = progress; this.cancel = cancel;
                 lv = ctx.disc.lv; paths = o.paths ?? new UxPaths(); log = ctx.log ?? (s => { });
-                slot = UxCommon.SlotName("sx", o.slot);
-                @base = sh.@base; tslot = @base.stem;
+                fmx = UxCommon.IsFmx(lv);
+                slot = UxCommon.RaceSlotName(lv, o.slot);
+                @base = fmx ? UxBase.Resolve(sh.@base.level, "sx", "freeride") : sh.@base; tslot = @base.stem;
                 foreach (string s in SUFFIXES) rename[tslot + s] = slot + s;
             }
 
@@ -699,7 +714,7 @@ namespace Reflex.Port.Content.UntamedImport
                     return new List<KeyValuePair<string, UxElem>>(ents.items);
                 });
                 Step(0.66f, "race line");
-                Timed("race", () =>
+                if (!fmx) Timed("race", () =>
                 {
                     var ro = new UxRaceOptions
                     {
@@ -726,6 +741,8 @@ namespace Reflex.Port.Content.UntamedImport
                 {
                     // ---- combined round (DESIGN 23): tuff blocks, EC water, MassiveAd panels (screens: collect_assets)
                     items = CombinedEntities(items);
+                    // ---- FREESTYLE.md: the ramp faces carried by the ramp entities
+                    if (fmx) items = FreestyleRamps(items);
                     // ---- --split-gate untamed (the Untamed drop gate on the base drop gate + its base)
                     if (o.splitGate == "untamed") items.AddRange(SplitGate());
                 });
@@ -983,6 +1000,20 @@ namespace Reflex.Port.Content.UntamedImport
                 info.Set("combined_assets", rec);
             }
 
+            // ------------------------------------------------------------------ freestyle ramps (FREESTYLE.md)
+            /// freestyle_ramps: UxFreestyle.Ramps: every collision-only ramp face the terrain stage left out of the HF goes into the collision of
+            /// the ramp it lies on (a new kind-22 UXR_ asset, stock FMX ramp-top values); the assets go to <L>Base.
+            List<KeyValuePair<string, UxElem>> FreestyleRamps(List<KeyValuePair<string, UxElem>> items)
+            {
+                var src = NewSources();
+                if (src.problems.Count > 0) throw new UxException("stage outputs (freestyle ramps): " + UxJson.Dumps(src.problems, -1));
+                var (rec, assets) = UxFreestyle.Ramps(items, ctx, src, UxCommon.YLift(lv), log, cancel);
+                Extra(assets, "freestyle");
+                freestyle = rec;
+                info.Set("freestyle", rec);
+                return items;
+            }
+
             // ------------------------------------------------------------------ split gate
             List<KeyValuePair<string, UxElem>> SplitGate()
             {
@@ -1065,7 +1096,7 @@ namespace Reflex.Port.Content.UntamedImport
                 }
                 // WP8 moves
                 var moved = new List<object>();
-                foreach (var kv in Obj(race.Get("moves")).items)
+                if (race != null) foreach (var kv in Obj(race.Get("moves")).items)
                 {
                     string nm = kv.Key; var mv = Obj(kv.Value);
                     var es = Named(nm, mv.Get("type") as string);
@@ -1132,6 +1163,12 @@ namespace Reflex.Port.Content.UntamedImport
                     foreach (var e in frX) foreach (var r in UxBuildAssets.EntityRefs(e)) if (r.type == "material" && dropped.Contains(r.name)) throw new UxException("dropped materials still referenced: " + r.name);
                 }
                 info.Set("dropped_material_filter", frep);
+                if (fmx && freestyle != null)       // FREESTYLE.md: carrier bounds after the filter
+                {
+                    byte[] ReadModel(string n) => variantAssets.TryGet((n, "model"), out var vb) ? vb : sources.Read((n, "model"));
+                    byte[] ReadCollis(string n) => extraAssets[(n, "collis")].data;
+                    Extra(UxFreestyle.WidenCarriers(convBase, freestyle, ReadModel, ReadCollis, log), "freestyle");
+                }
                 // template y offset
                 YOffset(bs, fr);
                 frExtra = frX;
@@ -1315,7 +1352,7 @@ namespace Reflex.Port.Content.UntamedImport
                 }
                 // WP13c start-gate patch assets (ux_race)
                 var raceKeys = new HashSet<(string, string)>();
-                foreach (var (name, type, bytes) in raceRes.assets)
+                if (raceRes != null) foreach (var (name, type, bytes) in raceRes.assets)
                 {
                     if (TA.Clash(name, type) != null || data.Has((name, type))) throw new UxException("start-gate patch asset " + name + "." + type + " clashes with an existing asset");
                     data[(name, type)] = new Item(bytes, (name, type)); raceKeys.Add((name, type));
@@ -1370,8 +1407,11 @@ namespace Reflex.Port.Content.UntamedImport
                 byte[] z = ZonesReplacement();
                 if (z != null) replacements[zonesKey] = z;
                 if (cameraflashReplacement != null) replacements[cameraflashReplacement.Value.key] = cameraflashReplacement.Value.data;
-                replacements[(tslot + "-sx", "tdf")] = tdfBytes;
-                if (!TA.Has(tslot + "-sx", "tdf")) throw new UxException("template has no tdf " + tslot + "-sx");
+                if (!fmx)
+                {
+                    replacements[(tslot + "-sx", "tdf")] = tdfBytes;
+                    if (!TA.Has(tslot + "-sx", "tdf")) throw new UxException("template has no tdf " + tslot + "-sx");
+                }
                 // ---- the record
                 var added = new SortedDictionary<string, long>(StringComparer.Ordinal); long addedBytes = 0;
                 var list = new List<object>();
@@ -1390,7 +1430,7 @@ namespace Reflex.Port.Content.UntamedImport
                 var renJ = new JObj(); foreach (var kv in ren) renJ.Set(K(kv.Key), kv.Value);
                 var variants = new List<string>(); foreach (var k in variant.Keys) if (k.type == "model") variants.Add(k.name);
                 variants.Sort(string.CompareOrdinal);
-                var kit = new List<object>(); foreach (var (name, type, _) in raceRes.assets) kit.Add(name + "." + type);
+                var kit = new List<object>(); if (raceRes != null) foreach (var (name, type, _) in raceRes.assets) kit.Add(name + "." + type);
                 assetRecord = new JObj().Set("added", addedJ).Set("added_bytes", addedBytes).Set("template_refs", tref).Set("global_refs", fromGlobal).Set("identical_to_template", same)
                     .Set("renames", renJ).Set("materials_retextured", matPatch).Set("variants", Strs(variants)).Set("race_kit", kit).Set("list", list);
                 return (data, replacements);
@@ -1459,6 +1499,7 @@ namespace Reflex.Port.Content.UntamedImport
             /// add_lappacing: ux_race's '<slot>-lappacing' bxml in <L>Base (only with --lappacing untamed).
             void AddLappacing(UxOrdered<(string name, string type), Item> data)
             {
+                if (fmx) return;
                 var lp = race.Get("lappacing") as JObj ?? new JObj();
                 var rec = new JObj();
                 foreach (string k in new[] { "asset", "type", "included", "source", "source_md5", "events_in", "renamed", "added", "bytes", "md5", "engine_check", "reason" }) rec.Set(k, lp.Get(k));
@@ -1673,7 +1714,8 @@ namespace Reflex.Port.Content.UntamedImport
                     return TA.Logical(by[k]);
                 }
                 var entsAll = new List<UxElem>(); foreach (var s in subs) entsAll.AddRange(s.Entities());
-                var roots = new List<(string name, string type)> { (tslot + "-sx", "tdf") };
+                var roots = new List<(string name, string type)>();
+                if (!fmx) roots.Add((tslot + "-sx", "tdf"));
                 if (o.baseScripts != "none")
                 {
                     foreach (var kv in scriptRen) roots.Add(kv.Key);
@@ -1684,7 +1726,7 @@ namespace Reflex.Port.Content.UntamedImport
                 var lit = UxBase.LiteralRoots(types);
                 foreach (var k in lit) if (!roots.Contains(k)) roots.Add(k);
                 var AS = sh.AnimSets(paths);
-                var setRoots = new List<string>(); foreach (var (set, type) in UxBase.ENGINE_ANIM_SETS) if (type == null || types.Contains(type)) setRoots.Add(set);
+                var setRoots = new List<string>(); if (!fmx) foreach (var (set, type) in UxBase.ENGINE_ANIM_SETS) if (type == null || types.Contains(type)) setRoots.Add(set);
                 var c = UxBase.Closure(entsAll, roots, index, Read, sh.Globals.Keys, AS.sets, setRoots, sh.SessionAnims);
                 var outp = new List<(string name, string type)>();
                 var kc = new SortedDictionary<string, long[]>(StringComparer.Ordinal); var rc = new SortedDictionary<string, long[]>(StringComparer.Ordinal);
@@ -1795,7 +1837,7 @@ namespace Reflex.Port.Content.UntamedImport
                 Step(0.97f, "packaging");
                 var sw = Stopwatch.StartNew();
                 byte[] topdown = ctx.work.ReadBytes(dirs["terrain"] + "/" + (UxJson.Get(sources.terrain, "ground", "default_topdown") as string ?? "topdown_occ.png"));
-                var files = UxPackage.Write(outFolder, slot, lv, dbBytes, lvBytes, sceneBytes, topdown, o.author, o.date, o.check);
+                var files = UxPackage.Write(outFolder, slot, lv, dbBytes, lvBytes, sceneBytes, topdown, o.author, o.date, o.check, fmx ? "freeride" : "supercross");
                 result.steps.Add(new KeyValuePair<string, double>("package", sw.Elapsed.TotalSeconds));
                 result.folder = outFolder; result.slot = slot;
                 var md5 = new JObj(); var bytes = new JObj();
@@ -1847,13 +1889,16 @@ namespace Reflex.Port.Content.UntamedImport
                 var warn = edoc.Get("warnings") as List<object> ?? new List<object>();
                 bi.Set("entities", new JObj().Set("options", edoc.Get("options")).Set("distance_fog", edoc.Get("distance_fog")).Set("freeride", edoc.Get("freeride"))
                     .Set("warnings", warn.Count > 50 ? warn.GetRange(0, 50) : warn));
-                var tdf = Obj(race.Get("tdf")); var gate = Obj(race.Get("gate")) ?? new JObj();
-                var tdfRec = new JObj(); foreach (string k in new[] { "asset", "mode", "sx_flags", "source", "source_md5" }) if (tdf.Has(k)) tdfRec.Set(k, tdf.Get(k));
-                var gateRec = new JObj();
-                foreach (string k in new[] { "gatestart_on_chute_dirt", "gatestart_in_corridor", "lap_crosses_gatestart_line", "template_gatestart_on_chute_dirt", "template_gatestart_in_corridor",
-                    "node_patch", "startgate_collision", "startgate_collision_trim", "gate_patch_option", "dropgate_materials", "startgate_visual" }) gateRec.Set(k, gate.Get(k));
-                bi.Set("race", new JObj().Set("tdf", tdfRec).Set("tdf_facts", tdf.Get("facts")).Set("gate", gateRec).Set("y_lift", race.Get("y_lift")).Set("checks", race.Get("checks"))
-                    .Set("warnings", race.Get("warnings")));
+                var tdf = Obj(race?.Get("tdf")) ?? new JObj(); var gate = Obj(race?.Get("gate")) ?? new JObj();
+                if (race != null)
+                {
+                    var tdfRec = new JObj(); foreach (string k in new[] { "asset", "mode", "sx_flags", "source", "source_md5" }) if (tdf.Has(k)) tdfRec.Set(k, tdf.Get(k));
+                    var gateRec = new JObj();
+                    foreach (string k in new[] { "gatestart_on_chute_dirt", "gatestart_in_corridor", "lap_crosses_gatestart_line", "template_gatestart_on_chute_dirt", "template_gatestart_in_corridor",
+                        "node_patch", "startgate_collision", "startgate_collision_trim", "gate_patch_option", "dropgate_materials", "startgate_visual" }) gateRec.Set(k, gate.Get(k));
+                    bi.Set("race", new JObj().Set("tdf", tdfRec).Set("tdf_facts", tdf.Get("facts")).Set("gate", gateRec).Set("y_lift", race.Get("y_lift")).Set("checks", race.Get("checks"))
+                        .Set("warnings", race.Get("warnings")));
+                }
                 var assets = new JObj(); foreach (var kv in assetRecord.items) if (kv.Key != "list") assets.Set(kv.Key, kv.Value);
                 bi.Set("assets", assets);
                 bi.Set("assembly", info);
@@ -1897,6 +1942,9 @@ namespace Reflex.Port.Content.UntamedImport
                 ro.Set("screens", combined.Get("screens") ?? new JObj().Set("option", o.screens));
                 ro.Set("massive_ads", combined.Get("massive_ads") ?? new JObj().Set("option", o.massiveAds));
                 ro.Set("combined_assets", info.Get("combined_assets"));
+                if (fmx)                                                                  // FREESTYLE.md record
+                    ro.Set("freestyle", new JObj().Set("slot", slot).Set("kind", "freeride (Beta_Fmx: Open Reflex FREE RIDE only)").Set("base_kit", "freeride")
+                        .Set("race_kit", null).Set("ramps", freestyle));
                 var dlr = new JObj().Set("option", o.dirtLook);                           // dirt-look round (DESIGN 23.10)
                 if (info.Get("dirt_look") is JObj dlj) foreach (var kv in dlj.items) dlr.Set(kv.Key, kv.Value);
                 ro.Set("dirt_look", dlr);

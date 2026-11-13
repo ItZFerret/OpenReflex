@@ -158,6 +158,11 @@ namespace Reflex.Port.Content.UntamedImport
             new Policy("StartEntityFreeRideRSData", "drop", null, "the 12 free-ride starts are synthesised from the free-ride line pose (synth when it is the pose source)", false),
             new Policy("StartEntityFreestyleRSData", "drop", null, "freestyle start (not a target mode)", false),
             new Policy("StartEntitySnakeTagRSData", "drop", null, "mini-game start (not a target mode)", false),
+            // Minimoto stadiums (DESIGN 25): Dyson's Base has one Untamed sound-zone entity (no other level has it)
+            new Policy("SoundZonesRSData", "drop", null, "Untamed audio zones not converted; the template audio managers are kept", false),
+            // Clearwater round (the reference's merged tools): Untamed breakable wooden fence pieces; no Reflex type converts them
+            new Policy("BreakableFencePostRSData", "drop", null, "Untamed breakable fence post (no Reflex type)", false),
+            new Policy("BreakableFenceSupportRSData", "drop", null, "Untamed breakable fence board (no Reflex type)", false),
         };
         const string FREERIDE_LINE_REFLEX = "StartEntityFreeRideRSData x12 in <L>FreeRide";       // POLICY['StartEntityFreeRideLineRSData']['reflex']
 
@@ -172,6 +177,10 @@ namespace Reflex.Port.Content.UntamedImport
             new Rule("TO_StartingGate", "sx", "replace", "template CollisionRSData TO_StartingGate",
                 "replaced by the template TO_StartingGate (GL_StartGate, 16 GateStart nodes); the Untamed gate base is a rigid multi-node model"),
             new Rule("TO_StartingGate", "fr", "drop", null, "no gate kit in the free-ride template (DESIGN 7); the Untamed gate base is a rigid multi-node model"),
+            // Minimoto stadiums (DESIGN 25): Untamed's career activity-start trigger (TriggerID StartActivity, LevelConfig ExhibitionMinimoto = no
+            // stock Reflex enum value; sits at the AAA start platform under the floor). No Reflex use.
+            new Rule("Minimoto Trigger", "sx", "drop", null, "Untamed activity-start trigger (StartActivity / ExhibitionMinimoto); no Reflex role"),
+            new Rule("Minimoto Trigger", "fr", "drop", null, "Untamed activity-start trigger (StartActivity / ExhibitionMinimoto); no Reflex role"),
         };
         /// Per-kind changes to the type policy: KIND_OVERRIDES[kind][type]. The free-ride template has no tdf, gate kit or 30 s board.
         static readonly Rule[] KIND_OVERRIDES =

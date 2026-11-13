@@ -2,9 +2,10 @@
 
 The player's own MX vs ATV Untamed (Xbox 360) disc, turned into OPEN REFLEX custom tracks. The conversion itself was developed outside this
 repository: the Python Untamed converter (the reference: about 21k lines on the build path plus 10k of verification; its design notes are
-its `docs/DESIGN.md`). It converts the 10 supercross and 2 EnduroCross stadiums natively: textures by block copy, meshes by vertex
+its `docs/DESIGN.md`). It converts the 10 supercross, 2 EnduroCross and 2 Minimoto stadiums and the 4 freestyle arenas natively:
+textures by block copy, meshes by vertex
 re-declaration, collision, materials onto stock Reflex shader templates, the ground as a 1 ft heightfield drawn with the stock supercross
-dirt (since its dirt-look rounds of 2026-11-11) and the race line from the disc's `AI/<level>-<mode>.tdf07`. It writes one `Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}` set and a `mod.ini` per track, installed
+dirt (since its dirt-look rounds of 2026-11-11) and the race line from the disc's `AI/<level>-<mode>.tdf07`. It writes one `Beta_Sx_Track_Slot_1.dx9.{database,level,package,scene}` set (a freestyle arena: `Beta_Fmx_Track_Slot_1`, a free-ride track) and a `mod.ini` per track, installed
 by hand as `Mods/Tracks/Untamed/<short>-v<n>/` (TrackMods.cs). All 12 pass that converter's offline checks and its headless race (11 AI,
 3 laps on rxcore; the two EnduroCross arenas warn only because Untamed's EnduroCross has no holeshot line). In game, Norton and Foothills
 have been ridden so far.
@@ -36,10 +37,24 @@ until its rows are added after the table's (the check takes the first row a leve
 | BridgePort_STADIUM | bridgeport | sx | Bridgeport Stadium | 60.6 | AI/BridgePort_STADIUM-sx.tdf07 |
 | Fairview_STADIUM | fairview | ec | Fairview Arena | 35.5 | AI/Fairview_STADIUM-ec.tdf07 |
 | Lincoln_STADIUM | lincoln | ec | Lincoln Memorial Arena | 35.3 | AI/Lincoln_STADIUM-ec.tdf07 |
+| Dyson_STADIUM | dyson | mm | Specter Arena | 33.4 | AI/Dyson_STADIUM-mm.tdf07 |
+| Edgewater_STADIUM | edgewater | mm | Edgewater Arena | 35.3 | AI/Edgewater_STADIUM-mm.tdf07 |
+| RBWCenter_STADIUM | rbwcenter | fmx | RBW Center Arena | 34.5 | AI/RBWCenter_STADIUM-fmx.tdf07 (freestyle lines) |
+| Southbend_STADIUM | southbend | fmx | Southbend Arena | 30.6 | AI/Southbend_STADIUM-fmx.tdf07 (freestyle lines) |
+| THQSpectrum_STADIUM | thqspectrum | fmx | THQ Spectrum Arena | 29.2 | AI/THQSpectrum_STADIUM-fmx.tdf07 (freestyle lines) |
+| WestLake_STADIUM | westlake | fmx | West Lake Arena | 32.6 | AI/WestLake_STADIUM-fmx.tdf07 (freestyle lines) |
 
-EnduroCross races as supercross: Reflex has no EnduroCross race, and a `Beta_Ec` stem would make the track Free Ride only. Not supported
-yet: the Minimoto stadiums Dyson and Edgewater (`-mm` race lines), the other stadiums (RBWCenter, Southbend, THQSpectrum, WestLake: freestyle
-and other modes) and every `*_WORLD` outdoor level.
+EnduroCross races as supercross: Reflex has no EnduroCross race, and a `Beta_Ec` stem would make the track Free Ride only. The Minimoto
+stadiums (added 2026-11-12) race as supercross too, on their `-mm` race lines, with full-size bikes (the jumps are built for minibikes;
+not rescaled). The four freestyle arenas (added 2026-11-12, the reference's final arena round v3) are free-ride tracks: OPEN REFLEX has
+no freestyle event for custom tracks, so they are installed in a `Beta_Fmx_Track_Slot_1` slot, which `TrackMods.KindOf` lists under
+FREE RIDE only ("FREESTYLE · FREE RIDE"). They are built on SX_FortDodge reduced to its free-ride kit (no race line, gate, 30 s board or
+cut-scenes; the 12 free-ride starts on Untamed's start pad). Untamed's steel ramps keep Untamed's own riding faces: collision-only
+terrain triangles that leave the heightfield and go into the collision of the ramp they lie on (DriveOn 1, the stock FMX ramp-top
+values); on THQ Spectrum four ramps whose steel Untamed placed up to 0.7 ft off their riding faces are moved onto them. The ramps'
+perforated grating, their navy / red side panels, RBW Center's dark funbox frame and the Untamed logo on the jumbotron are drawn as in
+the reference. The `-fmx.tdf07` (Untamed's AI freestyle lines) is read by the terrain stage only, never shipped. Not supported yet:
+every `*_WORLD` outdoor level (the four outdoor freestyle venues among them).
 
 ## M1 (done): choose the disc, recognize the stadiums
 
@@ -69,7 +84,7 @@ macOS or with Visual Studio Build Tools' Roslyn and the .NET 8 runtime on Window
 `Content/UntamedImport/UntamedImporter.Import.cs` (`UntamedImporter.Import`, Unity-free) and the screens in
 `OpenFrontEnd/OpenShell.UntamedImport.cs`.
 
-**Screens.** After FIND TRACKS the 12 stadiums are a list to choose from. Ready ones are chosen. One that is installed already is marked
+**Screens.** After FIND TRACKS the 18 tracks (14 stadiums, 4 freestyle arenas) are a list to choose from. Ready ones are chosen. One that is installed already is marked
 and not chosen: IMPORTED (choosing it imports it again and replaces it) or INSTALLED BY HAND (choosing it imports a new copy, the older
 one stays). A stadium that can't be imported says why (its disc files, the Reflex game files, a folder in the way). IMPORT n TRACKS
 shows the track in progress with its step, a bar for the track and one for the whole import, and CANCEL. The results list every
@@ -79,13 +94,14 @@ tracks, listed in a section of their own: FREE RIDE and RACE > MX vs ATV Untamed
 **What Import does**, per chosen stadium, on a worker thread:
 
 1. Checks the stadium's five disc files against the supported disc again, the package included (the scan leaves it out), and the
-   stadium the jumbotron picture is made from (WestStone for the supercross stadiums, Fairview for the arenas: the whole disc is needed).
+   stadium the jumbotron picture is made from (WestStone for the supercross, Minimoto and freestyle arenas, Fairview for the EnduroCross
+   arenas: the whole disc is needed).
 2. Builds the track with `UxBuildTrack.Build` (each track's options: `UxTrackOptions.ForLevel`) into a staging folder inside
    `Mods/Tracks`: `.untamed-<8 hex>/w` (the work store, 90 - 155 MB), `/o` (the track), `/previous` (a replaced track until the new one
    is in), `/lock` (held open). A dot name, so `TrackMods` never lists it.
 3. Checks the result: the rules `TrackMods` lists a track by (`UxPackage.Rules`: one complete set, a level name the core takes, a
-   database that covers the package, a scene with a Base section), `mod.ini` as the client reads it (name, kind supercross, the
-   picture), and every file re-hashed against `sha256.txt` and the builder's result.
+   database that covers the package, a scene with a Base section), `mod.ini` as the client reads it (name, kind supercross or, for a
+   freestyle arena, freeride, the picture), and every file re-hashed against `sha256.txt` and the builder's result.
 4. Writes `untamed-import.json` (importer and converter versions, the disc files' SHA-256, the disc image's file name, the kind of
    library, the options, the seven files with size and SHA-256, whether the four `.dx9` files are the tested build's, the time) and
    moves the folder to `Mods/Tracks/Untamed/<short>/`. The manifest holds no path: players share a track folder as it is.
@@ -95,7 +111,8 @@ Rules it keeps:
 - The disc and the Reflex game files are only read. The library is `UxDirectoryLibrary` over `ReflexInstall.Dir`: an original install, or
   the client's game files (loose or packed), read without Unity.
 - Before anything is written: the library holds what the converter reads (`UntamedImporter.LibraryProblem`: SX_FortDodge and 15 more
-  stock levels, 7 game databases, `AnimationSets.bxml`; the EnduroCross arenas also FR_Alpine and SX_DLC01_FreightYard), free disk
+  stock levels, 7 game databases, `AnimationSets.bxml`; the EnduroCross arenas also FR_Alpine and SX_DLC01_FreightYard, the freestyle
+  arenas NAT_Concord: RBW Center's tuff blocks wear its Acerbis wrap), free disk
   space (the tracks' estimate + 320 MB while importing), on Windows the path lengths, and `Mods/Tracks/Untamed` not being a file or a
   link. A failure says which and stops the import.
 - A track is there complete or not at all: one folder move. A failed or cancelled stadium leaves nothing; the others go on. Cancel
@@ -191,4 +208,10 @@ Untamed's resource layouts are Reflex PC's, byte-swapped (texture v6 vs v4, surf
 - **A track ridden since the start and then re-imported**: `TrackMods.Release` closes its package file first; models and textures
   the client already loaded from it stay until the next start (the same bytes unless the converter changed).
 - Menu pictures from the disc's UI.
-- Minimoto (Dyson, Edgewater) as supercross; the other stadiums and the outdoor levels.
+- The outdoor levels (the four outdoor freestyle venues among them).
+- **The freestyle arenas in game through the import.** The reference's owner rode its first arena builds (v1: "they look good"; the
+  ramps' missing grating was fixed after that); the final builds (v3) and this importer's identical files have passed the offline
+  checks and the reference's headless free-ride load check only. To look at in game: navy / red ramp side panels, RBW Center's dark
+  funbox frame, the Untamed logo on the jumbotrons, the wheels on the steel of all five THQ Spectrum ramps, and THQ ramp 5216299,
+  whose Untamed riding faces are about 0.7 ft wider than its drawn plate on one side (Untamed's own geometry, kept: a wheel can sit
+  on an invisible strip just past the plate edge).

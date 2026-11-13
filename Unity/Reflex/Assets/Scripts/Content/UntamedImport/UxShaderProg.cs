@@ -1246,5 +1246,317 @@ namespace Reflex.Port.Content.UntamedImport
             foreach (var In in info.ins) if (In.op == "tfetch" && LastWord(In) == want) return Dreg(In.parts[0]).mask;
             return null;
         }
+
+        // ---------------------------------------------------------------- polynomial lane evaluator (Arena v3, FREESTYLE.md 12)
+        // A lane value is a polynomial {monomial: coef} in Python insertion order; a monomial is the tuple of symbols sorted by repr:
+        // ('t', sampler, channel, fetch pc) a texture fetch lane, ('i', reg, lane) an interpolant read before any write, ('c', reg, lane) an
+        // engine constant, ('?', n) an untracked result. Used only by DiffuseAlbedo; the affine evaluator above is unchanged.
+        public const int IBL_DIFFUSE_SAMPLER = 13, IBL_SPECULAR_SAMPLER = 14;
+
+        sealed class PSym
+        {
+            public char k; public int a; public char ch; public int pc; public string repr;
+            public static PSym T(int smp, char c, int pc) => new PSym { k = 't', a = smp, ch = c, pc = pc, repr = "('t', " + I(smp) + ", '" + c + "', " + I(pc) + ")" };
+            public static PSym R(char kind, int reg, char lane) => new PSym { k = kind, a = reg, ch = lane, repr = "('" + kind + "', " + I(reg) + ", '" + lane + "')" };
+            public static PSym Q(int n) => new PSym { k = '?', a = n, repr = "('?', " + I(n) + ")" };
+        }
+        sealed class Mono
+        {
+            public readonly PSym[] s; public readonly string key;
+            public Mono(PSym[] s) { this.s = s; var parts = new string[s.Length]; for (int i = 0; i < s.Length; i++) parts[i] = s[i].repr; key = string.Join("\u0001", parts); }
+            public static Mono Sorted(IEnumerable<PSym> syms)
+            {
+                var l = new List<PSym>(syms);
+                // Python sorted(key=repr): stable, by the repr string (code point order)
+                var idx = new List<int>(); for (int i = 0; i < l.Count; i++) idx.Add(i);
+                idx.Sort((x, y) => { int c = string.CompareOrdinal(l[x].repr, l[y].repr); return c != 0 ? c : x.CompareTo(y); });
+                var o = new PSym[l.Count]; for (int i = 0; i < o.Length; i++) o[i] = l[idx[i]];
+                return new Mono(o);
+            }
+        }
+        sealed class Poly
+        {
+            public readonly List<Mono> m = new List<Mono>(); public readonly List<double> v = new List<double>();
+            readonly Dictionary<string, int> _at = new Dictionary<string, int>(StringComparer.Ordinal);
+            public int Count => m.Count;
+            public void Add(Mono k, double c)
+            {
+                if (_at.TryGetValue(k.key, out int i)) v[i] = v[i] + c;
+                else { _at[k.key] = m.Count; m.Add(k); v.Add(0.0 + c); }
+            }
+            public void Put(Mono k, double c) { if (_at.TryGetValue(k.key, out int i)) v[i] = c; else { _at[k.key] = m.Count; m.Add(k); v.Add(c); } }
+            public bool TryGet(string key, out double c) { if (_at.TryGetValue(key, out int i)) { c = v[i]; return true; } c = 0; return false; }
+            public Poly Filtered() { var o = new Poly(); for (int i = 0; i < m.Count; i++) if (Math.Abs(v[i]) > 1e-12) o.Put(m[i], v[i]); return o; }
+            public bool SameAs(Poly b)
+            {
+                if (b.Count != Count) return false;
+                for (int i = 0; i < m.Count; i++) { if (!b.TryGet(m[i].key, out double c) || c != v[i]) return false; }
+                return true;
+            }
+        }
+        static readonly Mono EMPTY = new Mono(new PSym[0]);
+        static int s_polyOpaque;
+        static Poly PC(double c) { var p = new Poly(); if (Math.Abs(c) > 0) p.Put(EMPTY, c); return p; }
+        static Poly PSy(PSym s) { var p = new Poly(); p.Put(new Mono(new[] { s }), 1.0); return p; }
+        static Poly POpaque() => PSy(PSym.Q(System.Threading.Interlocked.Increment(ref s_polyOpaque)));
+        static bool PIsC(Poly p) { foreach (var k in p.m) if (k.s.Length != 0) return false; return true; }
+        static double PCv(Poly p) => p.TryGet("", out double c) ? c : 0.0;
+        static Poly PAdd(Poly a, Poly b)
+        {
+            var o = new Poly();
+            for (int i = 0; i < a.Count; i++) o.Put(a.m[i], a.v[i]);
+            for (int i = 0; i < b.Count; i++) { o.TryGet(b.m[i].key, out double c); o.Put(b.m[i], c + b.v[i]); }
+            return o.Filtered();
+        }
+        static Poly PNeg(Poly a) { var o = new Poly(); for (int i = 0; i < a.Count; i++) o.Put(a.m[i], -a.v[i]); return o; }
+        static Poly PMul(Poly a, Poly b)
+        {
+            var o = new Poly();
+            for (int i = 0; i < a.Count; i++)
+                for (int j = 0; j < b.Count; j++)
+                {
+                    var all = new List<PSym>(a.m[i].s); all.AddRange(b.m[j].s);
+                    var k = Mono.Sorted(all);
+                    o.TryGet(k.key, out double c);
+                    o.Put(k, c + a.v[i] * b.v[j]);
+                }
+            if (o.Count > 2000) return POpaque();
+            return o.Filtered();
+        }
+        static bool PTexOnly(Poly p) { foreach (var k in p.m) foreach (var s in k.s) if (s.k != 't') return false; return true; }
+        static bool PBounded01(Poly p)
+        {
+            if (!PTexOnly(p)) return false;
+            double sum = 0; foreach (double x in p.v) { if (!(x >= 0)) return false; }
+            foreach (double x in p.v) sum += x;
+            return sum <= 1 + 1e-9;
+        }
+        static bool PNonNeg(Poly p) { foreach (double x in p.v) if (!(x >= 0)) return false; return true; }
+        static Poly PMax(Poly a, Poly b)
+        {
+            if (a.SameAs(b)) return a;
+            if (PIsC(a) && PIsC(b)) return PC(PyMax(PCv(a), PCv(b)));
+            foreach (var (x, y) in new[] { (a, b), (b, a) })
+                if (PIsC(y) && PCv(y) <= 0.0 && PTexOnly(x) && PNonNeg(x)) return x;
+            return POpaque();
+        }
+        static Poly PMin(Poly a, Poly b)
+        {
+            if (a.SameAs(b)) return a;
+            if (PIsC(a) && PIsC(b)) return PC(PyMin(PCv(a), PCv(b)));
+            foreach (var (x, y) in new[] { (a, b), (b, a) })
+                if (PIsC(y) && PCv(y) >= 1.0 && PBounded01(x)) return x;
+            return POpaque();
+        }
+        static Poly PSat(Poly a)
+        {
+            if (PIsC(a)) return PC(PyMin(1.0, PyMax(0.0, PCv(a))));
+            return PBounded01(a) ? a : POpaque();
+        }
+
+        /// poly_run(ins, literals, stop_pc): polynomial registers {(reg, lane): poly} up to (not including) pc stop_pc.
+        static Dictionary<(int, char), Poly> PolyRun(IList<UxSpIns> ins, Dictionary<int, double[]> literals, int? stopPc)
+        {
+            var regs = new Dictionary<(int, char), Poly>();
+            Poly ps = PC(0.0);
+            Poly Rd(UxSpOperand op, int lane)
+            {
+                if (op == null) return POpaque();
+                char comp = Swz4(op.sw)[lane];
+                Poly v;
+                if (comp == '0' || comp == '1') v = PC(comp - '0');
+                else if (op.kind == 'c')
+                {
+                    var lit = Lit(literals, op.idx);
+                    v = lit != null ? PC(lit[XyzwIndex(comp)]) : PSy(PSym.R('c', op.idx, comp));
+                }
+                else if (!regs.TryGetValue((op.idx, comp), out v)) v = PSy(PSym.R('i', op.idx, comp));
+                if (op.abs) v = PIsC(v) ? PC(Math.Abs(PCv(v))) : POpaque();
+                return op.neg ? PNeg(v) : v;
+            }
+            int g = 0;
+            while (g < ins.Count)
+            {
+                int end = g + 1;
+                while (end < ins.Count && ins[end].pc == ins[end - 1].pc && ins[end].op != "tfetch" && ins[g].op != "tfetch") end++;
+                if (stopPc != null && ins[g].pc >= stopPc.Value) break;
+                var writes = new List<(bool ps, (int, char) key, Poly v)>();
+                for (int q = g; q < end; q++)
+                {
+                    var In = ins[q];
+                    string op = In.op;
+                    if (op == "tfetch")
+                    {
+                        var (r, mk) = Dreg(In.parts[0]);
+                        string tf = LastWord(In);
+                        int smp = tf.StartsWith("tf", StringComparison.Ordinal) ? int.Parse(tf.Substring(2), CultureInfo.InvariantCulture) : -1;
+                        if (mk == null) throw Raise("TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'");
+                        string m4 = (mk + "____").Substring(0, 4);
+                        for (int L = 0; L < 4; L++)
+                        {
+                            char c = m4[L];
+                            if (c == '_') continue;
+                            if (XYZW.IndexOf(c) >= 0) writes.Add((false, (r, XYZW[L]), PSy(PSym.T(smp, c, In.pc))));
+                            else writes.Add((false, (r, XYZW[L]), PC(c == '0' || c == '1' ? c - '0' : 0.0)));
+                        }
+                        continue;
+                    }
+                    if (op == "vfetch" || op == "nop" || op.StartsWith("set", StringComparison.Ordinal) || op.StartsWith("get", StringComparison.Ordinal) || In.parts.Length == 0) continue;
+                    bool sat = op.EndsWith("_sat", StringComparison.Ordinal);
+                    string bas = sat ? op.Substring(0, op.Length - 4) : op;
+                    string dest = In.parts[0];
+                    var srcs = new UxSpOperand[In.parts.Length - 1];
+                    for (int x = 1; x < In.parts.Length; x++) srcs[x - 1] = ParseOperand(In.parts[x]);
+                    string dkey; List<int> dl;
+                    if (dest == "ps") { dkey = "ps"; dl = new List<int>(); }
+                    else
+                    {
+                        var mreg = MREG.Match(dest);
+                        if (!mreg.Success) continue;
+                        dkey = mreg.Groups[1].Value; dl = Lanes(mreg.Groups[2].Value);
+                    }
+                    var vals = new List<KeyValuePair<int, Poly>>();
+                    if (SCALAR_OPS.Contains(bas))
+                    {
+                        Poly v;
+                        if (bas == "mulsc" || bas == "addsc" || bas == "subsc")
+                        {
+                            Poly a = srcs.Length > 0 && srcs[0] != null ? Rd(srcs[0], 0) : POpaque();
+                            Poly b = srcs.Length > 1 && srcs[1] != null ? Rd(srcs[1], 0) : POpaque();
+                            v = bas == "mulsc" ? PMul(a, b) : bas == "addsc" ? PAdd(a, b) : PAdd(a, PNeg(b));
+                        }
+                        else if (bas == "retain_prev") v = ps;
+                        else
+                        {
+                            var s = srcs.Length > 0 ? srcs[0] : null;
+                            Poly a = Rd(s, 3), b = Rd(s, 0);
+                            if (bas == "maxs") v = PMax(a, b);
+                            else if (bas == "mins") v = PMin(a, b);
+                            else if (bas == "adds") v = PAdd(a, b);
+                            else if (bas == "muls") v = PMul(a, b);
+                            else if (bas == "muls_prev") v = PMul(a, ps);
+                            else if (bas == "adds_prev") v = PAdd(a, ps);
+                            else v = POpaque();
+                        }
+                        if (sat) v = PSat(v);
+                        writes.Add((true, (0, ' '), v));
+                        foreach (int L in dl) { vals.RemoveAll(kv => kv.Key == L); vals.Add(new KeyValuePair<int, Poly>(L, v)); }
+                    }
+                    else
+                    {
+                        foreach (int L in dl)
+                        {
+                            Poly v;
+                            if (bas == "add" && srcs.Length == 2) v = PAdd(Rd(srcs[0], L), Rd(srcs[1], L));
+                            else if (bas == "mul" && srcs.Length == 2) v = PMul(Rd(srcs[0], L), Rd(srcs[1], L));
+                            else if (bas == "mad" && srcs.Length == 3) v = PAdd(PMul(Rd(srcs[0], L), Rd(srcs[1], L)), Rd(srcs[2], L));
+                            else if (bas == "max" && srcs.Length == 2) v = PMax(Rd(srcs[0], L), Rd(srcs[1], L));
+                            else if (bas == "min" && srcs.Length == 2) v = PMin(Rd(srcs[0], L), Rd(srcs[1], L));
+                            else v = POpaque();
+                            vals.Add(new KeyValuePair<int, Poly>(L, sat ? PSat(v) : v));
+                        }
+                    }
+                    foreach (var kv in vals)
+                        if (dkey.StartsWith("r", StringComparison.Ordinal)) writes.Add((false, (int.Parse(dkey.Substring(1), CultureInfo.InvariantCulture), XYZW[kv.Key]), kv.Value));
+                }
+                foreach (var wv in writes) { if (wv.ps) ps = wv.v; else regs[wv.key] = wv.v; }
+                g = end;
+            }
+            return regs;
+        }
+
+        static string PyStrList(IEnumerable<string> l)
+        {
+            var o = new List<string>(); foreach (string s in l) o.Add("'" + s + "'");
+            return "[" + string.Join(", ", o) + "]";
+        }
+
+        /// diffuse_albedo(info, light_samplers): what the Untamed program multiplies the diffuse image light by (FREESTYLE.md 12):
+        ///   albedo_c = light_c x (offset_c + scale_c x T_c)
+        /// kind 'affine' (sampler, scale, offset) | 'literal' (rgb) | null (how = why not).
+        public static UxSpDiffuseAlbedo DiffuseAlbedo(UxShaderInfo info, ICollection<int> lightSamplers)
+        {
+            var w = Evaluate(info.ins, info.literals, new List<Export>());
+            if (w == null || w.fogOnly) return new UxSpDiffuseAlbedo { how = "no fog wrapper on the colour export" };
+            int? addPc = null;
+            foreach (var In in info.ins) if (In.raw == w.lines[0]) { addPc = In.pc; break; }
+            var regs = PolyRun(info.ins, info.literals, addPc);
+            int B = w.albedoReg;
+            var polys = new Poly[3];
+            for (int c = 0; c < 3; c++) polys[c] = regs.TryGetValue((B, XYZW[c]), out var p) ? p : PSy(PSym.R('i', B, XYZW[c]));
+            bool Ibl(PSym s) => s.k == 't' && (s.a == IBL_DIFFUSE_SAMPLER || s.a == IBL_SPECULAR_SAMPLER);
+            var coefOrder = new List<int>(); var coef = new Dictionary<int, Poly[]>();
+            for (int L = 0; L < 3; L++)
+            {
+                var p = polys[L];
+                for (int i = 0; i < p.Count; i++)
+                {
+                    var mono = p.m[i]; double v = p.v[i];
+                    var ii = new List<PSym>(); bool opaque = false;
+                    foreach (var s in mono.s) { if (Ibl(s)) ii.Add(s); if (s.k == '?') opaque = true; }
+                    if (ii.Count != 1 || ii[0].a != IBL_DIFFUSE_SAMPLER || opaque) continue;
+                    var rest = new List<PSym>(mono.s); rest.Remove(ii[0]);
+                    int fpc = ii[0].pc;
+                    if (!coef.TryGetValue(fpc, out var Q)) { Q = new[] { new Poly(), new Poly(), new Poly() }; coef[fpc] = Q; coefOrder.Add(fpc); }
+                    var rk = new Mono(rest.ToArray());
+                    Q[L].TryGet(rk.key, out double old);
+                    Q[L].Put(rk, old + v);
+                }
+            }
+            var clean = new List<int>(); foreach (int k in coefOrder) if (coef[k][0].Count > 0 && coef[k][1].Count > 0 && coef[k][2].Count > 0) clean.Add(k);
+            if (clean.Count != 1) return new UxSpDiffuseAlbedo { how = I(clean.Count) + " diffuse image-light fetches with a clean coefficient on all lanes (want 1)" };
+            int pc = clean[0]; var QQ = coef[pc];
+            var light = new HashSet<int>(lightSamplers);
+            int? src = null; var scale = new double[3]; var off = new double[3]; List<(char, int)> lights = null;
+            for (int L = 0; L < 3; L++)
+            {
+                char ch = XYZW[L]; var q = QQ[L];
+                for (int i = 0; i < q.Count; i++)
+                {
+                    var mono = q.m[i]; double v = q.v[i];
+                    var lfl = new List<PSym>(); foreach (var s in mono.s) if (s.k == 'i' || (s.k == 't' && light.Contains(s.a))) lfl.Add(s);
+                    var lf = Mono.Sorted(lfl).s;
+                    var col = new List<PSym>(); foreach (var s in mono.s) { bool inLf = false; foreach (var t in lf) if (t.repr == s.repr) inLf = true; if (!inLf) col.Add(s); }
+                    var key = new List<(char, int)>(); foreach (var s in lf) key.Add((s.k, s.a));
+                    if (lights == null) lights = key;
+                    bool same = key.Count == lights.Count; for (int z = 0; same && z < key.Count; z++) same = key[z] == lights[z];
+                    bool chOk = true; foreach (var s in lf) if (s.ch != ch) chOk = false;
+                    if (!same || !chOk)
+                        return new UxSpDiffuseAlbedo { how = "lane " + ch + ": light factors " + TupleRepr(key) + " differ from " + TupleRepr(lights) };
+                    if (col.Count == 0) off[L] += v;
+                    else if (col.Count == 1 && col[0].k == 't' && col[0].a < MATERIAL_SAMPLERS && col[0].ch == ch)
+                    {
+                        if (src != null && src.Value != col[0].a) return new UxSpDiffuseAlbedo { how = "two colour textures (tf" + I(src.Value) + ", tf" + I(col[0].a) + ")" };
+                        src = col[0].a;
+                        scale[L] += v;
+                    }
+                    else
+                    {
+                        var cr = new List<string>(); foreach (var s in col) cr.Add(s.repr);
+                        return new UxSpDiffuseAlbedo { how = "lane " + ch + ": term [" + string.Join(", ", cr) + "] is not a literal x one colour lane" };
+                    }
+                }
+            }
+            var lt = new List<string>(); foreach (var (a, b) in lights ?? new List<(char, int)>()) lt.Add(a + I(b));
+            string lj = lt.Count > 0 ? string.Join("*", lt) : "1";
+            if (src == null)
+                return new UxSpDiffuseAlbedo { kind = "literal", rgb = new[] { UxNp.PyRound(off[0], 6), UxNp.PyRound(off[1], 6), UxNp.PyRound(off[2], 6) }, light = lt, fetch_pc = pc,
+                    how = "albedo = " + lj + " x literal" };
+            return new UxSpDiffuseAlbedo { kind = "affine", sampler = src.Value, scale = new[] { UxNp.PyRound(scale[0], 6), UxNp.PyRound(scale[1], 6), UxNp.PyRound(scale[2], 6) },
+                offset = new[] { UxNp.PyRound(off[0], 6), UxNp.PyRound(off[1], 6), UxNp.PyRound(off[2], 6) }, light = lt, fetch_pc = pc,
+                how = "albedo = " + lj + " x (offset + scale x tf" + I(src.Value) + ")" };
+        }
+        static string TupleRepr(List<(char, int)> l)
+        {
+            var o = new List<string>(); foreach (var (a, b) in l) o.Add("('" + a + "', " + I(b) + ")");
+            return "(" + string.Join(", ", o) + (o.Count == 1 ? ",)" : ")");
+        }
+        internal static string PyStrListRepr(IEnumerable<string> l) => PyStrList(l);
+    }
+
+    /// diffuse_albedo(): kind 'affine' (sampler, scale, offset) | 'literal' (rgb) | null; light = the light factor names ('t5', 'i5').
+    public sealed class UxSpDiffuseAlbedo
+    {
+        public string kind, how; public int sampler, fetch_pc; public double[] scale, offset, rgb; public List<string> light = new List<string>();
     }
 }

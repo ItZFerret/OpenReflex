@@ -22,8 +22,9 @@ PARTITIONS = (("XGD2", 0x0FD90000), ("XGD3", 0x02080000), ("XGD1", 0x18300000), 
 MAGIC = b"MICROSOFT*XBOX*MEDIA"
 SUFFIXES = ("level", "database", "package", "scene")
 
-# (level, short name, race mode = the tdf07 suffix, the location name: MX07Tables' Free Ride name). The 10 supercross and 2 EnduroCross
-# stadiums the Python Untamed converter (the reference) builds; the disc's other *_STADIUM levels are listed as not supported.
+# (level, short name, mode = the tdf07 suffix, the location name: MX07Tables' Free Ride name). The 10 supercross, 2 EnduroCross and
+# 2 Minimoto stadiums and the 4 freestyle arenas (free ride; their tdf07 holds Untamed's AI freestyle lines) the Python Untamed converter (the
+# reference) builds; the disc's other *_STADIUM levels are listed as not supported.
 TRACKS = (
     ("Norton_STADIUM", "norton", "sx", "Norton Coliseum"),
     ("Capital_City_STADIUM", "capitalcity", "sx", "Capital City Stadium"),
@@ -37,6 +38,12 @@ TRACKS = (
     ("BridgePort_STADIUM", "bridgeport", "sx", "Bridgeport Stadium"),
     ("Fairview_STADIUM", "fairview", "ec", "Fairview Arena"),
     ("Lincoln_STADIUM", "lincoln", "ec", "Lincoln Memorial Arena"),
+    ("Dyson_STADIUM", "dyson", "mm", "Specter Arena"),
+    ("Edgewater_STADIUM", "edgewater", "mm", "Edgewater Arena"),
+    ("RBWCenter_STADIUM", "rbwcenter", "fmx", "RBW Center Arena"),
+    ("Southbend_STADIUM", "southbend", "fmx", "Southbend Arena"),
+    ("THQSpectrum_STADIUM", "thqspectrum", "fmx", "THQ Spectrum Arena"),
+    ("WestLake_STADIUM", "westlake", "fmx", "West Lake Arena"),
 )
 
 
