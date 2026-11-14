@@ -1,3 +1,8 @@
 # The in-client importer (the scan and the import); the converter it runs is ../../untamed_convert/foundation.txt and build/sources.txt.
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UntamedImporter.cs
 Unity/Reflex/Assets/Scripts/Content/UntamedImport/UntamedImporter.Import.cs
+Unity/Reflex/Assets/Scripts/Content/UntamedImport/UntamedImporter.Music.cs
+# the game soundtracks: the installer, the Alive songs, the music pool's tag reader and its Pool
+Unity/Reflex/Assets/Scripts/Content/ReflexGameMusic.cs
+Unity/Reflex/Assets/Scripts/Content/AliveImport/AliveMusic.cs
+Unity/Reflex/Assets/Scripts/Content/ReflexSongLibrary.cs

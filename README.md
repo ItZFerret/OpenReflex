@@ -18,8 +18,8 @@ This is the **single-player** build. It has:
 - **Physics Studio** (edit and share vehicle physics configs) and the OPEN REFLEX riding options (air helpers, Free Ride borders)
 - enhanced lighting, weather, replays and photo mode, ultrawide support
 - mods: `.rxmod` bikes, skins and kit packs (`tools/rxmod`), custom `.rxtrack` tracks (`tools/rxtrack`), the MX vs ATV Alive
-  content importer (for players who own Alive), and the MX vs ATV Untamed track importer (the 14 stadiums and 4 freestyle arenas of the
-  player's own disc as custom tracks; written, not yet tested in the game: `core/plan/UNTAMED_TRACKS.md`)
+  content importer (for players who own Alive; its 23-song soundtrack too, converted with the client's ffmpeg), and the MX vs ATV Untamed track importer (the 14 stadiums and 4 freestyle arenas of the
+  player's own disc as custom tracks, and its 22-song soundtrack; OPTIONS > AUDIO > SOUNDTRACK plays all songs or one game's alone; written, not yet tested in the game: `core/plan/UNTAMED_TRACKS.md`)
 
 Online play, accounts and online leaderboards are not part of this repository.
 

@@ -11,7 +11,7 @@ by hand as `Mods/Tracks/Untamed/<short>-v<n>/` (TrackMods.cs). All 12 pass that 
 have been ridden so far.
 
 The client now imports them itself (v1, below): players need nothing but their disc and their Reflex game files, as with the Alive
-importer (`core/plan/ALIVE_TRACKS.md`). The converter is a C# port of the Python one (`core/plan/UNTAMED_CONVERT.md`: its contract, tests
+importer (`core/plan/ALIVE_TRACKS.md`). The import also puts the disc's soundtrack into the client's music folder, where OPTIONS > AUDIO > SOUNDTRACK plays it ("The soundtrack", below). The converter is a C# port of the Python one (`core/plan/UNTAMED_CONVERT.md`: its contract, tests
 and numbers). Not done yet: a Unity compile and an in-game check of the import (see "Open").
 
 ## The supported disc
@@ -144,6 +144,55 @@ against the installed client's Unity 6000.6.1f1 assemblies, with its Mono class 
 under that client's Mono (`mono-2.0-bdwgc.dll` in a small embedding host) gives the tested build (all 12, en-US and tr-TR, before
 the review's fixes; Norton, Denton, Wilford and Lincoln again after them; with the dirt-look converter Norton, Foothills, Fairview
 and Lincoln, tr-TR: 103 s for the four).
+
+## The soundtrack
+
+`Content/UntamedImport/UntamedImporter.Music.cs` (the disc's songs) on `Content/ReflexGameMusic.cs` (the installer it shares with the
+Alive soundtrack, `core/plan/ALIVE_TRACKS.md` "The soundtrack"), both Unity-free. The disc's 22 licensed songs go into the client's
+music folder (`ReflexCustomMusic`: `Mods/Music`) as `Mods/Music/MX vs ATV Untamed/<Artist> - <Title>.mp3`. The music scan counts the
+songs of that folder (when it holds the importer's manifest, `untamed-music.json`) as the Untamed soundtrack, not as the player's own
+(`ReflexSongLibrary.Classify`), so they play whatever YOUR MUSIC is set to: OPTIONS > AUDIO > SOUNDTRACK decides (below). NOW
+PLAYING names them MX vs ATV UNTAMED; SKIP SONG (N) works as for any song.
+
+**On the disc.** `Database/Music.xenon.{database,package}` beside the stadium levels: the playlist asset `MX_ATV_music` and one
+`sounddat` asset per song, each in a package of its own, stored as they are (no LZX). A `sounddat` is a 72-byte big-endian header
+(1, 1, 44100, 2 channels, 16, the stream's length in bytes, ..., the length in seconds as a float) and a plain MPEG-1 Layer III stream:
+96 kbps, 44.1 kHz, joint stereo, whole frames to its last byte. Unity's own decoder plays it as it is, so nothing is transcoded: the
+import puts an ID3v2.3 tag (title, artist, album "MX vs ATV Untamed", year 2007; what `ReflexSongLibrary` reads for NOW PLAYING) in
+front of the stream. All 22 decode with no error in ffmpeg (2026-11-14).
+
+**Screens.** The soundtrack is one more row of the Untamed list (SOUNDTRACK · 22 SONGS), chosen unless every song is in the folder
+already; IMPORT n TRACKS + SOUNDTRACK writes it first (a second or two), then converts the stadiums. The results have a row for it
+with the folder and whether SOUNDTRACK plays it; the music folder is scanned again at once. It needs nothing of the Reflex game files.
+
+**Rules** (`ReflexGameMusic`). The disc's Music files are checked against the supported disc (sizes, the database's SHA-256) when the
+disc is scanned, and every song file against its size and SHA-256 in `UntamedImporter.Songs` as it is written; each stream is walked
+frame by frame. The songs are made in `Mods/Music/.game-music-<8 hex>/` (a dot name: the music scan never reads it; removed however
+the import ends, one a crash left by the next import). A new folder is moved in whole. Into the folder made before, a re-import makes
+only the songs that are missing; a song as the importer wrote it stays; a song the player changed (retagged, replaced, made
+read-only) is the player's and stays as it is; any other file of the player's stays; a file the importer wrote under a name it no
+longer uses (the Alive songs as `.mp3` after an import with an ffmpeg that has only libmp3lame, now `.ogg`) goes when it is
+unchanged. The order: those old files out, the manifest replaced in one step (`File.Replace`, never deleted first) listing the new
+songs before they are moved in, the songs in (so a crash or a held file in between leaves songs the next import makes again, never
+songs taken for the player's), then the manifest once more with the hashes of songs that replaced an older file. A manifest that
+does not read (held by another program) stops the import with that reason; it is never taken for "not the importer's". A
+`Mods/Music/MX vs ATV Untamed` of the player's own (no manifest), a file or a link of that name is never written. The manifest names
+the disc's file name, never a path. The music scan sets each song's source in one write (the song objects are shared with the main
+thread) and a change of sources alone makes the music player build its queue again.
+
+**OPTIONS > AUDIO > SOUNDTRACK** (`ReflexSettings.Soundtrack`, `ReflexSongLibrary.Pool`): ALL SONGS (the default: Reflex's own
+tracks, the Alive and the Untamed songs together, each song as likely as each of Reflex's tracks), REFLEX SONGS ONLY, ALIVE SONGS
+ONLY, UNTAMED SONGS ONLY (that game's songs alone, in the races and in the menus, where they replace the game's themes; Reflex's
+tracks while that game's soundtrack is not imported: never silence). YOUR MUSIC keeps its meaning for the player's own songs: OFF
+none, MIX IN among whichever soundtrack, ONLY instead of any (while there are some).
+
+**Test.** `sh tests/untamed_import/import/run.sh <scratch> music` (quick runs it too), 2026-11-14 from the disc images: 224 checks
+pass (`quick`, with the stadiums: 326). Untamed: the 22 files as the table says, their tags, the music scan finding them as the Untamed soundtrack and never a staging
+folder, again with nothing rewritten, a song the player changed (read-only) left as theirs, a deleted song put back, a read-only
+manifest replaced, a folder and a file in the way refused untouched, a cancel leaving nothing, a crashed import's staging folder
+removed. The pool: SOUNDTRACK x YOUR MUSIC, 12 cases. The installer on made-up songs: another encoder's names (the 3 unchanged
+old files removed, the player's retagged one kept), a manifest another program holds (refused, nothing changed), a listed song whose
+file is missing (made again). Alive (with `UX_ALIVE_ISO` and `REFLEX_FFMPEG`): see `ALIVE_TRACKS.md`.
 
 ## Why the converter can't simply be copied in
 

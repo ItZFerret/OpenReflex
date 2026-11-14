@@ -10,6 +10,10 @@
 //             track and its step, a bar for the track and one for the whole import, CANCEL), then each stadium's result and where the
 //             tracks are; TrackMods.Refresh() so FREE RIDE / RACE > MX vs ATV Untamed lists them at once. The disc and the Reflex game
 //             files are only read; the tracks are new files in Mods/Tracks/Untamed.
+//   music     the disc's soundtrack (22 songs: UntamedImporter.Music.cs) is one more row of the list: chosen, its songs go into the music
+//             pool, Mods/Music/MX vs ATV Untamed (ReflexGameMusic), before the tracks are converted;
+//             the music folder is scanned again at once (ReflexCustomMusic.Rescan); OPTIONS > AUDIO > SOUNDTRACK plays them (ALL SONGS,
+//             UNTAMED SONGS ONLY)
 //   leaving   the shell destroyed while a scan or an import runs (a ride starts, the game quits) cancels it (StopUntamedImport); what an
 //             import that did not end left in Mods/Tracks is removed when the shell first starts (CleanUntamedStaging) and by FIND TRACKS
 using System;
@@ -45,6 +49,13 @@ namespace Reflex.Port.OpenFrontEnd
         /// What the Reflex game files lack for the tracks of one mode only (the EnduroCross arenas' water, a freestyle arena's wrap): mode -> why.
         readonly Dictionary<string, string> _untamedModeProblem = new Dictionary<string, string>(StringComparer.Ordinal);
         static readonly string[] UntamedOwnModes = { "ec", "fmx" };
+        /// The disc's soundtrack (null: none in the sources), whether it is chosen, and its import's result.
+        UntamedMusicSource _untamedMusic; bool _untamedMusicChosen; ReflexGameMusicResult _untamedMusicResult;
+        /// The running import's stadiums (0: the soundtrack alone).
+        int _untamedImportTracks;
+        /// Why the soundtrack's row can't be chosen (null: it can).
+        string UntamedMusicBlocked => _untamedMusic == null ? "No soundtrack was found" : !_untamedMusic.Ok ? _untamedMusic.problem : _untamedMusic.inTheWay;
+        bool UntamedMusicWanted => _untamedMusic != null && _untamedMusicChosen && UntamedMusicBlocked == null;
         bool UntamedBusy => _untamedTask != null && !_untamedTask.IsCompleted;
         public bool UntamedScanRunning => UntamedBusy && !_untamedImporting;
         public bool UntamedImportRunning => UntamedBusy && _untamedImporting;
@@ -52,6 +63,9 @@ namespace Reflex.Port.OpenFrontEnd
         public IReadOnlyList<UntamedTrackSource> UntamedTracks => UntamedBusy ? null : _untamedFound?.tracks;
         /// The last import's per-stadium results (null before / during one; tests read them).
         public IReadOnlyList<UntamedTrackResult> UntamedResults => UntamedBusy ? null : _untamedResult?.tracks;
+        /// The last scan's soundtrack and the last import's result for it (null before / during one, or none; tests read them).
+        public UntamedMusicSource UntamedMusic => UntamedBusy ? null : _untamedMusic;
+        public ReflexGameMusicResult UntamedMusicResult => UntamedBusy ? null : _untamedMusicResult;
 
         /// The library card (ShowLibrary): the Untamed tracks converted before, CHOOSE UNTAMED DISC.
         void UntamedLibraryCard(VisualElement list)
@@ -63,12 +77,15 @@ namespace Reflex.Port.OpenFrontEnd
             OuUi.Text("OPTIONAL  ·  XBOX 360 DISC", "mxa-library-platform", copy);
             OuUi.Text("MX vs ATV UNTAMED", "mxa-track-title", copy);
             OuUi.Text("Import the 10 supercross, 2 EnduroCross and 2 Minimoto stadiums and the 4 freestyle arenas of your own MX vs ATV Untamed disc (the disc image, .iso, " +
-                      "or the extracted disc folder) as custom tracks. Your files are only read.",
+                      "or the extracted disc folder) as custom tracks, and its soundtrack into your music. Your files are only read.",
                       "mxa-library-description", copy).style.whiteSpace = WhiteSpace.Normal;
             var installed = new List<UntamedKnown>();
             try { installed = UntamedImporter.Installed(TrackMods.Folder); } catch (Exception) { }
             OuUi.Text(installed.Count > 0 ? $"{installed.Count} UNTAMED {(installed.Count == 1 ? "TRACK" : "TRACKS")} INSTALLED  ·  " + string.Join(", ", installed.Select(k => k.name.ToUpperInvariant()))
                                           : "NO UNTAMED TRACKS INSTALLED", "mxa-library-state", copy).style.whiteSpace = WhiteSpace.Normal;
+            bool songs = false;
+            try { string mf = MusicFolderOrNull(); songs = mf != null && UntamedImporter.ReadMusicManifest(Path.Combine(mf, UntamedImporter.MusicSubfolder)) != null; } catch (Exception) { }
+            if (songs) OuUi.Text("UNTAMED SOUNDTRACK IN YOUR MUSIC  ·  Mods/Music/" + UntamedImporter.MusicSubfolder, "mxa-library-state", copy).style.whiteSpace = WhiteSpace.Normal;
             var actions = OuUi.Div("ou-library-actions", card);
             actions.style.flexDirection = FlexDirection.Column; actions.style.width = 300; actions.style.flexShrink = 0;
             var b = OuUi.Button(UntamedImportRunning ? "IMPORT IN PROGRESS" : UntamedScanRunning ? "CHECK IN PROGRESS" : "CHOOSE UNTAMED DISC", "mxa-secondary mxa-library-action", () => { if (UntamedBusy) ShowUntamedProgress(); else ShowUntamedSources(); }, actions);
@@ -237,10 +254,11 @@ namespace Reflex.Port.OpenFrontEnd
         {
             if (UntamedBusy || _untamedSourcePaths.Count == 0) return;
             _untamedFound?.Dispose(); _untamedFound = null; _untamedError = null; _untamedImporting = false;
-            _untamedLibraryProblem = null; _untamedModeProblem.Clear();
+            _untamedLibraryProblem = null; _untamedModeProblem.Clear(); _untamedMusic = null;
             _untamedCancel = new CancellationTokenSource();
             var paths = _untamedSourcePaths.ToList(); var token = _untamedCancel.Token;
             string tracks = TrackMods.Folder, library = ReflexInstall.Dir;   // (main thread: the client root and the game folder come from Unity's paths and settings)
+            string music = MusicFolderOrNull();
             _untamedStatus = "Opening your sources…"; _untamedFraction = 0;
             _untamedTask = Task.Run(() =>
             {
@@ -263,6 +281,11 @@ namespace Reflex.Port.OpenFrontEnd
                 }
                 catch (OperationCanceledException) { found.Dispose(); throw; }
                 catch (Exception ex) { _untamedLibraryProblem = "Your MX vs ATV Reflex game files can't be read: " + ex.Message; }
+                // the soundtrack beside the stadiums (it needs nothing of the Reflex game files)
+                _untamedStatus = "Checking the soundtrack";
+                try { _untamedMusic = UntamedImporter.FindMusic(found, music, token); }
+                catch (OperationCanceledException) { found.Dispose(); throw; }
+                catch (Exception ex) { _untamedMusic = null; Debug.LogWarning("[OpenReflex] Untamed soundtrack: " + ex.Message); }
                 _untamedFound = found;
             }, token);
             ShowUntamedProgress();
@@ -279,27 +302,70 @@ namespace Reflex.Port.OpenFrontEnd
             return t.inTheWay;
         }
 
+        /// The music pool's folder (ReflexCustomMusic.Folder: Mods/Music), null when there is none. Main thread.
+        static string MusicFolderOrNull()
+        {
+            try { return ReflexCustomMusic.Folder; } catch (Exception) { return null; }
+        }
+
         void BeginUntamedImport()
         {
             if (UntamedBusy || _untamedFound == null) return;
-            string tracks = TrackMods.Folder, library = ReflexInstall.Dir;   // (main thread)
+            string tracks = TrackMods.Folder, library = ReflexInstall.Dir, music = MusicFolderOrNull();   // (main thread)
             var found = _untamedFound;
             var chosen = found.tracks.Where(t => UntamedBlocked(t) == null && _untamedChosen.Contains(t.known.level)).ToList();
-            if (chosen.Count == 0 || tracks == null || library == null) return;
+            var song = UntamedMusicWanted && music != null ? _untamedMusic : null;
+            if (chosen.Count > 0 && (tracks == null || library == null)) chosen.Clear();
+            if (chosen.Count == 0 && song == null) return;
             // a track ridden since the start keeps its package file open: closed, so a re-import can replace it (TrackMods opens it again)
             try { TrackMods.Release(UntamedImporter.TracksSubfolder + "/"); } catch (Exception e) { Debug.LogWarning("[OpenReflex] Untamed import: " + e.Message); }
-            _untamedCancel = new CancellationTokenSource(); _untamedResult = null; _untamedError = null; _untamedImporting = true; _untamedProgress = null;
+            _untamedCancel = new CancellationTokenSource(); _untamedResult = null; _untamedMusicResult = null; _untamedError = null; _untamedImporting = true; _untamedProgress = null;
             var token = _untamedCancel.Token;
             // choosing a stadium imported before asks for the re-import
             var options = new UntamedImportOptions { replace = true, freeBytes = ReflexAssetImport.FreeBytes, log = s => Debug.Log("[OpenReflex] " + s) };
             _untamedStatus = "Starting…"; _untamedFraction = 0;
-            Debug.Log("[OpenReflex] Untamed import: " + string.Join(", ", chosen.Select(c => c.known.level)) + " -> " + Path.Combine(tracks, UntamedImporter.TracksSubfolder) + " (Reflex game files: " + library + ")");
+            if (chosen.Count > 0) Debug.Log("[OpenReflex] Untamed import: " + string.Join(", ", chosen.Select(c => c.known.level)) + " -> " + Path.Combine(tracks, UntamedImporter.TracksSubfolder) + " (Reflex game files: " + library + ")");
+            if (song != null) Debug.Log("[OpenReflex] Untamed import: the soundtrack -> " + Path.Combine(music, UntamedImporter.MusicSubfolder));
+            int steps = chosen.Count + (song != null ? 1 : 0);
+            _untamedImportTracks = chosen.Count;
             _untamedTask = Task.Run(() =>
             {
-                _untamedResult = UntamedImporter.Import(found, chosen, tracks, library, options, p => Interlocked.Exchange(ref _untamedProgress, p), token);
+                // the soundtrack first (seconds), then the stadiums (minutes)
+                if (song != null)
+                {
+                    _untamedMusicResult = UntamedImporter.ImportMusic(song, music, options, (what, f) => Interlocked.Exchange(ref _untamedProgress,
+                        new UntamedProgress { level = UntamedMusicLevel, name = "MX vs ATV Untamed soundtrack", stage = what, index = 0, count = steps, track = f, overall = f / steps }), token);
+                    Debug.Log("[OpenReflex] Untamed import " + _untamedMusicResult);
+                    UntamedImporter.RefreshMusic(song, music);   // (hashes the songs: here, not on the main thread)
+                }
+                if (chosen.Count == 0) return;
+                int first = song != null ? 1 : 0;
+                _untamedResult = UntamedImporter.Import(found, chosen, tracks, library, options, p =>
+                {
+                    p.index += first; p.count = steps; p.overall = (p.index + p.track) / steps;
+                    Interlocked.Exchange(ref _untamedProgress, p);
+                }, token);
             }, token);
             ShowUntamedProgress();
         }
+
+        /// A game soundtrack's import result as one line: where, what was written, and whether OPTIONS > AUDIO > SOUNDTRACK plays it.
+        static string GameMusicDetail(ReflexGameMusicResult mr, int only)
+        {
+            if (mr.state == ReflexGameMusicState.Cancelled) return mr.updated ? "CANCELLED  ·  THE SONGS PUT BACK BEFORE THAT STAY" : "CANCELLED  ·  NOT IMPORTED";
+            if (mr.state != ReflexGameMusicState.Imported) return string.IsNullOrEmpty(mr.error) ? "Not imported" : mr.error;
+            int st = Reflex.Port.Options.ReflexSettings.Soundtrack;
+            string plays = st == ReflexSongLibrary.SoundtrackAll || st == only ? "PLAYED WITH SOUNDTRACK: " + ReflexSongLibrary.SoundtrackNames[st]
+                         : "SOUNDTRACK IS " + ReflexSongLibrary.SoundtrackNames[st] + ": SET IT TO ALL SONGS OR " + ReflexSongLibrary.SoundtrackNames[only] + " (OPTIONS > AUDIO) TO HEAR THEM";
+            if (Reflex.Port.Options.ReflexSettings.CustomMusic == ReflexSongLibrary.YourMusicOnly && ReflexCustomMusic.CountOf(ReflexSong.SourceCustom) > 0) plays = "YOUR MUSIC IS ON ONLY: SET IT TO MIX IN OR OFF (OPTIONS > AUDIO) TO HEAR THEM";
+            string what = mr.updated ? (mr.written == 0 ? "ALL SONGS WERE THERE ALREADY" : $"{mr.written} PUT BACK, {mr.kept} WERE THERE") : $"{mr.written} SONGS";
+            if (mr.changed > 0) what += $"  ·  {mr.changed} CHANGED BY YOU, LEFT AS THEY ARE";
+            if (mr.removed > 0) what += $"  ·  {mr.removed} OLDER COPIES REPLACED";
+            return $"Mods/Music/{mr.folder}  ·  {OpenWorldCache.SizeText(mr.bytes)}  ·  {what}  ·  {plays}";
+        }
+
+        /// The level the soundtrack's progress carries (UntamedProgress.level).
+        const string UntamedMusicLevel = "Music";
 
         /// The running scan / import (CANCEL).
         void ShowUntamedProgress()
@@ -307,9 +373,11 @@ namespace Reflex.Port.OpenFrontEnd
             Clear(Screen.Install, "import");
             var box = OuUi.Div("mxa-panel mxa-install", _layer);
             box.name = "ou-untamed-progress";
-            OuUi.Text(_untamedImporting ? "IMPORTING UNTAMED TRACKS" : "CHECKING YOUR UNTAMED DISC", "mxa-screen-title", box);
+            bool musicOnly = _untamedImporting && _untamedImportTracks == 0;
+            OuUi.Text(musicOnly ? "IMPORTING THE UNTAMED SOUNDTRACK" : _untamedImporting ? "IMPORTING UNTAMED TRACKS" : "CHECKING YOUR UNTAMED DISC", "mxa-screen-title", box);
             string tracks = TrackMods.Folder;
-            OuUi.Text(_untamedImporting ? "Converting each stadium on this computer and installing it into " + (tracks != null ? Path.Combine(tracks, UntamedImporter.TracksSubfolder) : "Mods/Tracks/" + UntamedImporter.TracksSubfolder) +
+            OuUi.Text(musicOnly ? "Writing the songs of your disc into " + Path.Combine(MusicFolderOrNull() ?? "Mods/Music", UntamedImporter.MusicSubfolder) + ". Your disc is only read. CANCEL leaves nothing behind."
+                      : _untamedImporting ? "Converting each stadium on this computer and installing it into " + (tracks != null ? Path.Combine(tracks, UntamedImporter.TracksSubfolder) : "Mods/Tracks/" + UntamedImporter.TracksSubfolder) +
                                           ". Your disc and your Reflex game files are only read. CANCEL removes the track in progress; tracks finished before stay."
                                         : "Reading each stadium's files and checking them against the supported disc. Your source files are only read.", "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
             _untamedStatusLabel = OuUi.Text(_untamedStatus, "mxa-install-status", box); _untamedStatusLabel.style.whiteSpace = WhiteSpace.Normal;
@@ -345,7 +413,7 @@ namespace Reflex.Port.OpenFrontEnd
                 {
                     _untamedStatusLabel.text = (p.name ?? p.level ?? "").ToUpperInvariant() + "  ·  " + (p.stage ?? "").ToUpperInvariant();
                     _untamedFill.style.width = Length.Percent(Mathf.Clamp01(p.track) * 100f);
-                    if (_untamedAllLabel != null) _untamedAllLabel.text = $"TRACK {p.index + 1} OF {p.count}  ·  {Mathf.Clamp01(p.overall) * 100f:0}% OF THE IMPORT";
+                    if (_untamedAllLabel != null) _untamedAllLabel.text = $"{(p.level == UntamedMusicLevel ? "SOUNDTRACK" : "TRACK")} {p.index + 1} OF {p.count}  ·  {Mathf.Clamp01(p.overall) * 100f:0}% OF THE IMPORT";
                     if (_untamedAllFill != null) _untamedAllFill.style.width = Length.Percent(Mathf.Clamp01(p.overall) * 100f);
                 }
                 else
@@ -365,6 +433,8 @@ namespace Reflex.Port.OpenFrontEnd
                 // the new tracks: Mods/Tracks is read again, so FREE RIDE / RACE > MX vs ATV Untamed lists them without a restart (the shell's
                 // event list follows TrackMods.Version)
                 try { TrackMods.Refresh(); } catch (Exception e) { Debug.LogWarning("[OpenReflex] Untamed import, custom tracks: " + e.Message); }
+                // the songs: the music pool is read again, so they play from the next race on
+                if (_untamedMusicResult != null && _untamedMusicResult.Ok) { try { ReflexCustomMusic.Rescan(); } catch (Exception e) { Debug.LogWarning("[OpenReflex] Untamed import, music: " + e.Message); } }
                 if (_untamedError != null && !cancelled)
                 {
                     if (_untamedError is UntamedImportException) Debug.LogWarning("[OpenReflex] Untamed import: " + _untamedError.Message);
@@ -394,6 +464,9 @@ namespace Reflex.Port.OpenFrontEnd
             // ... and one imported by an older converter whose files this one writes differently (an update: Fairview and Lincoln after the water-glare round)
             foreach (var tr in _untamedFound.tracks) { try { tr.outdated = UntamedImporter.Outdated(TrackMods.Folder, tr.known); } catch (Exception) { tr.outdated = false; } }
             foreach (var tr in _untamedFound.tracks) if (UntamedBlocked(tr) == null && (tr.installed == null || tr.outdated)) _untamedChosen.Add(tr.known.level);
+            // the soundtrack: chosen unless every song is in the music pool already
+            Debug.Log("[OpenReflex] Untamed soundtrack: " + (_untamedMusic == null ? "not found" : (UntamedMusicBlocked ?? "ready") + (_untamedMusic.imported != null ? $" (imported: {_untamedMusic.present} of {UntamedImporter.Songs.Length} songs)" : "")));
+            _untamedMusicChosen = _untamedMusic != null && UntamedMusicBlocked == null && !_untamedMusic.Complete;
             ShowUntamedTracks();
         }
 
@@ -412,6 +485,7 @@ namespace Reflex.Port.OpenFrontEnd
             }
             if (_untamedResult != null)
                 foreach (var r in _untamedResult.tracks) if (r.Ok) _untamedChosen.Remove(r.level);
+            if (_untamedMusicResult != null && _untamedMusicResult.Ok) _untamedMusicChosen = false;   // (its folder's status: read by the import's worker)
         }
 
         // --------------------------------------------------------------------------------------------- tracks / results
@@ -426,7 +500,7 @@ namespace Reflex.Port.OpenFrontEnd
             box.name = "ou-untamed-tracks";
             OuUi.Text("UNTAMED STADIUMS", "mxa-screen-title", box);
             var found = _untamedFound;
-            string tracksFolder = TrackMods.Folder;
+            string tracksFolder = TrackMods.Folder, musicFolder = MusicFolderOrNull();
             string into = tracksFolder != null ? Path.Combine(tracksFolder, UntamedImporter.TracksSubfolder) : "Mods/Tracks/" + UntamedImporter.TracksSubfolder;
             int ready = found.Ready.Count();
             OuUi.Text(found.tracks.Count == 0 ? "No MX vs ATV Untamed stadium was found in these sources."
@@ -443,8 +517,31 @@ namespace Reflex.Port.OpenFrontEnd
             void Count()
             {
                 int n = found.tracks.Count(t => UntamedBlocked(t) == null && _untamedChosen.Contains(t.known.level));
-                var lbl = import?.Q<Label>(); if (lbl != null) lbl.text = n > 0 ? $"IMPORT {n} {(n == 1 ? "TRACK" : "TRACKS")}" : "IMPORT";
-                import?.SetEnabled(n > 0 && tracksFolder != null);
+                bool m = UntamedMusicWanted && musicFolder != null;
+                string what = (n > 0 ? $"{n} {(n == 1 ? "TRACK" : "TRACKS")}" : "") + (m ? (n > 0 ? " + " : "") + "SOUNDTRACK" : "");
+                var lbl = import?.Q<Label>(); if (lbl != null) lbl.text = what.Length > 0 ? "IMPORT " + what : "IMPORT";
+                import?.SetEnabled((n > 0 && tracksFolder != null) || m);
+            }
+            if (_untamedMusic != null)
+            {   // the soundtrack: one row, into the music pool
+                var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
+                row.name = "ou-untamed-music";
+                var c = OuUi.Div("ou-cache-copy", row);
+                var title = OuUi.Text("", "mxa-track-name ou-cache-name", c);
+                string blocked = UntamedMusicBlocked ?? (musicFolder == null ? "The music folder (Mods/Music) was not found." : null);
+                var mu = _untamedMusic; int all = UntamedImporter.Songs.Length;
+                string state = mu.Complete ? $"IMPORTED (Mods/Music/{mu.imported})  ·  CHOOSE IT TO CHECK AND IMPORT IT AGAIN"
+                             : mu.imported != null ? $"{mu.present} OF {all} SONGS AS IMPORTED IN Mods/Music/{mu.imported}  ·  CHOOSE IT TO PUT BACK THE MISSING ONES (SONGS YOU CHANGED STAY AS THEY ARE)"
+                             : "READY";
+                OuUi.Text(blocked ?? $"{all} SONGS INTO THE MUSIC FOLDER (Mods/Music/{UntamedImporter.MusicSubfolder}): OPTIONS > AUDIO > SOUNDTRACK PLAYS THEM  ·  {OpenWorldCache.SizeText(mu.bytes)}  ·  {state}",
+                          blocked == null ? "ou-card-sub ou-cache-sub" : "mxa-error", c).style.whiteSpace = WhiteSpace.Normal;
+                void Title() => title.text = (blocked == null ? (_untamedMusicChosen ? "☑  " : "☐  ") : "✕  ") + "SOUNDTRACK  ·  " + all + " SONGS";
+                Title();
+                if (blocked == null)
+                {
+                    OuUi.Item(row, () => { _untamedMusicChosen = !_untamedMusicChosen; Title(); Count(); });
+                    first = row;
+                }
             }
             foreach (var t in found.tracks)
             {
@@ -473,8 +570,8 @@ namespace Reflex.Port.OpenFrontEnd
                 OuUi.Text("NOT SUPPORTED YET:  " + string.Join(", ", found.unsupported.Select(l => l.EndsWith("_STADIUM", StringComparison.OrdinalIgnoreCase) ? l.Substring(0, l.Length - "_STADIUM".Length) : l)),
                           "mxa-note", scroll.contentContainer).style.whiteSpace = WhiteSpace.Normal;
             import = OuUi.Button("IMPORT", "mxa-start", BeginUntamedImport, buttons); import.name = "ou-untamed-import";
-            OuUi.Button("ALL", "mxa-secondary", () => { foreach (var t in found.tracks) if (UntamedBlocked(t) == null) _untamedChosen.Add(t.known.level); ShowUntamedTracks(); }, buttons).name = "ou-untamed-all";
-            OuUi.Button("NONE", "mxa-secondary", () => { _untamedChosen.Clear(); ShowUntamedTracks(); }, buttons).name = "ou-untamed-none";
+            OuUi.Button("ALL", "mxa-secondary", () => { foreach (var t in found.tracks) if (UntamedBlocked(t) == null) _untamedChosen.Add(t.known.level); _untamedMusicChosen = _untamedMusic != null && UntamedMusicBlocked == null; ShowUntamedTracks(); }, buttons).name = "ou-untamed-all";
+            OuUi.Button("NONE", "mxa-secondary", () => { _untamedChosen.Clear(); _untamedMusicChosen = false; ShowUntamedTracks(); }, buttons).name = "ou-untamed-none";
             OuUi.Button("BACK", "mxa-secondary", ShowUntamedSources, buttons).name = "ou-untamed-other";
             Count();
             _nav.OnCancel = () => { ShowUntamedSources(); return true; };
@@ -494,11 +591,14 @@ namespace Reflex.Port.OpenFrontEnd
             string folder = _untamedResult?.tracksFolder ?? TrackMods.Folder;
             string into = folder != null ? Path.Combine(folder, UntamedImporter.TracksSubfolder) : "Mods/Tracks/" + UntamedImporter.TracksSubfolder;
             string listed = "They are listed in FREE RIDE and in RACE under MX vs ATV Untamed.";
+            var mr = _untamedMusicResult;
             string head = cancelled ? "Import cancelled. The track in progress was removed" + (ok > 0 ? $"; the {ok} finished before {(ok == 1 ? "stays" : "stay")} installed. " + listed : ".")
                         : _untamedError != null ? "Import stopped: " + _untamedError.Message
+                        : results.Count == 0 ? (mr != null && mr.Ok ? "The soundtrack is in your music." : "The soundtrack was not imported.")
                         : ok == results.Count ? $"{ok} {(ok == 1 ? "track" : "tracks")} installed. " + listed
                         : $"{ok} of {results.Count} tracks installed." + (ok > 0 ? " " + listed : "");
-            OuUi.Text(head, cancelled || _untamedError != null || ok < results.Count ? "mxa-error" : "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
+            bool bad = cancelled || _untamedError != null || ok < results.Count || (mr != null && !mr.Ok);
+            OuUi.Text(head, bad ? "mxa-error" : "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
             if (ok > 0) OuUi.Text("Installed in " + into + ".", "mxa-note", box).style.whiteSpace = WhiteSpace.Normal;
             var older = results.Where(r => r.Ok).SelectMany(r => r.olderCopies).ToList();
             if (older.Count > 0)
@@ -506,6 +606,14 @@ namespace Reflex.Port.OpenFrontEnd
                           string.Join(", ", older.Select(o => "Mods/Tracks/" + o)) + ". It is listed under CUSTOM TRACKS; you can delete the older " + (older.Count == 1 ? "folder" : "folders") + " yourself.",
                           "mxa-note", box).style.whiteSpace = WhiteSpace.Normal;
             var scroll = new ScrollView(ScrollViewMode.Vertical); scroll.AddToClassList("mxa-library-list"); box.Add(scroll);
+            if (mr != null)
+            {
+                var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
+                row.name = "ou-untamed-result-music";
+                var c = OuUi.Div("ou-cache-copy", row);
+                OuUi.Text((mr.Ok ? "✓  " : "✕  ") + "SOUNDTRACK  ·  " + UntamedImporter.Songs.Length + " SONGS", "mxa-track-name ou-cache-name", c);
+                OuUi.Text(GameMusicDetail(mr, ReflexSongLibrary.SoundtrackUntamed), mr.state == ReflexGameMusicState.Failed ? "mxa-error" : "ou-card-sub ou-cache-sub", c).style.whiteSpace = WhiteSpace.Normal;
+            }
             foreach (var r in results)
             {
                 var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
@@ -532,6 +640,7 @@ namespace Reflex.Port.OpenFrontEnd
             done.name = "ou-untamed-done";
             OuUi.Button("MORE TRACKS", "mxa-secondary", () => { if (_untamedFound != null) ShowUntamedTracks(); else ShowUntamedSources(); }, buttons).name = "ou-untamed-more";
             if (ok > 0) OuUi.Button("OPEN TRACKS FOLDER", "mxa-secondary", TrackMods.OpenFolder, buttons).name = "ou-untamed-open";
+            if (mr != null && mr.Ok) OuUi.Button("OPEN MUSIC FOLDER", "mxa-secondary", ReflexCustomMusic.OpenFolder, buttons).name = "ou-untamed-open-music";
             _nav.OnCancel = () => { LeaveUntamed(); return true; };
             _nav.DefaultItem = () => done;
             Hints((OuUi.KeySubmit, "SELECT"), (OuUi.KeyCancel, "BACK"));

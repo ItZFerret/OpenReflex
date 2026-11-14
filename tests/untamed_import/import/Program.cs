@@ -22,6 +22,19 @@
 //             crash        a staging folder left by a crashed import (with a replaced track in it, and a link to a folder outside):
 //                          removed, the track put back, the folder outside as it was; one whose lock is held: left
 //             disc         (with --folder) a copy of Lincoln's files with one package byte changed: refused; without Fairview: refused
+//   music   the soundtrack (UntamedImporter.Music.cs; quick runs it too) into a scratch Mods/Music:
+//             import       the 22 songs as the table says (size, SHA-256), every MP3 frame whole, the tags ReflexSongLibrary reads,
+//                          the music scan finds them (and never the staging folder); no staging folder left; the manifest has no path
+//             again        an import into the folder made before: every song kept, nothing rewritten; a song deleted and one changed
+//                          are put back, a file the player added stays
+//             in the way   a folder of that name without the manifest, a file of that name: refused, untouched
+//             cancel       cancelled while reading the songs: nothing written, no folder made
+//             crash        a staging folder a crashed import left: removed by the next import
+//             changed      a song the player changed (retagged, read-only) stays theirs; a deleted one is put back; a read-only manifest
+//             pool         OPTIONS > AUDIO > SOUNDTRACK x YOUR MUSIC: what may play (ReflexSongLibrary.Pool)
+//             installer    another encoder (old files go, the player's stay), a held manifest refused, a listed song missing made again
+//             Alive        (with UX_ALIVE_ISO and REFLEX_FFMPEG) the Alive soundtrack converted with ffmpeg: every song's tags and length,
+//                          the scan's view, again with nothing converted, a deleted song converted again, cancel and no ffmpeg
 //   all     every stadium (14) into an empty tracks folder: time, size, every read of the library (UntamedImporter's list of needed
 //           stock files must name them), the longest staged path against UntamedImporter.WorkPathBudget
 // Arguments: [quick|all] --iso <disc image> (or UX_DISC_ISO) --reflex <Reflex install or game files> (or UX_REFLEX / UX_CLIENT_LIB)
@@ -36,6 +49,7 @@ using System.Threading;
 using Reflex.Port.Content.AliveImport;
 using Reflex.Port.Content.UntamedImport;
 using Reflex.Port.Content.UntamedImport.Tests;
+using Reflex.Port.Content;
 
 /// A library that records what is read of it and can hide levels (a player's library without them).
 sealed class ProbeLibrary : IUxLibrary
@@ -144,6 +158,8 @@ static class Program
         using (var dir = new UxDirectoryLibrary(reflex))
         {
             if (what == "quick" || what == "both") Quick(iso, dir, reflex, scratch, folder, expected);
+            if (what == "quick" || what == "both" || what == "music") Music(iso, scratch);
+            if (what == "quick" || what == "both" || what == "music") AliveSoundtrack(UxTest.Arg(args, "alive-iso", "UX_ALIVE_ISO"), UxTest.Arg(args, "ffmpeg", "REFLEX_FFMPEG"), scratch);
             if (what == "all" || what == "both") All(iso, dir, scratch);
             if (what == "hide") Hide(iso, dir, scratch, UxTest.Arg(args, "hide", null, ""), UxTest.Arg(args, "levels", null, "norton"));
         }
@@ -151,6 +167,279 @@ static class Program
         Unchanged("the disc image is as it was", isoBefore, iso);
         Unchanged("the library folder is as it was (every file's size and time)", libBefore, reflex);
         return UxTest.Result("untamed import (" + what + ")");
+    }
+
+    // ------------------------------------------------------------------------------------------------------- music
+    static void Music(string iso, string scratch)
+    {
+        string root = UxTest.FreshFolder(scratch, "music");
+        string tracks = Path.Combine(root, "Mods", "Tracks"), music = Path.Combine(root, "Mods", "Music");
+        var none = CancellationToken.None;
+        UxTest.Section("music");
+        using (var found = UntamedImporter.Scan(new[] { iso }, tracks, null, none))
+        {
+            var src = UntamedImporter.FindMusic(found, music, none);
+            if (!UxTest.Report(src != null && src.Ok, "the soundtrack is found and is the supported disc's" + (src?.problem != null ? ": " + src.problem : ""))) return;
+            UxTest.Check(src.imported == null && src.present == 0 && src.inTheWay == null, "nothing imported before");
+            int n = UntamedImporter.Songs.Length;
+            UxTest.Check(n == 22, "22 songs in the table");
+            UxTest.Check(UntamedImporter.Songs.Select(x => x.FileName.ToLowerInvariant()).Distinct().Count() == n, "every song has its own file name");
+
+            // cancel: while the songs are read
+            var cts = new CancellationTokenSource();
+            var r = UntamedImporter.ImportMusic(src, music, Options(), (what, f) => { if (f > 0.3f) cts.Cancel(); }, cts.Token);
+            UxTest.Report(r.state == ReflexGameMusicState.Cancelled, "cancelled: " + r);
+            UxTest.Check(!Directory.Exists(Path.Combine(music, UntamedImporter.MusicSubfolder)), "cancelled: no songs' folder");
+            UxTest.Check(MusicStaging(music).Count == 0, "cancelled: no staging folder left");
+
+            // a crashed import's staging folder
+            Directory.CreateDirectory(Path.Combine(music, ReflexGameMusic.StagingPrefix + "0badf00d", "o"));
+            File.WriteAllText(Path.Combine(music, ReflexGameMusic.StagingPrefix + "0badf00d", "o", "half.mp3"), "half");
+
+            // import
+            r = UntamedImporter.ImportMusic(src, music, Options(), null, none);
+            UxTest.Report(r.Ok && r.written == n && r.kept == 0 && !r.updated, "imported: " + r + $" ({F(r.seconds)} s, {Mb(r.bytes)} MB)");
+            string dest = Path.Combine(music, UntamedImporter.MusicSubfolder);
+            UxTest.Check(MusicStaging(music).Count == 0, "no staging folder left (the crashed one removed too)");
+            foreach (var song in UntamedImporter.Songs)
+            {
+                string f = Path.Combine(dest, song.FileName);
+                if (!UxTest.Check(File.Exists(f), song.FileName + " is there")) continue;
+                byte[] b = File.ReadAllBytes(f);
+                UxTest.Check(b.Length == song.bytes && UxBin.Sha256(b) == song.sha256, song.FileName + ": the table's bytes");
+                var tags = Reflex.Port.Content.ReflexSongLibrary.ReadTags(f);
+                UxTest.Check(tags.artist == song.artist && tags.title == song.title && tags.album == "MX vs ATV Untamed" && tags.year == 2007, song.FileName + ": tags " + tags.Label);
+                UxTest.Check(Frames(b) > 1000, song.FileName + ": an MP3 stream of whole frames after its tag");
+            }
+            string manifest = File.ReadAllText(Path.Combine(dest, UntamedImporter.MusicManifestName));
+            UxTest.Check(UntamedImporter.ReadMusicManifest(dest) != null, "the manifest reads");
+            UxTest.Check(NoPath(manifest, root, Path.GetDirectoryName(iso)), "the manifest names no path");
+            var songs = Reflex.Port.Content.ReflexSongLibrary.Scan(music);
+            UxTest.Check(songs.Count == n && songs.All(x => x.path.StartsWith(dest, StringComparison.Ordinal)), "the music scan finds the " + n + " songs and nothing else (" + songs.Count + ")");
+            UxTest.Check(songs.All(x => x.source == ReflexSong.SourceUntamed), "the music scan counts them as the Untamed soundtrack");
+            // the scan never reads a staging folder: one with a song in it
+            string fake = Path.Combine(music, ReflexGameMusic.StagingPrefix + "12345678", "o");
+            Directory.CreateDirectory(fake); File.Copy(Path.Combine(dest, UntamedImporter.Songs[0].FileName), Path.Combine(fake, "x.mp3"));
+            UxTest.Check(ReflexSongLibrary.Scan(music).Count == n, "the music scan skips a staging folder");
+            Directory.Delete(Path.Combine(music, ReflexGameMusic.StagingPrefix + "12345678"), true);
+            UntamedImporter.RefreshMusic(src, music);
+            UxTest.Check(src.Complete && src.imported == UntamedImporter.MusicSubfolder, "the scan's view: imported, every song there");
+
+            // again: nothing rewritten
+            var before = Snapshot(dest, true);
+            r = UntamedImporter.ImportMusic(src, music, Options(), null, none);
+            UxTest.Report(r.Ok && r.updated && r.written == 0 && r.kept == n, "again: " + r);
+            Same(before, Snapshot(dest, true), out string first);
+            UxTest.Check(first == null || first == UntamedImporter.MusicManifestName + " changed", "again: no song rewritten" + (first != null ? " (" + first + ")" : ""));
+
+            // a song deleted, one changed by the player (retagged: read-only too), one of the player's own added
+            File.Delete(Path.Combine(dest, UntamedImporter.Songs[0].FileName));
+            string retagged = Path.Combine(dest, UntamedImporter.Songs[1].FileName);
+            File.WriteAllText(retagged, "the player's retagged copy");
+            File.SetAttributes(retagged, File.GetAttributes(retagged) | FileAttributes.ReadOnly);
+            File.WriteAllText(Path.Combine(dest, "Mine - My Song.mp3"), "the player's");
+            UntamedImporter.RefreshMusic(src, music);
+            UxTest.Check(src.imported != null && src.present == n - 2 && !src.Complete, "the scan's view: " + src.present + " of " + n);
+            r = UntamedImporter.ImportMusic(src, music, Options(), null, none);
+            UxTest.Report(r.Ok && r.written == 1 && r.kept == n - 2 && r.changed == 1, "put back: " + r);
+            UxTest.Check(File.ReadAllText(retagged) == "the player's retagged copy" && (File.GetAttributes(retagged) & FileAttributes.ReadOnly) != 0, "the song the player changed stays theirs (read-only kept)");
+            File.SetAttributes(retagged, File.GetAttributes(retagged) & ~FileAttributes.ReadOnly);
+            UxTest.Check(File.Exists(Path.Combine(dest, UntamedImporter.Songs[0].FileName)), "the deleted song is back");
+            UntamedImporter.RefreshMusic(src, music);
+            UxTest.Check(src.present == n - 1, "the scan's view: the changed song still counts as not the importer's (" + src.present + ")");
+            UxTest.Check(File.Exists(Path.Combine(dest, "Mine - My Song.mp3")) && File.ReadAllText(Path.Combine(dest, "Mine - My Song.mp3")) == "the player's", "the player's own file stays");
+            UxTest.Check(ReflexSongLibrary.Scan(music).Count(x => x.source == ReflexSong.SourceUntamed) == n + 1, "the player's file in the folder plays with the Untamed songs");
+            // the player deletes the changed copy: the next import puts the song back
+            File.Delete(retagged);
+            r = UntamedImporter.ImportMusic(src, music, Options(), null, none);
+            UxTest.Report(r.Ok && r.written == 1 && r.kept == n - 1, "deleted by the player, put back: " + r);
+            UntamedImporter.RefreshMusic(src, music);
+            UxTest.Check(src.Complete, "every song there again");
+            // a read-only manifest (restored from a backup): the update still works, the manifest is replaced
+            string mf = Path.Combine(dest, UntamedImporter.MusicManifestName);
+            File.SetAttributes(mf, File.GetAttributes(mf) | FileAttributes.ReadOnly);
+            File.Delete(Path.Combine(dest, UntamedImporter.Songs[2].FileName));
+            r = UntamedImporter.ImportMusic(src, music, Options(), null, none);
+            UxTest.Report(r.Ok && r.written == 1 && UntamedImporter.ReadMusicManifest(dest) != null, "a read-only manifest: updated (" + r + ")");
+
+            // in the way: the player's folder of that name, a file of that name
+            string music2 = Path.Combine(root, "Mods2", "Music"), own = Path.Combine(music2, UntamedImporter.MusicSubfolder);
+            Directory.CreateDirectory(own); File.WriteAllText(Path.Combine(own, "Saosin - Collapse.mp3"), "mine");
+            UntamedImporter.RefreshMusic(src, music2);
+            UxTest.Check(src.inTheWay != null, "a folder of the player's own: the scan flags it");
+            var snap = Snapshot(music2, true);
+            r = UntamedImporter.ImportMusic(src, music2, Options(), null, none);
+            UxTest.Report(r.state == ReflexGameMusicState.Failed && r.error != null && r.error.Contains("not made by this importer"), "a folder of the player's own: refused (" + r.error + ")");
+            Unchanged("a folder of the player's own: untouched", snap, music2, true);
+            string music3 = Path.Combine(root, "Mods3", "Music");
+            Directory.CreateDirectory(music3); File.WriteAllText(Path.Combine(music3, UntamedImporter.MusicSubfolder), "a file");
+            r = UntamedImporter.ImportMusic(src, music3, Options(), null, none);
+            UxTest.Report(r.state == ReflexGameMusicState.Failed && File.ReadAllText(Path.Combine(music3, UntamedImporter.MusicSubfolder)) == "a file", "a file of that name: refused, untouched (" + r.error + ")");
+            UntamedImporter.RefreshMusic(src, music);
+        }
+        Pool();
+        Installer(scratch);
+    }
+
+    /// ReflexGameMusic.Install's rules on made-up songs: another encoder's names (the old files of the importer go, one the player changed
+    /// stays), a manifest another program holds (refused, nothing changed), a manifest that lists songs not moved in yet (made again, never
+    /// taken for the player's).
+    static void Installer(string scratch)
+    {
+        UxTest.Section("music installer");
+        string music = Path.Combine(UxTest.FreshFolder(scratch, "installer"), "Music");
+        var g = ReflexSongLibrary.Alive; var none = CancellationToken.None;
+        string dest = Path.Combine(music, g.folder);
+        List<ReflexGameSong> Songs(string ext, string body) => Enumerable.Range(0, 4).Select(i => new ReflexGameSong
+        {
+            fileName = "Artist - Song " + i + ext, artist = "Artist", title = "Song " + i,
+            write = (path, c) => File.WriteAllText(path, body + i),
+        }).ToList();
+        ReflexGameMusicResult Install(List<ReflexGameSong> songs) => ReflexGameMusic.Install(music, g, "test/1", new JObj(), songs, 1000, null, null, null, none);
+        var r = Install(Songs(".mp3", "mp3 "));
+        UxTest.Report(r.Ok && r.written == 4, "first import, .mp3: " + r);
+        // the player retags one .mp3; then an import with the other encoder
+        File.WriteAllText(Path.Combine(dest, "Artist - Song 1.mp3"), "the player's retag");
+        r = Install(Songs(".ogg", "ogg "));
+        UxTest.Report(r.Ok && r.written == 4 && r.removed == 3, "another encoder: 4 made, the 3 unchanged old files removed (" + r + ", " + r.removed + " removed)");
+        var left = Directory.GetFiles(dest).Select(Path.GetFileName).OrderBy(x => x, StringComparer.Ordinal).ToList();
+        UxTest.Check(left.Count(x => x.EndsWith(".ogg")) == 4 && left.Count(x => x.EndsWith(".mp3")) == 1 && File.Exists(Path.Combine(dest, "Artist - Song 1.mp3")),
+                     "the player's retagged .mp3 stays, no other .mp3 (" + string.Join(", ", left) + ")");
+        var st = ReflexGameMusic.Status(music, g);
+        UxTest.Check(st.listed == 4 && st.present == 4, $"the manifest lists the 4 new songs ({st.present} of {st.listed})");
+        // a manifest another program holds: refused, nothing changed (Windows enforces the share mode)
+        if (Path.DirectorySeparatorChar == '\\')
+        {
+            File.Delete(Path.Combine(dest, "Artist - Song 2.ogg"));
+            var before = Snapshot(dest, true);
+            using (new FileStream(Path.Combine(dest, g.manifest), FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                r = Install(Songs(".ogg", "ogg "));
+                UxTest.Report(r.state == ReflexGameMusicState.Failed && r.error.Contains("can't be read now"), "a manifest another program holds: refused (" + r.error + ")");
+            }
+            Unchanged("a manifest another program holds: nothing changed", before, dest, true);
+            r = Install(Songs(".ogg", "ogg "));
+            UxTest.Report(r.Ok && r.written == 1, "then: the missing song made (" + r + ")");
+        }
+        // a manifest that lists a song whose file is not there (the import stopped after the manifest, before the move): made again
+        File.Delete(Path.Combine(dest, "Artist - Song 3.ogg"));
+        r = Install(Songs(".ogg", "ogg "));
+        UxTest.Report(r.Ok && r.written == 1 && r.changed == 0, "a listed song missing: made again, nothing taken for the player's (" + r + ")");
+        UxTest.Check(ReflexGameMusic.Status(music, g).present == 4, "every song as the importer wrote it");
+    }
+
+    /// The manifest holds neither folder, in any of the ways JSON writes a path (the separators as they are, as '/', escaped).
+    static bool NoPath(string manifest, params string[] folders)
+    {
+        foreach (string f in folders)
+        {
+            if (string.IsNullOrEmpty(f)) continue;
+            foreach (string form in new[] { f, f.Replace('\\', '/'), f.Replace("\\", "\\\\") })
+                if (manifest.IndexOf(form, StringComparison.OrdinalIgnoreCase) >= 0) return false;
+        }
+        return true;
+    }
+
+    /// OPTIONS > AUDIO > SOUNDTRACK and YOUR MUSIC: what may play (ReflexSongLibrary.Pool).
+    static void Pool()
+    {
+        UxTest.Section("music pool");
+        ReflexSong Song(string source, int i) => new ReflexSong { path = source + i, title = "t" + i, source = source };
+        var mine = Enumerable.Range(0, 3).Select(i => Song(ReflexSong.SourceCustom, i)).ToList();
+        var alive = Enumerable.Range(0, 23).Select(i => Song(ReflexSong.SourceAlive, i)).ToList();
+        var untamed = Enumerable.Range(0, 22).Select(i => Song(ReflexSong.SourceUntamed, i)).ToList();
+        var all = mine.Concat(alive).Concat(untamed).ToList();
+        int Of(List<ReflexSong> p, string source) => p.Count(x => x.source == source);
+        void Case(string what, IEnumerable<ReflexSong> songs, int yours, int st, int wantMine, int wantAlive, int wantUntamed, bool wantGame)
+        {
+            var p = ReflexSongLibrary.Pool(songs, yours, st, out bool game);
+            UxTest.Check(Of(p, ReflexSong.SourceCustom) == wantMine && Of(p, ReflexSong.SourceAlive) == wantAlive && Of(p, ReflexSong.SourceUntamed) == wantUntamed && game == wantGame,
+                         what + $": {Of(p, ReflexSong.SourceCustom)} yours, {Of(p, ReflexSong.SourceAlive)} Alive, {Of(p, ReflexSong.SourceUntamed)} Untamed, Reflex's {(game ? "too" : "not")}");
+        }
+        int MixIn = ReflexSongLibrary.YourMusicMixIn, Off = ReflexSongLibrary.YourMusicOff, Only = ReflexSongLibrary.YourMusicOnly;
+        Case("ALL SONGS, MIX IN", all, MixIn, ReflexSongLibrary.SoundtrackAll, 3, 23, 22, true);
+        Case("ALL SONGS, OFF", all, Off, ReflexSongLibrary.SoundtrackAll, 0, 23, 22, true);
+        Case("REFLEX ONLY, OFF", all, Off, ReflexSongLibrary.SoundtrackReflex, 0, 0, 0, true);
+        Case("REFLEX ONLY, MIX IN", all, MixIn, ReflexSongLibrary.SoundtrackReflex, 3, 0, 0, true);
+        Case("ALIVE ONLY, OFF", all, Off, ReflexSongLibrary.SoundtrackAlive, 0, 23, 0, false);
+        Case("ALIVE ONLY, MIX IN", all, MixIn, ReflexSongLibrary.SoundtrackAlive, 3, 23, 0, false);
+        Case("UNTAMED ONLY, OFF", all, Off, ReflexSongLibrary.SoundtrackUntamed, 0, 0, 22, false);
+        Case("UNTAMED ONLY without Untamed songs: Reflex's", mine.Concat(alive), Off, ReflexSongLibrary.SoundtrackUntamed, 0, 0, 0, true);
+        Case("ALIVE ONLY without Alive songs, MIX IN: Reflex's and yours", mine.Concat(untamed), MixIn, ReflexSongLibrary.SoundtrackAlive, 3, 0, 0, true);
+        Case("YOUR MUSIC ONLY: yours alone", all, Only, ReflexSongLibrary.SoundtrackAlive, 3, 0, 0, false);
+        Case("YOUR MUSIC ONLY without songs of yours: the soundtrack", alive.Concat(untamed), Only, ReflexSongLibrary.SoundtrackUntamed, 0, 0, 22, false);
+        Case("nothing imported, ALL SONGS, OFF", new ReflexSong[0], Off, ReflexSongLibrary.SoundtrackAll, 0, 0, 0, true);
+    }
+
+    // ------------------------------------------------------------------------------------------------------- the Alive soundtrack
+    /// The Alive disc's soundtrack (AliveMusic) converted with ffmpeg into a scratch Mods/Music: every song, its tags, its length, the
+    /// music scan's view; again with nothing rewritten; cancel leaving nothing; no ffmpeg: a clear refusal.
+    static void AliveSoundtrack(string aliveIso, string ffmpeg, string scratch)
+    {
+        UxTest.Section("Alive soundtrack");
+        if (aliveIso == null || !File.Exists(aliveIso)) { UxTest.Skip("no MX vs ATV Alive disc image (--alive-iso / UX_ALIVE_ISO)"); return; }
+        if (ffmpeg == null || !File.Exists(ffmpeg)) { UxTest.Skip("no ffmpeg (--ffmpeg / REFLEX_FFMPEG)"); return; }
+        string root = UxTest.FreshFolder(scratch, "alive-music"), music = Path.Combine(root, "Mods", "Music");
+        var none = CancellationToken.None;
+        var isoBefore = Snapshot(aliveIso);
+        using (var v = new DiscVolume(aliveIso))
+        {
+            var src = AliveMusic.Find(new Volume[] { v }, music, none);
+            if (!UxTest.Report(src != null && src.Ok, "the soundtrack is found and is the supported disc's" + (src?.problem != null ? ": " + src.problem : ""))) return;
+            int n = AliveMusic.Songs.Length;
+            UxTest.Check(n == 23, "23 songs in the table");
+            string enc = AliveMusic.Encoder(ffmpeg);
+            UxTest.Report(enc != null, "ffmpeg encodes " + (enc ?? "neither Vorbis nor MP3"));
+            var r0 = AliveMusic.Import(src, music, null, null, null, null, none);
+            UxTest.Report(r0.state == ReflexGameMusicState.Failed && r0.error.Contains("ffmpeg") && !Directory.Exists(Path.Combine(music, ReflexSongLibrary.Alive.folder)), "no ffmpeg: refused, nothing written (" + r0.error + ")");
+            var cts = new CancellationTokenSource();
+            var r = AliveMusic.Import(src, music, ffmpeg, null, null, (what, f) => { if (f > 0.1f) cts.Cancel(); }, cts.Token);
+            UxTest.Report(r.state == ReflexGameMusicState.Cancelled && !Directory.Exists(Path.Combine(music, ReflexSongLibrary.Alive.folder)) && !Directory.GetDirectories(music).Any(d => Path.GetFileName(d).StartsWith(ReflexGameMusic.StagingPrefix, StringComparison.Ordinal)),
+                          "cancelled while converting: nothing left (" + r + ")");
+            r = AliveMusic.Import(src, music, ffmpeg, null, null, null, none);
+            UxTest.Report(r.Ok && r.written == n, "imported: " + r + $" ({F(r.seconds)} s, {Mb(r.bytes)} MB)");
+            string dest = Path.Combine(music, ReflexSongLibrary.Alive.folder), ext = enc == "libvorbis" ? ".ogg" : ".mp3";
+            foreach (var s in AliveMusic.Songs)
+            {
+                string f = Path.Combine(dest, ReflexGameMusic.SongFileName(s.artist, s.title, ext));
+                if (!UxTest.Check(File.Exists(f), Path.GetFileName(f) + " is there")) continue;
+                var tags = ReflexSongLibrary.ReadTags(f);
+                UxTest.Check(tags.artist == s.artist && tags.title == s.title && tags.album == "MX vs ATV Alive" && tags.year == 2011, Path.GetFileName(f) + ": tags " + tags.Label + " / " + tags.album + " / " + tags.year);
+                if (ext == ".ogg") { long got = AliveMusic.OggSamples(f); UxTest.Check(Math.Abs(got - s.samples) <= 4096, Path.GetFileName(f) + $": {got} samples, the song {s.samples}"); }
+            }
+            string manifest = File.ReadAllText(Path.Combine(dest, ReflexSongLibrary.Alive.manifest));
+            UxTest.Check(NoPath(manifest, root, Path.GetDirectoryName(aliveIso), Path.GetDirectoryName(ffmpeg)), "the manifest names no path");
+            var songs = ReflexSongLibrary.Scan(music);
+            UxTest.Check(songs.Count == n && songs.All(x => x.source == ReflexSong.SourceAlive), "the music scan finds the " + n + " songs as the Alive soundtrack (" + songs.Count + ")");
+            AliveMusic.RefreshStatus(src, music);
+            UxTest.Check(src.Complete, "the scan's view: imported, every song there");
+            var before = Snapshot(dest, true);
+            r = AliveMusic.Import(src, music, ffmpeg, null, null, null, none);
+            UxTest.Report(r.Ok && r.updated && r.written == 0 && r.kept == n, "again: nothing converted (" + r + $", {F(r.seconds)} s)");
+            Same(before, Snapshot(dest, true), out string first);
+            UxTest.Check(first == null || first == ReflexSongLibrary.Alive.manifest + " changed", "again: no song rewritten" + (first != null ? " (" + first + ")" : ""));
+            File.Delete(Path.Combine(dest, ReflexGameMusic.SongFileName(AliveMusic.Songs[4].artist, AliveMusic.Songs[4].title, ext)));
+            r = AliveMusic.Import(src, music, ffmpeg, null, null, null, none);
+            UxTest.Report(r.Ok && r.written == 1 && r.kept == n - 1, "a deleted song converted again: " + r);
+        }
+        Unchanged("the Alive disc image is as it was", isoBefore, aliveIso);
+    }
+
+    static List<string> MusicStaging(string music) =>
+        Directory.Exists(music) ? Directory.GetDirectories(music).Select(Path.GetFileName).Where(n => n.StartsWith(ReflexGameMusic.StagingPrefix, StringComparison.Ordinal)).ToList() : new List<string>();
+
+    /// The MPEG-1 Layer III frames after an ID3v2 tag, to the file's last byte (0: not a whole stream).
+    static int Frames(byte[] b)
+    {
+        if (b.Length < 10 || b[0] != 'I' || b[1] != 'D' || b[2] != '3') return 0;
+        int p = 10 + ((b[6] & 0x7f) << 21 | (b[7] & 0x7f) << 14 | (b[8] & 0x7f) << 7 | (b[9] & 0x7f)), n = 0;
+        int[] kbps = { 0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 };
+        while (p < b.Length)
+        {
+            if (p + 4 > b.Length || b[p] != 0xFF || (b[p + 1] & 0xFE) != 0xFA || (b[p + 2] >> 4) == 0 || (b[p + 2] >> 4) == 15 || (b[p + 2] & 0x0C) != 0) return 0;
+            p += 144000 * kbps[b[p + 2] >> 4] / 44100 + (b[p + 2] >> 1 & 1); n++;
+        }
+        return p == b.Length ? n : 0;
     }
 
     // ------------------------------------------------------------------------------------------------------- quick
