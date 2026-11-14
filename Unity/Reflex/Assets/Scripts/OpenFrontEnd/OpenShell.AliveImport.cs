@@ -9,6 +9,9 @@
 //   bikes     the Alive motorcycles found (AliveBikes: each rides as the Reflex bike of its class and brand) are listed under the
 //             levels, all chosen; IMPORT converts the chosen ones into <content>/AliveBikes (.rxmod folders) after the levels and the
 //             garage lists them as MOD cards (BikeMods.Refresh)
+//   music     the disc's soundtrack (the 23 songs of the jukebox: AliveMusic) is one more row: chosen, its songs are converted with the
+//             client's ffmpeg into the music pool, Mods/Music/MX vs ATV Alive (ReflexGameMusic), after the levels and bikes; the music folder
+//             is scanned again at once. OPTIONS > AUDIO > SOUNDTRACK plays them (ALL SONGS, ALIVE SONGS ONLY)
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,7 +36,15 @@ namespace Reflex.Port.OpenFrontEnd
         Label _aliveStatusLabel; VisualElement _aliveFill;
         List<AliveLevelResult> _aliveResults; Exception _aliveError;
         List<AliveBikeResult> _aliveBikeResults;
-        const string BikeKey = "bike:";
+        const string BikeKey = "bike:", AliveMusicKey = "music:";
+        /// The disc's soundtrack (null: none in the sources), whether it is chosen, and its import's result.
+        AliveMusicSource _aliveMusic; bool _aliveMusicChosen; ReflexGameMusicResult _aliveMusicResult;
+        /// Why the soundtrack's row can't be chosen (null: it can).
+        string AliveMusicBlocked(string musicFolder, string ffmpeg) => _aliveMusic == null ? "No soundtrack was found" : !_aliveMusic.Ok ? _aliveMusic.problem : _aliveMusic.status.inTheWay
+            ?? (musicFolder == null ? "The music folder (Mods/Music) was not found." : ffmpeg == null ? "The Alive songs are converted with ffmpeg, which was not found: put an ffmpeg build in the ffmpeg folder beside the game (the Windows download has one) or set REFLEX_FFMPEG." : null);
+        /// The last scan's soundtrack and the last import's result for it (tests read them).
+        public AliveMusicSource AliveMusicFound => AliveImportRunning ? null : _aliveMusic;
+        public ReflexGameMusicResult AliveMusicResult => AliveImportRunning ? null : _aliveMusicResult;
         bool _aliveImporting; string _aliveNotice;
         readonly List<string> _aliveOrder = new List<string>();
         public bool AliveImportRunning => _aliveTask != null && !_aliveTask.IsCompleted;
@@ -59,7 +70,7 @@ namespace Reflex.Port.OpenFrontEnd
             string content = AliveContent();
             int count = 0; try { count = AliveLevels.All.Count; } catch (Exception) { }
             OuUi.Text(content == null ? (ReflexInstall.Dir == null ? "Connect the Reflex game folder first." : AliveImporter.ContentProblem(ReflexInstall.Dir))
-                                      : "Import the levels of your own MX vs ATV Alive disc and downloaded level packs. Your files are only read.", "mxa-library-description", copy).style.whiteSpace = WhiteSpace.Normal;
+                                      : "Import the levels of your own MX vs ATV Alive disc and downloaded level packs, and the disc's soundtrack into your music. Your files are only read.", "mxa-library-description", copy).style.whiteSpace = WhiteSpace.Normal;
             OuUi.Text(count > 0 ? $"{count} {(count == 1 ? "LEVEL" : "LEVELS")} INSTALLED  ·  " + string.Join(", ", AliveLevels.All.Select(e => e.DisplayName.ToUpperInvariant()))
                                 : "NO ALIVE LEVELS INSTALLED", "mxa-library-state", copy).style.whiteSpace = WhiteSpace.Normal;
             var actions = OuUi.Div("ou-library-actions", card);
@@ -219,10 +230,10 @@ namespace Reflex.Port.OpenFrontEnd
         void BeginAliveScan()
         {
             if (AliveImportRunning || _aliveSourcePaths.Count == 0) return;
-            _aliveFound?.Dispose(); _aliveFound = null; _aliveError = null; _aliveImporting = false;
+            _aliveFound?.Dispose(); _aliveFound = null; _aliveError = null; _aliveImporting = false; _aliveMusic = null;
             _aliveCancel = new CancellationTokenSource();
             var paths = _aliveSourcePaths.ToList(); var token = _aliveCancel.Token;
-            string content = AliveContent();
+            string content = AliveContent(), music = MusicFolderOrNull();
             _aliveStatus = "Opening your sources…";
             _aliveTask = Task.Run(() =>
             {
@@ -235,6 +246,11 @@ namespace Reflex.Port.OpenFrontEnd
                     catch (OperationCanceledException) { throw; }
                     catch (Exception ex) { found.warnings.Add("Level pictures: " + ex.Message); }
                 }
+                // the soundtrack on the disc (Database/Music.xenon.*), and what of it is in the music folder already
+                _aliveStatus = "Checking the soundtrack";
+                try { _aliveMusic = AliveMusic.Find(found.volumes, music, token); }
+                catch (OperationCanceledException) { found.Dispose(); throw; }
+                catch (Exception ex) { _aliveMusic = null; found.warnings.Add("Soundtrack: " + ex.Message); }
                 _aliveFound = found;
             }, token);
             ShowAliveProgress();
@@ -242,12 +258,13 @@ namespace Reflex.Port.OpenFrontEnd
 
         void BeginAliveImport()
         {
-            string content = AliveContent();
-            if (AliveImportRunning || _aliveFound == null || content == null) return;
-            var chosen = _aliveFound.levels.Where(l => l.recognized && _aliveChosen.Contains(l.level)).ToList();
-            var bikes = _aliveFound.bikes.Where(b => b.Importable && _aliveChosen.Contains(BikeKey + b.aliveId)).ToList();
-            if (chosen.Count == 0 && bikes.Count == 0) return;
-            _aliveCancel = new CancellationTokenSource(); _aliveResults = null; _aliveBikeResults = null; _aliveError = null; _aliveImporting = true; _aliveProgress = null;
+            string content = AliveContent(), music = MusicFolderOrNull(), ffmpeg = FfmpegBinkSource.Relocate();   // (main thread: Unity's paths)
+            if (AliveImportRunning || _aliveFound == null) return;
+            var chosen = content == null ? new List<AliveLevelSource>() : _aliveFound.levels.Where(l => l.recognized && _aliveChosen.Contains(l.level)).ToList();
+            var bikes = content == null ? new List<AliveBikeSource>() : _aliveFound.bikes.Where(b => b.Importable && _aliveChosen.Contains(BikeKey + b.aliveId)).ToList();
+            var song = _aliveMusicChosen && AliveMusicBlocked(music, ffmpeg) == null ? _aliveMusic : null;
+            if (chosen.Count == 0 && bikes.Count == 0 && song == null) return;
+            _aliveCancel = new CancellationTokenSource(); _aliveResults = null; _aliveBikeResults = null; _aliveMusicResult = null; _aliveError = null; _aliveImporting = true; _aliveProgress = null;
             _aliveOrder.Clear(); _aliveOrder.AddRange(chosen.Select(c => c.level));
             var token = _aliveCancel.Token;
             _aliveStatus = "Starting…";
@@ -262,6 +279,16 @@ namespace Reflex.Port.OpenFrontEnd
                     _aliveBikeResults = AliveBikes.Import(bikes, found, content, s => { _aliveStatus = s; Interlocked.Exchange(ref _aliveProgress, new AliveProgress { level = BikeKey, stage = s, done = n++, total = bikes.Count }); }, token);
                     foreach (var r in _aliveBikeResults) Debug.Log("[OpenReflex] Alive bike " + (r.ok ? "OK " : "FAILED ") + r.bike.Label + (r.ok ? $" -> {r.folder} ({r.surfaces} surfaces, {r.maps} maps, {r.bytes >> 10} KB, {r.seconds:0.0} s)" : ": " + r.error));
                 }
+                // the soundtrack last (about a minute: every song decoded and encoded by ffmpeg)
+                if (song != null && !token.IsCancellationRequested)
+                {
+                    Debug.Log("[OpenReflex] Alive import: the soundtrack -> " + Path.Combine(music, ReflexSongLibrary.Alive.folder) + " (ffmpeg " + ffmpeg + ")");
+                    _aliveMusicResult = AliveMusic.Import(song, music, ffmpeg, ReflexAssetImport.FreeBytes, s => Debug.Log("[OpenReflex] " + s),
+                        (s, f) => Interlocked.Exchange(ref _aliveProgress, new AliveProgress { level = AliveMusicKey, stage = s, done = (int)(f * 1000), total = 1000 }), token);
+                    Debug.Log("[OpenReflex] Alive import " + _aliveMusicResult);
+                    AliveMusic.RefreshStatus(song, music);   // (hashes the songs: here, not on the main thread)
+                }
+                else if (song != null) _aliveMusicResult = new ReflexGameMusicResult { state = ReflexGameMusicState.Cancelled };   // (cancelled before its turn: the results say so)
             }, token);
             ShowAliveProgress();
         }
@@ -321,6 +348,12 @@ namespace Reflex.Port.OpenFrontEnd
                 if (_aliveImporting && p != null)
                 {
                     var lv = _aliveFound?.levels.FirstOrDefault(l => l.level == p.level);
+                    if (p.level == AliveMusicKey)
+                    {
+                        _aliveStatusLabel.text = "SOUNDTRACK  ·  " + (p.stage ?? "").ToUpperInvariant() + $"  {p.Fraction * 100:0}%";
+                        _aliveFill.style.width = Length.Percent((float)(100.0 * p.Fraction));
+                        return;
+                    }
                     if (p.level == BikeKey)
                     {
                         _aliveStatusLabel.text = p.stage.ToUpperInvariant();
@@ -343,13 +376,15 @@ namespace Reflex.Port.OpenFrontEnd
             }
             var t = _aliveTask; _aliveTask = null; _aliveCancel?.Dispose(); _aliveCancel = null;
             if (t.IsFaulted) _aliveError = t.Exception?.GetBaseException();
-            bool cancelled = t.IsCanceled || _aliveError is OperationCanceledException || (_aliveResults?.Any(r => r.error == "Cancelled") ?? false);
+            bool cancelled = t.IsCanceled || _aliveError is OperationCanceledException || (_aliveResults?.Any(r => r.error == "Cancelled") ?? false)
+                             || _aliveMusicResult?.state == ReflexGameMusicState.Cancelled;
             if (_aliveImporting)
             {
                 // the new levels: the registry, the event list and the shell's content read again (the hub's MX vs ATV Alive entry)
                 AliveLevels.Reset();
                 if (_aliveResults != null && _aliveResults.Any(r => r.ok)) { ReflexEvents.Refresh(); OpenContent.Reset(); }
                 if (_aliveBikeResults != null && _aliveBikeResults.Any(r => r.ok)) BikeMods.Refresh();   // (the garage's MOD cards)
+                if (_aliveMusicResult != null && _aliveMusicResult.Ok) { _aliveMusicChosen = false; try { ReflexCustomMusic.Rescan(); } catch (Exception e) { Debug.LogWarning("[OpenReflex] Alive import, music: " + e.Message); } }
                 if (_aliveError != null && !cancelled) Debug.LogException(_aliveError);
                 foreach (var r in _aliveResults ?? new List<AliveLevelResult>()) Debug.Log("[OpenReflex] Alive import " + (r.ok ? "OK " : "FAILED ") + r);
                 ShowAliveResults(cancelled);
@@ -366,6 +401,9 @@ namespace Reflex.Port.OpenFrontEnd
                 _aliveChosen.Clear();
                 foreach (var l in _aliveFound.levels) if (l.recognized && (l.kind.StartsWith("Free Ride", StringComparison.Ordinal))) _aliveChosen.Add(l.level);
                 foreach (var b in _aliveFound.bikes) if (b.Importable) _aliveChosen.Add(BikeKey + b.aliveId);
+                // the soundtrack: chosen unless every song is in the music folder already
+                _aliveMusicChosen = _aliveMusic != null && _aliveMusic.Ok && _aliveMusic.status.inTheWay == null && !_aliveMusic.Complete;
+                Debug.Log("[OpenReflex] Alive soundtrack: " + (_aliveMusic == null ? "not found" : (_aliveMusic.problem ?? _aliveMusic.status.inTheWay ?? "ready") + (_aliveMusic.status.imported != null ? $" (imported: {_aliveMusic.status.present} of {AliveMusic.Songs.Length} songs)" : "")));
                 ShowAliveLevels();
             }
         }
@@ -378,9 +416,9 @@ namespace Reflex.Port.OpenFrontEnd
             var box = OuUi.Div("mxa-panel mxa-install mxa-library", _layer);
             box.name = "ou-alive-levels";
             OuUi.Text(_aliveFound != null && _aliveFound.bikes.Count > 0 ? "ALIVE LEVELS & BIKES" : "ALIVE LEVELS", "mxa-screen-title", box);
-            string content = AliveContent();
+            string content = AliveContent(), musicFolder = MusicFolderOrNull(), ffmpeg = FfmpegBinkSource.Relocate();
             var found = _aliveFound;
-            OuUi.Text(found.levels.Count == 0 && found.bikes.Count == 0 ? "No MX vs ATV Alive level was found in these sources."
+            OuUi.Text(found.levels.Count == 0 && found.bikes.Count == 0 ? (_aliveMusic != null ? "No MX vs ATV Alive level was found in these sources; the disc's soundtrack was." : "No MX vs ATV Alive level was found in these sources.")
                       : $"{found.levels.Count} levels" + (found.bikes.Count > 0 ? $" and {found.bikes.Count} bikes" : "") + " found. Choose what to import; each level is installed as a Free Ride map of the MX vs ATV Alive category"
                         + (found.bikes.Count > 0 ? ", each bike as a MOD card in the garage." : "."),
                       "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
@@ -397,10 +435,34 @@ namespace Reflex.Port.OpenFrontEnd
                 var parts = new List<string>();
                 if (n > 0) parts.Add($"{n} {(n == 1 ? "LEVEL" : "LEVELS")}");
                 if (nb > 0) parts.Add($"{nb} {(nb == 1 ? "BIKE" : "BIKES")}");
+                bool m = _aliveMusicChosen && AliveMusicBlocked(musicFolder, ffmpeg) == null;
+                if (content == null) { n = 0; nb = 0; parts.Clear(); }
+                if (m) parts.Add("SOUNDTRACK");
                 var lbl = import?.Q<Label>(); if (lbl != null) lbl.text = parts.Count > 0 ? "IMPORT " + string.Join(" + ", parts) : "IMPORT";
-                import?.SetEnabled(n + nb > 0 && content != null);
+                import?.SetEnabled(n + nb > 0 || m);
             }
             VisualElement first = null;
+            if (_aliveMusic != null)
+            {   // the soundtrack: one row, into the music pool
+                var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
+                row.name = "ou-alive-music";
+                var c = OuUi.Div("ou-cache-copy", row);
+                var title = OuUi.Text("", "mxa-track-name ou-cache-name", c);
+                string blocked = AliveMusicBlocked(musicFolder, ffmpeg);
+                var mu = _aliveMusic; int all = AliveMusic.Songs.Length;
+                string state = mu.Complete ? $"IMPORTED (Mods/Music/{mu.status.imported})  ·  CHOOSE IT TO CHECK AND IMPORT IT AGAIN"
+                             : mu.status.imported != null ? $"{mu.status.present} OF {all} SONGS AS IMPORTED IN Mods/Music/{mu.status.imported}  ·  CHOOSE IT TO PUT BACK THE MISSING ONES (SONGS YOU CHANGED STAY AS THEY ARE)"
+                             : "READY";
+                OuUi.Text(blocked ?? $"{all} SONGS ({AliveMusic.TotalSeconds / 60:0} MIN), CONVERTED ON THIS COMPUTER INTO THE MUSIC FOLDER (Mods/Music/{ReflexSongLibrary.Alive.folder}, ABOUT {OpenWorldCache.SizeText(AliveMusic.MusicBytes)}, A MINUTE OR SO): OPTIONS > AUDIO > SOUNDTRACK PLAYS THEM  ·  {state}",
+                          blocked == null ? "ou-card-sub ou-cache-sub" : "mxa-error", c).style.whiteSpace = WhiteSpace.Normal;
+                void Title() => title.text = (blocked == null ? (_aliveMusicChosen ? "☑  " : "☐  ") : "✕  ") + "SOUNDTRACK  ·  " + all + " SONGS";
+                Title();
+                if (blocked == null)
+                {
+                    OuUi.Item(row, () => { _aliveMusicChosen = !_aliveMusicChosen; Title(); Count(); });
+                    first = row;
+                }
+            }
             foreach (var l in found.levels)
             {
                 var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
@@ -445,8 +507,8 @@ namespace Reflex.Port.OpenFrontEnd
                 }
             }
             import = OuUi.Button("IMPORT", "mxa-start", BeginAliveImport, buttons); import.name = "ou-alive-import";
-            OuUi.Button("ALL", "mxa-secondary", () => { foreach (var l in found.levels.Where(x => x.recognized)) _aliveChosen.Add(l.level); foreach (var b in found.bikes.Where(x => x.Importable)) _aliveChosen.Add(BikeKey + b.aliveId); ShowAliveLevels(); }, buttons).name = "ou-alive-all";
-            OuUi.Button("NONE", "mxa-secondary", () => { _aliveChosen.Clear(); ShowAliveLevels(); }, buttons).name = "ou-alive-none";
+            OuUi.Button("ALL", "mxa-secondary", () => { foreach (var l in found.levels.Where(x => x.recognized)) _aliveChosen.Add(l.level); foreach (var b in found.bikes.Where(x => x.Importable)) _aliveChosen.Add(BikeKey + b.aliveId); _aliveMusicChosen = AliveMusicBlocked(musicFolder, ffmpeg) == null; ShowAliveLevels(); }, buttons).name = "ou-alive-all";
+            OuUi.Button("NONE", "mxa-secondary", () => { _aliveChosen.Clear(); _aliveMusicChosen = false; ShowAliveLevels(); }, buttons).name = "ou-alive-none";
             OuUi.Button("BACK", "mxa-secondary", ShowAliveSources, buttons);
             Count();
             _nav.OnCancel = () => { ShowAliveSources(); return true; };
@@ -464,13 +526,23 @@ namespace Reflex.Port.OpenFrontEnd
             var results = _aliveResults ?? new List<AliveLevelResult>();
             var bikeResults = _aliveBikeResults ?? new List<AliveBikeResult>();
             int ok = results.Count(r => r.ok), okb = bikeResults.Count(r => r.ok);
+            var mr = _aliveMusicResult;
             string head = cancelled ? "Import cancelled. The level in progress was removed; levels finished before stay installed."
                         : _aliveError != null ? "Import stopped: " + _aliveError.Message
+                        : results.Count == 0 && bikeResults.Count == 0 ? (mr != null && mr.Ok ? "The soundtrack is in your music." : "The soundtrack was not imported.")
                         : ok == results.Count && okb == bikeResults.Count ? string.Join(" ", new[] { results.Count > 0 ? $"{ok} {(ok == 1 ? "level" : "levels")} installed. They are listed under MX vs ATV Alive." : null,
                                                                                                     bikeResults.Count > 0 ? $"{okb} {(okb == 1 ? "bike" : "bikes")} installed: GARAGE > VEHICLE lists each as a MOD card under the bike it rides as." : null }.Where(x => x != null))
                         : $"{ok} of {results.Count} levels, {okb} of {bikeResults.Count} bikes installed.";
-            OuUi.Text(head, cancelled || _aliveError != null || ok < results.Count || okb < bikeResults.Count ? "mxa-error" : "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
+            OuUi.Text(head, cancelled || _aliveError != null || ok < results.Count || okb < bikeResults.Count || (mr != null && !mr.Ok) ? "mxa-error" : "mxa-install-text", box).style.whiteSpace = WhiteSpace.Normal;
             var scroll = new ScrollView(ScrollViewMode.Vertical); scroll.AddToClassList("mxa-library-list"); box.Add(scroll);
+            if (mr != null)
+            {
+                var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
+                row.name = "ou-alive-result-music";
+                var c = OuUi.Div("ou-cache-copy", row);
+                OuUi.Text((mr.Ok ? "✓  " : "✕  ") + "SOUNDTRACK  ·  " + AliveMusic.Songs.Length + " SONGS", "mxa-track-name ou-cache-name", c);
+                OuUi.Text(GameMusicDetail(mr, ReflexSongLibrary.SoundtrackAlive), mr.state == ReflexGameMusicState.Failed ? "mxa-error" : "ou-card-sub ou-cache-sub", c).style.whiteSpace = WhiteSpace.Normal;
+            }
             foreach (var r in results)
             {
                 var row = OuUi.Div("ou-cache-row", scroll.contentContainer);
@@ -491,6 +563,7 @@ namespace Reflex.Port.OpenFrontEnd
             var done = OuUi.Button("DONE", "mxa-start", LeaveAlive, buttons);
             done.name = "ou-alive-done";
             OuUi.Button("MORE LEVELS", "mxa-secondary", () => { if (_aliveFound != null) ShowAliveLevels(); else ShowAliveSources(); }, buttons);
+            if (mr != null && mr.Ok) OuUi.Button("OPEN MUSIC FOLDER", "mxa-secondary", ReflexCustomMusic.OpenFolder, buttons).name = "ou-alive-open-music";
             _nav.OnCancel = () => { LeaveAlive(); return true; };
             _nav.DefaultItem = () => done;
             Hints((OuUi.KeySubmit, "SELECT"), (OuUi.KeyCancel, "BACK"));

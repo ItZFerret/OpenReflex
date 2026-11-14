@@ -58,6 +58,13 @@ namespace Reflex.Port.Content
         static string located; static bool searched;
         /// The ffmpeg executable: REFLEX_FFMPEG, the copy bundled with the client (<client root>/ffmpeg: the Windows package ships an
         /// LGPL build there), the usual install folders, then PATH. Null when there is none.
+        /// Locate, searching again when the last search found nothing or what it found is gone (an ffmpeg put in place while the game runs).
+        public static string Relocate()
+        {
+            try { if (searched && (located == null || !File.Exists(located))) { searched = false; located = null; } } catch (Exception) { }
+            return Locate();
+        }
+
         public static string Locate()
         {
             if (searched) return located;

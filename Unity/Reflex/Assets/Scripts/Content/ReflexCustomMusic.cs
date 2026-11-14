@@ -2,6 +2,9 @@
 // .mp3 / .ogg / .wav files in <client root>/Mods/Music (ReflexMods: next to OpenReflex.app / OpenReflex.exe; subfolders too), played through Unity's own
 // decoders (UnityWebRequestMultimedia; no third-party decoder) in the game's place or among its tracks.
 //   OPTIONS > AUDIO > YOUR MUSIC   OFF | MIX IN (default) | ONLY (ReflexSettings.CustomMusic)
+//   OPTIONS > AUDIO > SOUNDTRACK   ALL SONGS (default) | REFLEX / ALIVE / UNTAMED SONGS ONLY (ReflexSettings.Soundtrack): the MX vs ATV Alive and
+//                                  Untamed soundtracks the importers put in Mods/Music/<the game> are those games' songs, not the player's
+//                                  (ReflexSongLibrary.Classify); ReflexSongLibrary.Pool says what may play
 //   races      OriginalMusic keeps the game's MusicPlayer cues (start delay, the activity's fade-in, the end-of-race fade-out, the pause duck, a track
 //              that ends brings the next playlist entry). A playlist entry is where a song of the folder may stand in for the game's track:
 //              MIX IN in proportion (PickForSlot: n songs against the playlist's tracks), ONLY always. The scenario scores stay the game's.
@@ -34,8 +37,15 @@ namespace Reflex.Port.Content
 
         /// 0 OFF, 1 MIX IN, 2 ONLY (ReflexSettings.CustomMusic).
         public static int Mode => ReflexSettings.CustomMusic;
-        /// The songs replace the game's soundtrack now (ONLY, with songs in the folder).
-        public static bool Only => Mode == 2 && Count > 0;
+        /// The songs replace Reflex's own soundtrack now (YOUR MUSIC ONLY with songs of the player's, or ALIVE / UNTAMED SONGS ONLY with that
+        /// game's songs imported): every playlist entry is one of them, and the menus play them instead of the game's themes.
+        public static bool Only { get { var pool = Pool(out bool game); return !game && pool.Count > 0; } }
+
+        /// The songs that may play now (ReflexSongLibrary.Pool) and whether Reflex's own tracks may.
+        public static List<ReflexSong> Pool(out bool gameTracks) => ReflexSongLibrary.Pool(Songs, ReflexSettings.CustomMusic, ReflexSettings.Soundtrack, out gameTracks);
+
+        /// The songs of one source ("YOUR MUSIC", "MX vs ATV ALIVE", "MX vs ATV UNTAMED").
+        public static int CountOf(string source) { int n = 0; foreach (var s in Songs) if (s.source == source) n++; return n; }
 
         static string Arg(string name)
         {
@@ -61,7 +71,9 @@ namespace Reflex.Port.Content
         static Dictionary<string, ReflexSong> s_byPath = new Dictionary<string, ReflexSong>(StringComparer.OrdinalIgnoreCase);
         static readonly Dictionary<string, ReflexSong> s_tags = new Dictionary<string, ReflexSong>();   // (the scan thread only)
         static float s_scanAt = -1000f;
-        static bool s_scanned;
+        static bool s_scanned, s_scanAgain;
+        /// The songs' sources at the last scan taken (the song objects are shared: a change of source alone is seen here).
+        static string s_sources = "";
         /// Changes whenever a scan finds another set of songs (the queue is built again).
         public static int Version { get; private set; }
 
@@ -71,10 +83,11 @@ namespace Reflex.Port.Content
         /// The first scan has finished.
         public static bool Scanned { get { Poll(); return s_scanned; } }
 
-        /// Scans the folder in the background (a scan under way is left to finish).
+        /// Scans the folder in the background (a scan under way is left to finish, and another follows it: what changed meanwhile is found).
         public static void Rescan()
         {
-            if (s_scan != null) return;
+            if (s_scan != null) { s_scanAgain = true; return; }
+            s_scanAgain = false;
             string folder;
             try { folder = Folder; } catch (Exception) { return; }   // (Unity's paths: main thread)
             s_scanAt = Time.realtimeSinceStartup;
@@ -86,13 +99,16 @@ namespace Reflex.Port.Content
 
         static void Poll()
         {
-            if (s_scan == null) { if (!s_scanned && ReflexSettings.CustomMusic != 0) Rescan(); return; }
+            if (s_scan == null) { if (!s_scanned) Rescan(); return; }
             if (!s_scan.IsCompleted) return;
             var t = s_scan; s_scan = null;
+            if (s_scanAgain) Rescan();   // (asked while this one ran: its result is taken now, the next one replaces it)
             if (t.IsFaulted) { Debug.LogWarning("[Music] your music: the scan failed: " + t.Exception.GetBaseException().Message); s_scanned = true; return; }
             var found = t.Result;
             bool same = found.Count == s_songs.Count;
             for (int i = 0; same && i < found.Count; i++) same = string.Equals(found[i].path, s_songs[i].path, StringComparison.OrdinalIgnoreCase);
+            string sources = string.Join("|", found.Select(x => x.source));
+            if (sources != s_sources) { same = false; s_sources = sources; }
             if (!same || !s_scanned)
             {
                 s_songs = found;
@@ -116,7 +132,8 @@ namespace Reflex.Port.Content
         // ------------------------------------------------------------------------------------------------ the queue
 
         static List<string> s_queue;
-        static int s_qi, s_queueVersion = -1;
+        static int s_qi;
+        static string s_queueVersion;
         static string s_last;
         static readonly System.Random s_rnd = new System.Random();
 
@@ -135,34 +152,39 @@ namespace Reflex.Port.Content
             ReflexSave.SetString(RecentKey, string.Join("\n", r));
         }
 
-        /// The next song of the shuffle (null: the folder has none).
+        /// The next song of the shuffle among the ones that may play (null: none may).
         public static ReflexSong Next()
         {
-            var songs = Songs;
+            var songs = Pool(out _);
             if (songs.Count == 0) return null;
+            // (the queue is built again when the songs found or the settings change)
+            string version = Version + "|" + ReflexSettings.CustomMusic + "|" + ReflexSettings.Soundtrack;
+            var allowed = new HashSet<string>(songs.Select(x => x.path), StringComparer.OrdinalIgnoreCase);
             for (int round = 0; round < 2; round++)
             {
-                if (s_queue == null || s_queueVersion != Version || s_qi >= s_queue.Count)
+                if (s_queue == null || s_queueVersion != version || s_qi >= s_queue.Count)
                 {
                     s_queue = ReflexSongLibrary.ShuffleQueue(songs, Recent(), s_last, s_rnd);
-                    s_qi = 0; s_queueVersion = Version;
+                    s_qi = 0; s_queueVersion = version;
                 }
                 while (s_qi < s_queue.Count)
                 {
                     string p = s_queue[s_qi++];
-                    if (s_byPath.TryGetValue(p, out var s)) { s_last = p; return s; }
+                    if (allowed.Contains(p) && s_byPath.TryGetValue(p, out var s)) { s_last = p; return s; }
                 }
             }
             return null;
         }
 
-        /// A playlist entry of the game's jukebox: the song that stands in for it, or null for the game's own track. MIX IN: a song with the chance
-        /// songs / (songs + the playlist's tracks); ONLY: always one.
+        /// A playlist entry of the game's jukebox: the song that stands in for it, or null for Reflex's own track. With Reflex's tracks allowed
+        /// (Pool): a song with the chance songs / (songs + the playlist's tracks), so every song of the mix is as likely as each of Reflex's;
+        /// without: always one.
         public static ReflexSong PickForSlot(int gameTracks)
         {
-            int mode = Mode, n = Count;
-            if (mode == 0 || n == 0) return null;
-            if (mode == 1 && s_rnd.Next(n + Math.Max(1, gameTracks)) >= n) return null;
+            var pool = Pool(out bool game);
+            int n = pool.Count;
+            if (n == 0) return null;
+            if (game && s_rnd.Next(n + Math.Max(1, gameTracks)) >= n) return null;
             return Next();
         }
 
@@ -315,7 +337,7 @@ namespace Reflex.Port.Content
         {
             void OnEnable() { Application.focusChanged += FocusChanged; }
             void OnDisable() { Application.focusChanged -= FocusChanged; }
-            static void FocusChanged(bool focused) { if (focused && ReflexSettings.CustomMusic != 0) RescanIfOld(5f); }   // (back from the file browser)
+            static void FocusChanged(bool focused) { if (focused) RescanIfOld(5f); }   // (back from the file browser)
 
             void Update()
             {
@@ -335,7 +357,7 @@ namespace Reflex.Port.Content
             var go = new GameObject("Your music") { hideFlags = HideFlags.HideAndDontSave };
             UnityEngine.Object.DontDestroyOnLoad(go);
             go.AddComponent<Host>();
-            if (ReflexSettings.CustomMusic != 0) Rescan();
+            Rescan();   // (the game soundtracks in the folder play whatever YOUR MUSIC is)
         }
     }
 }

@@ -175,6 +175,7 @@ namespace Reflex.Port.OpenFrontEnd
             }
 
             if (ready) AliveLibraryCard(list);   // MX vs ATV ALIVE (OpenShell.AliveImport.cs)
+            if (ready) UntamedLibraryCard(list);   // MX vs ATV UNTAMED (OpenShell.UntamedImport.cs)
             if (ready && !core)
             {
                 var head = OuUi.Div("ou-cache-head", list);
@@ -257,6 +258,7 @@ namespace Reflex.Port.OpenFrontEnd
         {
             UpdateAssetImport();
             UpdateAliveImport();
+            UpdateUntamedImport();
             if (_buildTask == null) return;
             if (!_buildTask.IsCompleted)
             {

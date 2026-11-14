@@ -43,6 +43,35 @@ levels with a race activity (every one but FR_Dunes, FR_Quarry, FR_DLC_JSComp, F
 Not tracks: `UI_World` (the front end's world), `Model_Viewer_Tool` (a developer level). The vehicle / gear packs of the content
 folder and the `00009000` avatar items carry no levels.
 
+## The soundtrack (2026-11-14)
+
+`Content/AliveImport/AliveMusic.cs` on `Content/ReflexGameMusic.cs` (the installer shared with the Untamed soundtrack: its rules are in
+`core/plan/UNTAMED_TRACKS.md` "The soundtrack"). The 23 songs of the game's jukebox go into the client's music folder as
+`Mods/Music/MX vs ATV Alive/<Artist> - <Title>.ogg`, the Alive soundtrack of OPTIONS > AUDIO > SOUNDTRACK (ALL SONGS, ALIVE SONGS ONLY).
+
+**On the disc.** `Database/Music.xenon.{database,package}` (80.6 MB): `MusicConfig/MusicAudioMap.bxml` lists the jukebox
+(`Music/Jukebox/Track`: Package, BankName, SongName, ArtistName; the names in `AliveMusic.Songs` are the game's own, "when I Feel"
+capitalised), the scenario scores and the three menu themes (not songs: left out). Each song is a package `TrackNN` with one asset
+`MUS_INGAME_NN.soundbnk` (LZX): a 0x40-byte bank header, then an FSB4 bank of one sample in XMA (sample mode `0x01000000`), 44.1 kHz
+stereo, its data whole 2048-byte packets to the bank's end. (`Track00` repeats `Track01`'s bank and is not in the jukebox.)
+
+**The conversion.** Unity can't decode XMA. The client's ffmpeg can (the Windows package ships an LGPL build in `<client root>/ffmpeg`
+for the videos; `REFLEX_FFMPEG`, the usual install folders and `PATH` too: `FfmpegBinkSource.Locate`): its FSB demuxer does not open
+these banks ("format 0x1 is not implemented"), so the XMA data is put in a RIFF WAVE with an XMA2WAVEFORMATEX (one stream, stereo,
+44.1 kHz, 64 KB blocks, the bank's sample count), which its `xma2` decoder reads. Each song is encoded once, at the import, to Ogg
+Vorbis (libvorbis quality 6, about 190 kbps; an ffmpeg without libvorbis: MP3 with libmp3lame, VBR 2) with the title, artist, album
+"MX vs ATV Alive" and year 2011 as tags. Checked: the XMA data's size, sample count and SHA-256 against the table (the supported
+disc's songs); the file decodes again with no error; an Ogg file ends within 4096 samples of the song's length. The bundled ffmpeg
+9.0 (2026-11-14): all 23 in 48 s, 96.5 MB, every length within the bound; a spectrogram and the levels (-10 to -13 dB RMS) are music.
+Without an ffmpeg (or one with neither encoder) the row says why and nothing is written.
+
+**Screens.** One more row of the Alive list (SOUNDTRACK · 23 SONGS), chosen unless every song is there; it is converted after the
+levels and bikes (about a minute), with its own progress line; its result row says whether SOUNDTRACK plays it.
+
+**Test.** `tests/untamed_import/import/run.sh <scratch> music` with `UX_ALIVE_ISO` and `REFLEX_FFMPEG`: no ffmpeg (refused, nothing
+written), a cancel while converting (nothing left), the 23 files with their tags and lengths, the music scan's view, again (nothing
+converted, 0.1 s), a deleted song converted again; the disc image unchanged.
+
 ## Racing (w-aliveai, 2026-11-02): 22 levels race with AI, overlay `map-a6-race`
 
 `builds/alive/combined/map-a6-race` (over `builds/alive/<level>/conversion-a6` and `builds/alive/base-clean`) adds each race level's

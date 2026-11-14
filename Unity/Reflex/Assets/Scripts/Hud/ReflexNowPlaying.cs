@@ -159,7 +159,7 @@ namespace Reflex.Port.Hud
             string title = string.IsNullOrWhiteSpace(s.title) ? "Unknown song" : s.title.Trim();
             string artist = string.IsNullOrWhiteSpace(s.artist) ? "Unknown artist" : s.artist.Trim();
             string line = string.Join("  ·  ", new[] { artist, string.IsNullOrWhiteSpace(s.album) ? null : s.album.Trim(), s.year > 0 ? s.year.ToString() : null }.Where(x => x != null));
-            _source.text = mine ? "YOUR MUSIC" : "THE GAME";
+            _source.text = mine ? "YOUR MUSIC" : string.IsNullOrEmpty(s.source) || s.source == ReflexSong.SourceGame ? "THE GAME" : s.source;   // (an imported soundtrack: MX vs ATV ALIVE / UNTAMED)
             float kW = _kicker.preferredWidth + 2f, tagW = kW + Pad * 1.5f;
             var rt = _card;
             if (ride)

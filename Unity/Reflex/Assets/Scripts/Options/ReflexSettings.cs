@@ -215,6 +215,10 @@ namespace Reflex.Port.Options
         /// soundtrack only), 1 MIX IN (default: the songs are played among the game's tracks in the races; nothing changes while the folder is empty), 2 ONLY (they
         /// replace the game's soundtrack in the menus and the races; the game's soundtrack plays while the folder has no songs).
         public static int CustomMusic { get => Mathf.Clamp(ReflexSave.GetInt("Options.CustomMusic", 1), 0, 2); set => ReflexSave.SetInt("Options.CustomMusic", Mathf.Clamp(value, 0, 2)); }
+        /// SOUNDTRACK (OPTIONS > AUDIO, Content/ReflexSongLibrary.Pool): which games' songs play: 0 ALL SONGS (default: Reflex's own tracks and the
+        /// MX vs ATV Alive / Untamed soundtracks imported from the player's discs, together), 1 REFLEX SONGS ONLY, 2 ALIVE SONGS ONLY, 3 UNTAMED SONGS
+        /// ONLY (Reflex's tracks while that game's songs are not imported). YOUR MUSIC adds the player's own songs to whichever it is.
+        public static int Soundtrack { get => Mathf.Clamp(ReflexSave.GetInt("Options.Soundtrack", 0), 0, 3); set => ReflexSave.SetInt("Options.Soundtrack", Mathf.Clamp(value, 0, 3)); }
         /// NOW PLAYING POP-UP (OPTIONS > AUDIO, Hud/ReflexNowPlaying.cs): the title and artist of a song slide in when it starts (the game's tracks too). ON by default.
         public static bool NowPlayingPopup { get => ReflexSave.GetInt("Options.NowPlaying", 1) != 0; set => ReflexSave.SetInt("Options.NowPlaying", value ? 1 : 0); }
         /// MASTER VOLUME (0 .. 1): every sound (AudioListener.volume), over the game's own EFFECTS / MUSIC / ENGINE volumes.

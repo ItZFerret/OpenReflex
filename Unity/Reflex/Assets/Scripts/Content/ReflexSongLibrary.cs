@@ -3,6 +3,8 @@
 //   <client root>/Mods/Music (and its subfolders)  .mp3, .ogg, .wav files; Unity decodes them (ReflexCustomMusic)
 //   title / artist / album / year   the file's ID3v2 (2.2, 2.3, 2.4) or ID3v1 tags (mp3), its Ogg Vorbis comments (ogg), else the file name
 //                                   ("Artist - Title.mp3", a leading track number "01 - " dropped, "_" read as a blank)
+// The game soundtracks (GameSoundtracks): the songs the Alive and Untamed importers write into Mods/Music/<the game's folder> with their manifest
+// count as that game's (ReflexSong.source), not as the player's own; Pool picks what may play for OPTIONS > AUDIO > SOUNDTRACK and YOUR MUSIC.
 // The queue (ShuffleQueue): one round of the songs, the ones not heard lately first and shuffled, the ones heard lately after them (the
 // longest ago first), no artist twice in a row where another can follow, the song playing never opening the next round. The memory of what
 // was heard (Heard) is kept across runs by the caller. Nothing of anyone's music is in the project: it is read where the player has it.
@@ -17,7 +19,7 @@ namespace Reflex.Port.Content
 {
     public sealed class ReflexSong
     {
-        public const string SourceGame = "THE GAME", SourceCustom = "YOUR MUSIC";
+        public const string SourceGame = "THE GAME", SourceCustom = "YOUR MUSIC", SourceAlive = "MX vs ATV ALIVE", SourceUntamed = "MX vs ATV UNTAMED";
         public string path, title, artist, album, source = SourceCustom;
         public int year;
         /// The file's size and write time when its tags were read (a changed file is read again).
@@ -28,8 +30,74 @@ namespace Reflex.Port.Content
         public string Label => string.IsNullOrWhiteSpace(artist) ? (title ?? "") : artist + " - " + title;
     }
 
+    /// A game's soundtrack in the music folder: the folder its importer writes and the manifest that tells it from a folder of the player's own.
+    public sealed class ReflexGameSoundtrack
+    {
+        public readonly string source, folder, manifest, album;
+        public ReflexGameSoundtrack(string source, string folder, string manifest, string album) { this.source = source; this.folder = folder; this.manifest = manifest; this.album = album; }
+    }
+
     public static class ReflexSongLibrary
     {
+        public static readonly ReflexGameSoundtrack Alive = new ReflexGameSoundtrack(ReflexSong.SourceAlive, "MX vs ATV Alive", "alive-music.json", "MX vs ATV Alive");
+        public static readonly ReflexGameSoundtrack Untamed = new ReflexGameSoundtrack(ReflexSong.SourceUntamed, "MX vs ATV Untamed", "untamed-music.json", "MX vs ATV Untamed");
+        public static readonly ReflexGameSoundtrack[] GameSoundtracks = { Alive, Untamed };
+
+        /// OPTIONS > AUDIO > SOUNDTRACK (ReflexSettings.Soundtrack).
+        public const int SoundtrackAll = 0, SoundtrackReflex = 1, SoundtrackAlive = 2, SoundtrackUntamed = 3;
+        public static readonly string[] SoundtrackNames = { "ALL SONGS", "REFLEX SONGS ONLY", "ALIVE SONGS ONLY", "UNTAMED SONGS ONLY" };
+        /// YOUR MUSIC (ReflexSettings.CustomMusic).
+        public const int YourMusicOff = 0, YourMusicMixIn = 1, YourMusicOnly = 2;
+
+        /// What may play: the songs of the folder that may stand in for the game's tracks, and whether Reflex's own tracks may play (false:
+        /// every playlist entry is one of the songs, and the menus play them instead of the game's themes).
+        ///   SOUNDTRACK  ALL SONGS: Reflex's tracks, the Alive and the Untamed songs together; REFLEX / ALIVE / UNTAMED SONGS ONLY: that game's
+        ///               (one whose songs are not imported plays Reflex's: never silence)
+        ///   YOUR MUSIC  the player's own songs: OFF none, MIX IN among the soundtrack, ONLY instead of any soundtrack (while there are some)
+        public static List<ReflexSong> Pool(IEnumerable<ReflexSong> songs, int yourMusic, int soundtrack, out bool gameTracks)
+        {
+            var yours = new List<ReflexSong>(); var alive = new List<ReflexSong>(); var untamed = new List<ReflexSong>();
+            foreach (var s in songs ?? new ReflexSong[0])
+            {
+                if (s == null) continue;
+                if (s.source == ReflexSong.SourceAlive) alive.Add(s);
+                else if (s.source == ReflexSong.SourceUntamed) untamed.Add(s);
+                else yours.Add(s);
+            }
+            if (yourMusic == YourMusicOnly && yours.Count > 0) { gameTracks = false; return yours; }
+            var pool = new List<ReflexSong>();
+            if (yourMusic != YourMusicOff) pool.AddRange(yours);
+            bool all = soundtrack != SoundtrackReflex && soundtrack != SoundtrackAlive && soundtrack != SoundtrackUntamed;
+            if (all || soundtrack == SoundtrackAlive) pool.AddRange(alive);
+            if (all || soundtrack == SoundtrackUntamed) pool.AddRange(untamed);
+            gameTracks = all || soundtrack == SoundtrackReflex || (soundtrack == SoundtrackAlive && alive.Count == 0) || (soundtrack == SoundtrackUntamed && untamed.Count == 0);
+            if (pool.Count == 0) gameTracks = true;
+            return pool;
+        }
+
+        /// Marks the songs of each game soundtrack folder of the music folder (the folder named so, in any case, holding its importer's
+        /// manifest) with that game; every other song is the player's own.
+        public static void Classify(string folder, List<ReflexSong> songs)
+        {
+            var dirs = new List<(string dir, string source)>();
+            try
+            {
+                if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                    foreach (string d in Directory.GetDirectories(folder))
+                        foreach (var g in GameSoundtracks)
+                            if (string.Equals(Path.GetFileName(d), g.folder, StringComparison.OrdinalIgnoreCase) && File.Exists(Path.Combine(d, g.manifest)))
+                                dirs.Add((d.TrimEnd('/', '\\') + Path.DirectorySeparatorChar, g.source));
+            }
+            catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException || e is NotSupportedException) { }
+            foreach (var s in songs)
+            {   // (one write of the final value: the song objects are shared with the main thread, which reads them meanwhile)
+                string source = ReflexSong.SourceCustom;
+                foreach (var (dir, src) in dirs)
+                    if (s.path != null && s.path.StartsWith(dir, StringComparison.OrdinalIgnoreCase)) { source = src; break; }
+                if (s.source != source) s.source = source;
+            }
+        }
+
         public static readonly string[] Extensions = { ".mp3", ".ogg", ".wav" };
         /// Folders deeper than this, and lists longer than this, are not followed (a link loop, a whole drive dropped in by mistake).
         public const int MaxDepth = 8, MaxSongs = 4000;
@@ -69,6 +137,7 @@ namespace Reflex.Port.Content
             isJunk = isJunk ?? DefaultJunk;
             try { if (Directory.Exists(folder)) Walk(folder, 0, list, isJunk, cache); }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException || e is ArgumentException || e is NotSupportedException) { }
+            Classify(folder, list);
             return list;
         }
 
